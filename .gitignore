@@ -1,0 +1,10 @@
+*.ipynb_checkpoints
+**/.DS_Store
+*/.DS_Store
+__pycache__/
+*.py[cod]
+*$py.class
+data/*
+notebook/data/*
+*/github.yml
+logs/*

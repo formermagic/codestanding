@@ -1,0 +1,27 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "clone repositories",
+            "type": "shell",
+            "command": "python /workspace/src/clone_repository.py --repo_file /workspace/data/repositories_list.txt --output /tmp/clone_repositories",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "parse diffs",
+            "type": "shell",
+            "command": "python /workspace/src/download_diffs.py --repo_dir /tmp/clone_repositories --output /workspace/tmp/test1",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
