@@ -38,15 +38,19 @@ class DiffMining:
             "new_path": modification.new_path,
         }
 
-    def _parse_commit(self, commit: Commit) -> JSONType:
+    def _parse_commit(self, commit: Commit) -> typing.Optional[JSONType]:
         try:
             modifications = commit.modifications
         except (
             InvalidGitRepositoryError,
             NoSuchPathError,
             RepositoryDirtyError,
+            AttributeError,
         ):
             modifications = []
+
+        if not modifications:
+            return None
 
         return {
             "sha": commit.hash,
@@ -58,6 +62,7 @@ class DiffMining:
             ],
         }
 
+    # TODO: Make generator-like
     def parse_diff_tree(self) -> JSONList:
         return [
             self._parse_commit(commit)
@@ -91,8 +96,8 @@ class DiffMining:
 
             for commit in self.repository_mining.traverse_commits():
                 diff = self._parse_commit(commit)
-                buffer.append(diff)
-
+                if diff:
+                    buffer.append(diff)
                 if len(buffer) == 100:
                     flush_buffer()
 
