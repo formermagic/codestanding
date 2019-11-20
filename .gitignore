@@ -8,3 +8,4 @@ data/*
 notebook/data/*
 */github.yml
 logs/*
+tmp/*
