@@ -16,7 +16,13 @@
         {
             "label": "parse diffs",
             "type": "shell",
-            "command": "python /workspace/src/download_diffs.py --repo_dir /tmp/clone_repositories --output /workspace/tmp/test1",
+            "command": "python /workspace/src/download_diffs.py --repo_dir /tmp/clone_repositories --output /workspace/tmp/repos",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
         {
             "label": "tokenize diffs",
             "type": "shell",
