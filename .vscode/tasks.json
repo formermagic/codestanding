@@ -27,6 +27,10 @@
             },
             "problemMatcher": []
         },
+        {
+            "label": "merge diff files",
+            "type": "shell",
+            "command": "python /workspace/src/merge_file.py --input_dir /workspace/tmp/raw_dataset --output_filename /workspace/tmp/raw_dataset.jsonl --remove_files",
             "group": {
                 "kind": "build",
                 "isDefault": true
