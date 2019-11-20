@@ -21,3 +21,4 @@ jsonlines
 pyyaml
 pydriller
 GitPython
+orjson
