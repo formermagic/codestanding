@@ -88,7 +88,11 @@ def split_parsed_diffs(
         diff_path, mode="w"
     ) as diff_ptr:
         for line in tqdm(iterate_lines(input_path), **kwargs):
-            json: JSONType = orjson.loads(line)
+            try:
+                json: JSONType = orjson.loads(line)
+            except ValueError:
+                continue
+
             message: str = json["message"]
             modifications = json["modifications"]
 
