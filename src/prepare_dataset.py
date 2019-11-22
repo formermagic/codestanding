@@ -77,6 +77,7 @@ def split_parsed_diffs(
     input_path: str, message_path: str, diff_path: str
 ) -> None:
     buffer: typing.List[typing.Tuple[str, str]] = []
+    max_len: int = 1000
     kwargs = {
         "total": 3_346_500,
         "unit": "it",
@@ -87,6 +88,13 @@ def split_parsed_diffs(
     with open(message_path, mode="w") as message_ptr, open(
         diff_path, mode="w"
     ) as diff_ptr:
+
+        def flush_buffer():
+            for (message, diff) in buffer:
+                message_ptr.write(message + "\n")
+                diff_ptr.write(diff + "\n")
+            buffer.clear()
+
         for line in tqdm(iterate_lines(input_path), **kwargs):
             try:
                 json: JSONType = orjson.loads(line)
@@ -114,11 +122,9 @@ def split_parsed_diffs(
 
             buffer.append((message, diff))
 
-            if len(buffer) >= 10000:
-                for (message, diff) in buffer:
-                    message_ptr.write(message + "\n")
-                    diff_ptr.write(diff + "\n")
-                break
+            if len(buffer) >= max_len:
+                flush_buffer()
+        flush_buffer()
 
 
 def main():
