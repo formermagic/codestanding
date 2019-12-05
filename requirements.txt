@@ -22,3 +22,5 @@ pyyaml
 pydriller
 GitPython
 orjson
+docopt
+sentencepiece
