@@ -18,7 +18,8 @@
         ],
         "python.formatting.blackPath": "black",
         "python.formatting.blackArgs": [
-            "--line-length", "80"
+            "--line-length",
+            "80"
         ],
         "python.formatting.provider": "black",
         "python.jediEnabled": false,
