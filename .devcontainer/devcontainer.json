@@ -11,7 +11,10 @@
         "python.linting.pylintEnabled": true,
         "python.linting.pylintPath": "/opt/conda/bin/pylint",
         "python.linting.pylintArgs": [
-            "--rcfile", "/workspace/.pylintrc"
+            "--rcfile",
+            "/workspace/.pylintrc",
+            // "--errors-only",
+            "--generated-members=numpy.* ,torch.* ,cv2.* , cv.*"
         ],
         "python.formatting.blackPath": "black",
         "python.formatting.blackArgs": [
