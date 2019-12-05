@@ -8,7 +8,7 @@ from functools import reduce
 import orjson
 from tqdm import tqdm
 
-from utils import iterate_lines
+from src.utils import iterate_lines
 
 JSONType = typing.Dict[str, typing.Any]
 
