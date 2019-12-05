@@ -41,8 +41,8 @@ RUN apt-get update \
 ENV DEBIAN_FRONTEND=
 
 # # Enable PyTorch auto-completion
-# RUN mkdir /usr/local/lib/python3.7/dist-packages/torch/
-# COPY *.tmp/__init__.pyi /usr/local/lib/python3.7/dist-packages/torch/
+RUN mkdir /usr/local/lib/python3.7/dist-packages/torch/
+COPY *.torch/__init__.pyi /usr/local/lib/python3.7/dist-packages/torch/
 
 # Install pip packages with caching
 WORKDIR /workspace
