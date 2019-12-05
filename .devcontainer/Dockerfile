@@ -17,6 +17,7 @@ RUN apt-get update \
     #
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
     && apt-get -y install git iproute2 procps iproute2 lsb-release \
+    && apt-get install --reinstall build-essential \
     #
     # Install pylint
     && apt-get -y install gcc \
