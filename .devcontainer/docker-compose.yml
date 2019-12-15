@@ -8,7 +8,7 @@ services:
       context: ..
       dockerfile: .devcontainer/dockerfile-gpu.dockerfile
     ports:
-      - 8000:8000
+      - 8000:8500
     volumes:
       - ..:/workspace
     command: sleep infinity
