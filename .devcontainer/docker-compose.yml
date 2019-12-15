@@ -1,7 +1,9 @@
-version: '3'
+version: '2.4'
 
 services:
   codestanding-ml:
+    runtime:
+      "nvidia"
     build:
       context: ..
       dockerfile: .devcontainer/dockerfile-gpu.dockerfile
