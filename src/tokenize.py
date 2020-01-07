@@ -117,22 +117,6 @@ class Vocab:
         vocab_size: int,
         input_sentence_size: int = 1000,
     ):
-        # tmp_cat_filename = os.path.join(
-        #     os.path.dirname(source_path), "tmp_train.shared"
-        # )
-
-        # subprocess.call(
-        #     [
-        #         "cat",
-        #         source_path,
-        #         target_path,
-        #         "|",
-        #         "shuffle",
-        #         ">",
-        #         tmp_cat_filename,
-        #     ],
-        #     shell=True,
-        # )
         symbols_str = ",".join(self.symbols)
         train_args = f"""--input={source_path},{target_path} \
             --user_defined_symbols={symbols_str} \
@@ -145,9 +129,6 @@ class Vocab:
             --model_type=bpe"""
 
         spm.SentencePieceTrainer.Train(train_args)
-
-        # if os.path.exists(tmp_cat_filename):
-        #     os.remove(tmp_cat_filename)
 
     def load(self, model_path: str):
         self.sentence_processor.Load(model_path)
