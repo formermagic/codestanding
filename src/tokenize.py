@@ -461,6 +461,22 @@ def main():
             target_input_sentence_size=target_input_sentence_size,
         )
 
+    elif arguments["train-shared"]:
+        source_path = arguments["--source-input-path"]
+        target_path = arguments["--target-input-path"]
+        model_name = arguments["--model-name"]
+        vocab_size = arguments["--vocab-size"]
+        input_sentence_size = arguments["--input_sentence_size"]
+
+        train_shared_vocab(
+            symbols,
+            source_input_path=source_path,
+            target_input_path=target_path,
+            shared_model_name=model_name,
+            shared_vocab_size=vocab_size,
+            input_sentence_size=input_sentence_size,
+        )
+
     elif arguments["tokenize-bpe"]:
         source_model_path = arguments["--source-model"]
         target_model_path = arguments["--target-model"]
@@ -485,22 +501,6 @@ def main():
             dest_target_path=dest_target_path,
             max_size=max_size,
             max_len=512,
-        )
-
-    elif arguments["train-shared"]:
-        source_path = arguments["--source-input-path"]
-        target_path = arguments["--target-input-path"]
-        model_name = arguments["--model-name"]
-        vocab_size = arguments["--vocab-size"]
-        input_sentence_size = arguments["--input_sentence_size"]
-
-        train_shared_vocab(
-            symbols,
-            source_input_path=source_path,
-            target_input_path=target_path,
-            shared_model_name=model_name,
-            shared_vocab_size=vocab_size,
-            input_sentence_size=input_sentence_size,
         )
 
     elif arguments["tokenize-shared-bpe"]:
