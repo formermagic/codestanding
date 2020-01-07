@@ -1,7 +1,7 @@
 {
     "name": "Codestanding",
     "context": "..",
-    "dockerComposeFile": "docker-compose.yml",
+    "dockerComposeFile": "docker-compose-cpu.yml",
     "service": "codestanding-ml",
     "workspaceFolder": "/workspace",
     "settings": {
