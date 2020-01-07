@@ -37,6 +37,37 @@ def merge_jsonl_files(
                 os.remove(file_path)
 
 
+def merge_pair_files(
+    input_path: str,
+    output_prefix: str,
+    extensions: typing.Tuple[str, str],
+    remove_files: bool = True,
+) -> None:
+    dirname = os.path.dirname(output_prefix)
+    os.makedirs(dirname, exist_ok=True)
+
+    search_path = Path(input_path)
+    source, target = extensions
+    source_file = open(output_prefix + f".{source}", mode="w")
+    target_file = open(output_prefix + f".{target}", mode="w")
+
+    with source_file, target_file:
+        for source_path in search_path.glob(f"**/*.{source}"):
+            prefix_path = os.path.splitext(source_path)[0]
+            target_path = prefix_path + f".{target}"
+            if not os.path.exists(target_path):
+                print(target_path)
+                continue
+
+            print(f"source: {source_path}")
+            with open(source_path) as file:
+                source_file.writelines(file.readlines())
+
+            print(f"target: {target_path}")
+            with open(target_path) as file:
+                target_file.writelines(file.readlines())
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Merges parsed diff json lines into a single file."
