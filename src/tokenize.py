@@ -39,6 +39,7 @@ Options:
 """
 
 import os
+import sys
 import typing
 
 import sentencepiece as spm
@@ -257,6 +258,12 @@ class BPETokenizer:
         source_sentence = self.detokenize_source_ids(source_ids)
         target_sentence = self.detokenize_target_ids(target_ids)
         return source_sentence, target_sentence
+
+
+def __non_negative(value: int) -> int:
+    if value < 0:
+        return sys.maxsize
+    return value
 
 
 def tokenize_dataset(
