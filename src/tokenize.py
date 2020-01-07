@@ -546,8 +546,8 @@ def main():
         tokenize_shared_dataset(
             symbols,
             shared_model_path=shared_model_path,
-            source_preprocessor=preprocess_diff,
-            target_preprocessor=preprocess_message,
+            source_preprocessor=source_preprocessor,
+            target_preprocessor=target_preprocessor,
             source_path=source_path,
             target_path=target_path,
             dest_source_path=dest_source_path,
