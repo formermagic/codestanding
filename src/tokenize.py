@@ -47,7 +47,12 @@ import typing
 import sentencepiece as spm
 from docopt import docopt
 
-from src.prepare_dataset import preprocess_diff, preprocess_message
+from src.prepare_dataset import (
+    preprocess_diff,
+    preprocess_message,
+    preprocess_src,
+    preprocess_ast,
+)
 from src.utils import iterate_lines
 
 
