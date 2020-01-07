@@ -353,26 +353,15 @@ def tokenize_shared_dataset(
         target_preprocessor=preprocess_message,
     )
 
-    dest_dir = os.path.dirname(dest_source_path)
-    os.makedirs(dest_dir, exist_ok=True)
-
-    with open(dest_source_path, mode="w") as src_ptr, open(
-        dest_target_path, mode="w"
-    ) as trg_ptr:
-        corpus = zip(iterate_lines(source_path), iterate_lines(target_path))
-        seen = 0
-        for src, trg in corpus:
-            if seen >= max_size:
-                break
-            src_tokens = tokenizer.tokenize_source(src)
-            trg_tokens = tokenizer.tokenize_target(trg)
-
-            if len(src_tokens) > max_len:
-                continue
-
-            seen += 1
-            src_ptr.write(" ".join(src_tokens) + "\n")
-            trg_ptr.write(" ".join(trg_tokens) + "\n")
+    __tokenize_dataset(
+        tokenizer,
+        source_path,
+        target_path,
+        dest_source_path,
+        dest_target_path,
+        max_size,
+        max_len,
+    )
 
 
 def train_vocabs(
