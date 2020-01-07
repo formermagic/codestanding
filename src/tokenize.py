@@ -428,7 +428,7 @@ def main():
     python -m src.tokenize train \
         --source-input-path=src-path \
         --source-model-name=src-name \
-        --target-input-path=trg-ath \
+        --target-input-path=trg-path \
         --target-model-name=trg-name
 
     python -m src.tokenize tokenize-bpe \
