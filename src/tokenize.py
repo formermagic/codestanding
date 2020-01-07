@@ -9,7 +9,8 @@ Usage:
         --target-model-name=<t> \
         [--target-vocab-size=<t>] \
         [--target-input_sentence_size=<t>]
-    tokenize.py tokenize-bpe --source-model=<s> \
+    tokenize.py tokenize-bpe --task=<s> \
+        --source-model=<s> \
         --source-path=<s> \
         --target-model=<t> \
         --target-path=<t> \
@@ -21,7 +22,8 @@ Usage:
         --model-name=<t> \
         [--vocab-size=<s>] \
         [--input_sentence_size=<t>]
-    tokenize.py tokenize-shared-bpe --shared-model=<s> \
+    tokenize.py tokenize-shared-bpe --task=<s> \
+        --shared-model=<s> \
         --source-path=<s> \
         --target-path=<t> \
         --dest-source-path=<d> \
