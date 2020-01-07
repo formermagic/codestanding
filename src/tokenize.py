@@ -313,7 +313,6 @@ def tokenize_dataset(
 ) -> None:
     source_vocab = Vocab(symbols)
     target_vocab = Vocab(symbols)
-
     source_vocab.load(source_model_path)
     target_vocab.load(target_model_path)
 
