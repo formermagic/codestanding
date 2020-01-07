@@ -499,6 +499,17 @@ def main():
         os.makedirs(os.path.dirname(dest_source_path), exist_ok=True)
         os.makedirs(os.path.dirname(dest_target_path), exist_ok=True)
 
+        task = arguments["--task"]
+        if task == diff2msg_task:
+            source_preprocessor = preprocess_diff
+            target_preprocessor = preprocess_message
+        elif task == code2ast_task:
+            source_preprocessor = preprocess_src
+            target_preprocessor = preprocess_ast
+        else:
+            source_preprocessor = None
+            target_preprocessor = None
+
         tokenize_dataset(
             symbols,
             source_model_path=source_model_path,
@@ -520,6 +531,17 @@ def main():
         dest_source_path = arguments["--dest-source-path"]
         dest_target_path = arguments["--dest-target-path"]
         max_size = int(arguments["--max-size"])
+
+        task = arguments["--task"]
+        if task == diff2msg_task:
+            source_preprocessor = preprocess_diff
+            target_preprocessor = preprocess_message
+        elif task == code2ast_task:
+            source_preprocessor = preprocess_src
+            target_preprocessor = preprocess_ast
+        else:
+            source_preprocessor = None
+            target_preprocessor = None
 
         tokenize_shared_dataset(
             symbols,
