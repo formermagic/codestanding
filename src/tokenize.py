@@ -343,7 +343,7 @@ def tokenize_shared_dataset(
     dest_target_path: str,
     max_size: int = 1_000,
     max_len: int = -1,
-):
+) -> None:
     shared_vocab: Vocab = Vocab(symbols, model_path=shared_model_path)
 
     tokenizer = BPETokenizer(
