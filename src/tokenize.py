@@ -266,6 +266,40 @@ def __non_negative(value: int) -> int:
     return value
 
 
+# pylint: disable=too-many-locals, too-many-arguments
+def __tokenize_dataset(
+    tokenizer: BPETokenizer,
+    source_path: str,
+    target_path: str,
+    dest_source_path: str,
+    dest_target_path: str,
+    max_size: int = 1_000,
+    max_len: int = -1,
+) -> None:
+    dest_dir = os.path.dirname(dest_source_path)
+    os.makedirs(dest_dir, exist_ok=True)
+
+    src_ptr = open(dest_source_path, mode="w")
+    trg_ptr = open(dest_target_path, mode="w")
+    corpus = zip(iterate_lines(source_path), iterate_lines(target_path))
+
+    with src_ptr, trg_ptr:
+        seen = 0
+        for src, trg in corpus:
+            if seen >= __non_negative(max_size):
+                break
+            src_tokens = tokenizer.tokenize_source(src)
+            trg_tokens = tokenizer.tokenize_target(trg)
+
+            if len(src_tokens) > __non_negative(max_len):
+                continue
+            if len(trg_tokens) > __non_negative(max_len):
+                continue
+            seen += 1
+            src_ptr.write(" ".join(src_tokens) + "\n")
+            trg_ptr.write(" ".join(trg_tokens) + "\n")
+
+
 def tokenize_dataset(
     symbols: typing.List[str],
     source_model_path: str,
