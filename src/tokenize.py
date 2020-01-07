@@ -486,6 +486,7 @@ def main():
         target_path = arguments["--target-path"]
         dest_source_path = arguments["--dest-source-path"]
         dest_target_path = arguments["--dest-target-path"]
+        max_size = int(arguments["--max-size"])
 
         os.makedirs(os.path.dirname(dest_source_path), exist_ok=True)
         os.makedirs(os.path.dirname(dest_target_path), exist_ok=True)
@@ -498,7 +499,8 @@ def main():
             target_path=target_path,
             dest_source_path=dest_source_path,
             dest_target_path=dest_target_path,
-            max_size=10_000,
+            max_size=max_size,
+            max_len=512,
         )
 
     elif arguments["train-shared"]:
