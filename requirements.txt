@@ -24,3 +24,4 @@ GitPython
 orjson
 docopt
 sentencepiece
+tensorboard
