@@ -317,6 +317,8 @@ def tokenize_dataset(
 def tokenize_shared_dataset(
     symbols: typing.List[str],
     shared_model_path: str,
+    source_preprocessor: typing.Optional[typing.Callable[[str], str]],
+    target_preprocessor: typing.Optional[typing.Callable[[str], str]],
     source_path: str,
     target_path: str,
     dest_source_path: str,
@@ -329,8 +331,8 @@ def tokenize_shared_dataset(
     tokenizer = BPETokenizer(
         source_vocab=shared_vocab,
         target_vocab=shared_vocab,
-        source_preprocessor=preprocess_diff,
-        target_preprocessor=preprocess_message,
+        source_preprocessor=source_preprocessor,
+        target_preprocessor=target_preprocessor,
     )
 
     __tokenize_dataset(
