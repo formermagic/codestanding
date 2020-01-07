@@ -285,6 +285,8 @@ def tokenize_dataset(
     symbols: typing.List[str],
     source_model_path: str,
     target_model_path: str,
+    source_preprocessor: typing.Optional[typing.Callable[[str], str]],
+    target_preprocessor: typing.Optional[typing.Callable[[str], str]],
     source_path: str,
     target_path: str,
     dest_source_path: str,
@@ -298,10 +300,7 @@ def tokenize_dataset(
     target_vocab.load(target_model_path)
 
     tokenizer = BPETokenizer(
-        source_vocab,
-        target_vocab,
-        source_preprocessor=preprocess_diff,
-        target_preprocessor=preprocess_message,
+        source_vocab, target_vocab, source_preprocessor, target_preprocessor,
     )
 
     __tokenize_dataset(
