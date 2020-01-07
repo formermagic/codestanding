@@ -60,6 +60,20 @@ def preprocess_diff(text: str) -> str:
     return text.lower()
 
 
+def preprocess_src(text: str) -> str:
+    text = re.sub(
+        r"(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?",
+        URL_TOKEN,
+        text,
+    )
+
+    return text.lower()
+
+
+def preprocess_ast(text: str) -> str:
+    return text.lower()
+
+
 def merge_modifications(modifications: typing.List[JSONType]) -> str:
     merged_diffs: str = ""
 
