@@ -445,6 +445,9 @@ def main():
     symbols = TextPreprocessor().symbols
     arguments = docopt(__doc__, version="Tokenization 1.0")
 
+    diff2msg_task = "diff2msg"
+    code2ast_task = "code2ast"
+
     if arguments["train"]:
         source_input_path = arguments["--source-input-path"]
         source_model_name = arguments["--source-model-name"]
