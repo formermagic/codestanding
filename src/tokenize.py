@@ -309,7 +309,8 @@ def tokenize_dataset(
     dest_source_path: str,
     dest_target_path: str,
     max_size: int = 1_000,
-):
+    max_len: int = -1,
+) -> None:
     source_vocab = Vocab(symbols)
     target_vocab = Vocab(symbols)
 
