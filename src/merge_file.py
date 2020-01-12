@@ -27,7 +27,7 @@ import orjson
 from docopt import docopt
 from tqdm import tqdm
 
-from src.utils import iterate_lines
+from src.utils import iterate_lines, parse_listed_arg
 
 
 def merge_jsonl_files(
