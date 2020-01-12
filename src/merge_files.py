@@ -1,11 +1,11 @@
 """Util methods to merge multiple files.
 
 Usage:
-    merge_file merge-jsonl \
+    merge_files merge-jsonl \
         --input-path=<inp> \
         --output-path=<out_file> \
         [--remove-files]
-    merge_file merge-pairs \
+    merge_files merge-pairs \
         --input-path=<inp> \
         --output-prefix=<out_pref> \
         --extensions=<exts> \
@@ -95,13 +95,13 @@ def merge_pair_files(
 
 def main():
     """
-    python -m src.merge_file merge-pairs \
+    python -m src.merge_files merge-pairs \
         --input-path=/workspace/tmp/ast_test/test-01 \
         --output-prefix=/workspace/tmp/ast_test/test-02/all \
         --extensions="src, ast" \
         --remove-files
 
-    python -m src.merge_file merge-jsonl \
+    python -m src.merge_files merge-jsonl \
         --input-path=/workspace/tmp/test-01 \
         --output-path=123 \
         --remove-files=123
