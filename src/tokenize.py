@@ -288,6 +288,37 @@ def __tokenize_dataset(
             trg_ptr.write(" ".join(trg_tokens) + "\n")
 
 
+def __detokenize_dataset(
+    tokenizer: BPETokenizer,
+    source_path: str,
+    target_path: str,
+    dest_source_path: str,
+    dest_target_path: str,
+    max_size: int = -1,
+) -> None:
+    dest_dir = os.path.dirname(dest_source_path)
+    os.makedirs(dest_dir, exist_ok=True)
+
+    src_ptr = open(dest_source_path, mode="w")
+    trg_ptr = open(dest_target_path, mode="w")
+    corpus = zip(iterate_lines(source_path), iterate_lines(target_path))
+
+    with src_ptr, trg_ptr:
+        seen = 0
+        for src, trg in corpus:
+            if seen >= __non_negative(max_size):
+                break
+
+            src = src.split("\n")[0]
+            trg = trg.split("\n")[0]
+            src_sent = tokenizer.detokenize_source(src.split(" "))
+            trg_sent = tokenizer.detokenize_target(trg.split(" "))
+
+            seen += 1
+            src_ptr.write("".join(src_sent) + "\n")
+            trg_ptr.write("".join(trg_sent) + "\n")
+
+
 def tokenize_dataset(
     symbols: typing.List[str],
     source_model_path: str,
