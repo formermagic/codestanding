@@ -1,7 +1,7 @@
 import os
 import typing
 import subprocess
-from utils import iterate_lines
+from .utils import iterate_lines
 
 
 def pack_file_content(filepath: str, output_path: str) -> None:
