@@ -88,6 +88,10 @@ def merge_pair_files(
             with open(target_path) as file:
                 target_file.writelines(file.readlines())
 
+            if remove_files:
+                os.remove(source_path)
+                os.remove(target_path)
+
 
 def main():
     parser = argparse.ArgumentParser(
