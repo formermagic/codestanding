@@ -384,6 +384,37 @@ def tokenize_shared_dataset(
     )
 
 
+def detokenize_dataset(
+    symbols: typing.List[str],
+    source_model_path: str,
+    target_model_path: str,
+    source_preprocessor: typing.Optional[typing.Callable[[str], str]],
+    target_preprocessor: typing.Optional[typing.Callable[[str], str]],
+    source_path: str,
+    target_path: str,
+    dest_source_path: str,
+    dest_target_path: str,
+    max_size: int = -1,
+) -> None:
+    source_vocab = Vocab(symbols)
+    target_vocab = Vocab(symbols)
+    source_vocab.load(source_model_path)
+    target_vocab.load(target_model_path)
+
+    tokenizer = BPETokenizer(
+        source_vocab, target_vocab, source_preprocessor, target_preprocessor,
+    )
+
+    __detokenize_dataset(
+        tokenizer,
+        source_path,
+        target_path,
+        dest_source_path,
+        dest_target_path,
+        max_size,
+    )
+
+
 def train_vocabs(
     symbols: typing.List[str],
     source_input_path: str,
