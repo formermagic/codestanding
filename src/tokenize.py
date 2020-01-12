@@ -17,6 +17,13 @@ Usage:
         --dest-source-path=<d> \
         --dest-target-path=<d> \
         [--max-size=<x>]
+    tokenize.py detokenize-bpe --source-model=<s> \
+        --source-path=<s> \
+        --target-model=<t> \
+        --target-path=<t> \
+        --dest-source-path=<d> \
+        --dest-target-path=<d> \
+        [--max-size=<x>]
     tokenize.py train-shared --source-input-path=<s> \
         --target-input-path=<t> \
         --model-name=<t> \
