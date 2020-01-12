@@ -24,11 +24,12 @@ class ASTRepoFileDumper:
             basename = self.__file_basename(file_path)
             input_file = open(file_path, mode="r")
 
+            prefix = output_path.replace("/", "_") + "_"
             source_filepath = os.path.join(
-                output_path, basename + "." + exts[0]
+                output_path, prefix + basename + "." + exts[0]
             )
             target_filepath = os.path.join(
-                output_path, basename + "." + exts[1]
+                output_path, prefix + basename + "." + exts[1]
             )
 
             source_file = open(source_filepath, mode="w")
