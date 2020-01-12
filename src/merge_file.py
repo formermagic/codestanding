@@ -94,36 +94,36 @@ def merge_pair_files(
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Merges parsed diff json lines into a single file."
-    )
+    """
+    python -m src.merge_file merge-pairs \
+        --input-path=/workspace/tmp/ast_test/test-01 \
+        --output-prefix=/workspace/tmp/ast_test/test-02/all \
+        --extensions="src, ast" \
+        --remove-files
 
-    parser.add_argument(
-        "--input_dir",
-        type=str,
-        required=True,
-        help="A path to the parsed diff files.",
-    )
-    parser.add_argument(
-        "--output_filename",
-        type=str,
-        required=True,
-        help="A full name for the output merged file.",
-    )
-    parser.add_argument(
-        "--remove_files",
-        action="store_true",
-        required=False,
-        default=False,
-        help="Indicates if input files should be deleted.",
-    )
+    python -m src.merge_file merge-jsonl \
+        --input-path=/workspace/tmp/test-01 \
+        --output-path=123 \
+        --remove-files=123
+    """
+    arguments = docopt(__doc__, version="Merge files utils 1.0")
+    print(arguments, arguments["--remove-files"])
 
-    args = parser.parse_args()
+    if arguments["merge-jsonl"]:
+        input_path = str(arguments["--input-path"])
+        output_path = str(arguments["--output-path"])
+        remove_files = bool(arguments["--remove-files"])
 
-    input_dir = args.input_dir
-    output_filename = args.output_filename
-    remove_files = args.remove_files
-    merge_jsonl_files(input_dir, output_filename, remove_files=remove_files)
+        merge_jsonl_files(input_path, output_path, remove_files)
+
+    elif arguments["merge-pairs"]:
+        extensions = parse_listed_arg(str(arguments["--extensions"]))
+        extensions = str(extensions[0]), str(extensions[1])
+        input_path = str(arguments["--input-path"])
+        output_prefix = str(arguments["--output-prefix"])
+        remove_files = bool(arguments["--remove-files"])
+
+        merge_pair_files(input_path, output_prefix, extensions, remove_files)
 
 
 if __name__ == "__main__":
