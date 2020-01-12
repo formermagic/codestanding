@@ -1,9 +1,30 @@
-import argparse
+"""Util methods to merge multiple files.
+
+Usage:
+    merge_file merge-jsonl \
+        --input-path=<inp> \
+        --output-path=<out_file> \
+        [--remove-files]
+    merge_file merge-pairs \
+        --input-path=<inp> \
+        --output-prefix=<out_pref> \
+        --extensions=<exts> \
+        [--remove-files]
+
+Options:
+    --input-path=<inp>              A path to look files at.
+    --output-path=<out_file>        A path to the file to write the merged data to.
+    --output-prefix=<out_pref>      A common prefix for merged files to write to.
+    --extensions=<exts>             A string with extensions of paired files (a tuple of <s1, s2>).
+    --remove-files                  Indicates whether input files \
+                                    will be removed after completion [default: False].
+"""
 import os
 import typing
 from pathlib import Path
 
 import orjson
+from docopt import docopt
 from tqdm import tqdm
 
 from src.utils import iterate_lines
