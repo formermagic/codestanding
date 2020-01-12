@@ -625,6 +625,31 @@ def main():
             max_len=512,
         )
 
+    elif arguments["detokenize-bpe"]:
+        source_model_path = arguments["--source-model"]
+        target_model_path = arguments["--target-model"]
+        source_path = arguments["--source-path"]
+        target_path = arguments["--target-path"]
+        dest_source_path = arguments["--dest-source-path"]
+        dest_target_path = arguments["--dest-target-path"]
+        max_size = int(arguments["--max-size"])
+
+        os.makedirs(os.path.dirname(dest_source_path), exist_ok=True)
+        os.makedirs(os.path.dirname(dest_target_path), exist_ok=True)
+
+        detokenize_dataset(
+            symbols,
+            source_model_path=source_model_path,
+            target_model_path=target_model_path,
+            source_preprocessor=None,
+            target_preprocessor=None,
+            source_path=source_path,
+            target_path=target_path,
+            dest_source_path=dest_source_path,
+            dest_target_path=dest_target_path,
+            max_size=max_size,
+        )
+
 
 if __name__ == "__main__":
     main()
