@@ -1,3 +1,17 @@
+"""Remove duplicates from the reference file
+and picks corresponding lines from the aligned file.
+
+Usage:
+    remove_duplicates \
+        --reference-filepath=<ref> \
+        --aligned-filepath=<aligned> \
+        --destination-path=<dst>
+
+Options:
+    --reference-filepath=<ref>      A path to the source file to filter.
+    --aligned-filepath=<aligned>    A path to the target file to filter.
+    --destination-path=<dst>        Destination path to write results to.
+"""
 import os
 import typing
 import subprocess
