@@ -178,10 +178,10 @@ def main() -> None:
     )
 
     process_dataset_files(
-        messages_path=messages_path,
-        diffs_path=diffs_path,
-        messages_output_path=messages_output_path,
-        diffs_output_path=diffs_output_path,
+        reference_filepath,
+        aligned_filepath,
+        dest_reference_filepath,
+        dest_aligned_filepath,
     )
 
 
