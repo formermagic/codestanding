@@ -111,38 +111,45 @@ def remove_file(filepath: str) -> None:
 
 
 def process_dataset_files(
-    messages_path: str,
-    diffs_path: str,
-    messages_output_path: str,
-    diffs_output_path: str,
+    reference_filepath: str,
+    aligned_filepath: str,
+    dest_reference_filepath: str,
+    dest_aligned_filepath: str,
 ) -> None:
-    base_dir = os.path.dirname(messages_output_path)
-    pack_tmp_filepath = os.path.join(base_dir, "messages_pack_tmp.jsonl")
-    sort_tmp_filepath = os.path.join(base_dir, "messages_sort_tmp.jsonl")
-    no_dup_tmp_filepath = os.path.join(base_dir, "messages_no_dup_tmp.jsonl")
-    sort_idx_tmp_filepath = os.path.join(
-        base_dir, "messages_sort_idx_tmp.jsonl"
+    base_dir = os.path.dirname(dest_reference_filepath)
+    pack_tmp_filepath = os.path.join(base_dir, "_pack_tmp.jsonl")
+    sort_tmp_filepath = os.path.join(base_dir, "_sort_tmp.jsonl")
+    no_dup_tmp_filepath = os.path.join(base_dir, "_no_dup_tmp.jsonl")
+    sort_idx_tmp_filepath = os.path.join(base_dir, "_sort_idx_tmp.jsonl")
+
+    # convert lines into tuples (index, line_value)
+    pack_file_content(
+        filepath=reference_filepath, output_path=pack_tmp_filepath
     )
 
-    pack_file_content(filepath=messages_path, output_path=pack_tmp_filepath)
-
+    # sort lines by `line_value` alphanumerically
     sort_file(filepath=pack_tmp_filepath, output_path=sort_tmp_filepath)
 
+    # remove sequential duplicates
     remove_duplicates(
         filepath=sort_tmp_filepath, output_path=no_dup_tmp_filepath
     )
 
+    # sort lines by `index` in an ascending order
     sort_file_by_index(
         filepath=no_dup_tmp_filepath, output_path=sort_idx_tmp_filepath
     )
 
-    _pick_diffs(
-        index_path=sort_idx_tmp_filepath,
-        diffs_path=diffs_path,
-        messages_output_path=messages_output_path,
-        diffs_output_path=diffs_output_path,
+    # pick lines from aligned file that correspond
+    # to the positional index of indexed reference file's lines
+    pick_aligned_pairs(
+        indexed_reference_filepath=sort_idx_tmp_filepath,
+        aligned_filepath=aligned_filepath,
+        dest_reference_filepath=dest_reference_filepath,
+        dest_aligned_filepath=dest_aligned_filepath,
     )
 
+    # remove tmp files
     remove_file(pack_tmp_filepath)
     remove_file(sort_tmp_filepath)
     remove_file(no_dup_tmp_filepath)
