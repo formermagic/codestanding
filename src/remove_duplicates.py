@@ -13,8 +13,11 @@ Options:
     --destination-path=<dst>        Destination path to write results to.
 """
 import os
-import typing
 import subprocess
+import typing
+
+from docopt import docopt
+
 from .utils import iterate_lines
 
 
