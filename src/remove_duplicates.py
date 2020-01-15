@@ -78,28 +78,29 @@ def next_indexed_item(
         raise error
 
 
-# TODO: rename
-def _pick_diffs(
-    index_path: str,
-    diffs_path: str,
-    messages_output_path: str,
-    diffs_output_path: str,
+def pick_aligned_pairs(
+    indexed_reference_filepath: str,
+    aligned_filepath: str,
+    dest_reference_filepath: str,
+    dest_aligned_filepath: str,
 ) -> None:
-    message_iter = iterate_lines(index_path)
-    message_idx, message = next_indexed_item(message_iter)
+    reference_iter = iterate_lines(indexed_reference_filepath)
+    reference_idx, reference_sent = next_indexed_item(reference_iter)
+    reference_ptr = open(dest_reference_filepath, mode="w")
+    aligned_ptr = open(dest_aligned_filepath, mode="w")
 
-    with open(messages_output_path, mode="w") as messages_ptr, open(
-        diffs_output_path, mode="w"
-    ) as diffs_ptr:
-        for diff_idx, diff in enumerate(iterate_lines(diffs_path)):
-            if message_idx != diff_idx:
+    with reference_ptr, aligned_ptr:
+        for idx, sent in enumerate(iterate_lines(aligned_filepath)):
+            if idx != reference_idx:
                 continue
 
-            messages_ptr.write(message)
-            diffs_ptr.write(diff)
+            reference_ptr.write(reference_sent)
+            aligned_ptr.write(sent)
 
             try:
-                message_idx, message = next_indexed_item(message_iter)
+                reference_idx, reference_sent = next_indexed_item(
+                    reference_iter
+                )
             except StopIteration:
                 break
 
