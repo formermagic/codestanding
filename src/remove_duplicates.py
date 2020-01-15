@@ -156,11 +156,26 @@ def process_dataset_files(
     remove_file(sort_idx_tmp_filepath)
 
 
-def main():
-    messages_path = "/workspace/tmp/messages.all"
-    diffs_path = "/workspace/tmp/diffs.all"
-    messages_output_path = "/workspace/tmp/messages_no_dup.all"
-    diffs_output_path = "/workspace/tmp/diffs_no_dup.all"
+def main() -> None:
+    """
+    Usage:
+        python -m src.remove_duplicates \
+            --reference-filepath=/workspace/tmp/ast_test/test-02/all.src \
+            --aligned-filepath=/workspace/tmp/ast_test/test-02/all.ast \
+            --destination-path=/workspace/tmp/ast_test/test-02/no_dups
+    """
+    arguments = docopt(__doc__, version="Remove duplicates 1.0")
+
+    reference_filepath = arguments["--reference-filepath"]
+    aligned_filepath = arguments["--aligned-filepath"]
+    destination_path = arguments["--destination-path"]
+
+    dest_reference_filepath = os.path.join(
+        destination_path, os.path.basename(reference_filepath)
+    )
+    dest_aligned_filepath = os.path.join(
+        destination_path, os.path.basename(aligned_filepath)
+    )
 
     process_dataset_files(
         messages_path=messages_path,
