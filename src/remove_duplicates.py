@@ -8,8 +8,9 @@ Usage:
         --destination-path=<dst>
 
 Options:
-    --reference-filepath=<ref>      A path to the source file to filter.
-    --aligned-filepath=<aligned>    A path to the target file to filter.
+    --reference-filepath=<ref>      A path to the file to remove duplicates from.
+    --aligned-filepath=<aligned>    A path to the file that should be aligned \
+                                    to filtered reference lines.
     --destination-path=<dst>        Destination path to write results to.
 """
 import os
