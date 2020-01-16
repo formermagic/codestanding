@@ -180,7 +180,7 @@ class ASTParser:
 
         return "<nl>".join(lines)
 
-    def traverse_tree(self, node: TreeNode) -> Node:
+    def traverse_tree(self, node: TreeNode) -> TreeNode:
         node_deque = deque(node.children)
         while node_deque:
             left_node = node_deque.popleft()
