@@ -146,6 +146,26 @@ class ASTParser:
 
         return source_code, parsed_ast
 
+    def __parse_decorated_def(
+        self, node: TreeNode, program_lines: List[str]
+    ) -> Tuple[str, str]:
+        start_point = node.children[0].start_point
+        def_nodes = node.children[1].children
+        end_point = def_nodes[0].end_point
+        for child in def_nodes:
+            if child.type == "block":
+                break
+            end_point = child.end_point
+
+        definition_node = TreeNode(node.node, start_point, end_point)
+        src = self.find_substring(program_lines, definition_node)
+        ast = self.parse_node(definition_node, program_lines)
+
+        # drop body from node definition
+        ast = ast.split(" body:")[0] + ")"
+
+        return src, ast
+
     def parse_node(self, node: TreeNode, program_lines: List[str]) -> str:
         source_sexp = node.sexp()
         for child_node in self.traverse_tree(node):
