@@ -35,6 +35,10 @@ class TreeNode:
     def type(self) -> str:
         return self.node.type
 
+    @property
+    def is_named(self) -> bool:
+        return self.node.is_named
+
 
 class LanguageRepr:
     def __init__(self, library_path: str, lang: str):
