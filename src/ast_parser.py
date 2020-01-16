@@ -183,7 +183,7 @@ class ASTParser:
     def traverse_tree(self, node: TreeNode) -> TreeNode:
         node_deque = deque(node.children)
         while node_deque:
-            left_node = node_deque.popleft()
+            left_node = TreeNode(node_deque.popleft())
             if left_node.is_named:
                 node_deque.extendleft(left_node.children[::-1])
                 yield left_node
