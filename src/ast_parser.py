@@ -87,6 +87,36 @@ class ASTParser:
         self.__language_repr = language_repr
         self.parser = language_repr.parser
 
+    def parse_program(
+        self, program: str
+    ) -> typing.List[typing.Tuple[str, str]]:
+        tree = self.parser.parse(bytes(program, "utf8"))
+        root_node = TreeNode(tree.root_node)
+
+        program_lines = program.split("\n")
+        src_lines: typing.List[str] = []
+        ast_lines: typing.List[str] = []
+
+        for node in self.traverse_tree(root_node):
+            if (
+                node.type == "class_definition"
+                or node.type == "function_definition"
+            ):
+                src, ast = self.__parse_def(node, program_lines)
+                src_lines.append(src)
+                ast_lines.append(ast)
+            elif node.type == "decorated_definition":
+                src, ast = self.__parse_decorated_def(node, program_lines)
+                src_lines.append(src)
+                ast_lines.append(ast)
+
+            if "statement" in node.type or "definition" in node.type:
+                src_lines.append(self.find_substring(program_lines, node))
+                ast_lines.append(self.parse_node(node, program_lines))
+                # print(f"NodeType: {node.type}")
+
+        return list(zip(src_lines, ast_lines))
+
     def parse_root_children(
         self, program: str
     ) -> typing.List[typing.Tuple[str, str]]:
