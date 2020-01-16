@@ -130,12 +130,14 @@ class ASTParser:
     def __parse_def(
         self, node: TreeNode, program_lines: List[str]
     ) -> Tuple[str, str]:
-        definition_node = TreeNode(
-            node.node,
-            start_point=node.children[0].start_point,
-            end_point=node.children[-2].end_point,
-        )
+        start_point = node.children[0].start_point
+        end_point = node.children[0].end_point
+        for child in node.children:
+            if child.type == "block":
+                break
+            end_point = child.end_point
 
+        definition_node = TreeNode(node.node, start_point, end_point)
         source_code = self.find_substring(program_lines, definition_node)
         parsed_ast = self.parse_node(definition_node, program_lines)
 
