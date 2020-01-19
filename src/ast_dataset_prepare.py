@@ -14,11 +14,11 @@ class ASTFileParser:
         self.parser = parser
         self.rule = rule
 
-    def dump_files(
+    def parse_file(
         self,
-        repository_path: str,
+        filepath: str,
         output_path: str,
-        exts: typing.Tuple[str, str],
+        extensions: typing.Tuple[str, str],
     ) -> None:
         # dirname = os.path.dirname(output_path)
         os.makedirs(output_path, exist_ok=True)
