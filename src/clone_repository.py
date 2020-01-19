@@ -33,7 +33,7 @@ async def run_clone_repositories(
         subprocess.call(f"rm -rf {output_directory}", shell=True)
 
     loop = asyncio.get_event_loop()
-    with ProcessPoolExecutor(max_workers=10) as executor:
+    with ProcessPoolExecutor(max_workers=16) as executor:
         futures = [
             loop.run_in_executor(
                 executor, clone_repository, repository, output_directory
