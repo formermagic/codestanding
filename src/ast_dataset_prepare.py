@@ -4,6 +4,11 @@ from pathlib import Path
 from .ast_parser import ASTParser, LanguageRepr
 
 
+class ASTParseRule(Enum):
+    root_nodes = 1
+    all_nodes = 2
+
+
 class ASTRepoFileDumper:
     def __init__(self, parser: ASTParser, lang_ext: str):
         self.parser = parser
