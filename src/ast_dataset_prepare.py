@@ -9,10 +9,10 @@ class ASTParseRule(Enum):
     all_nodes = 2
 
 
-    def __init__(self, parser: ASTParser, lang_ext: str):
 class ASTFileParser:
+    def __init__(self, parser: ASTParser, rule: ASTParseRule):
         self.parser = parser
-        self.__lang_ext = lang_ext
+        self.rule = rule
 
     def dump_files(
         self,
