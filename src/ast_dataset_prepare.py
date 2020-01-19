@@ -49,6 +49,16 @@ class ASTRepoFileDumper:
         return basename
 
 
+class ASTParserBuilder:
+    def __init__(self, library_path: str, language: str):
+        self.library_path = library_path
+        self.language = language
+
+    def build(self) -> ASTParser:
+        lang_repr = LanguageRepr(self.library_path, self.language)
+        parser = ASTParser(lang_repr)
+        return parser
+
 def main():
     lang_repr = LanguageRepr(
         library_path="/workspace/tmp/ast_test/my-languages.so", lang="python"
