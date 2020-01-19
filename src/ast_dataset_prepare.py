@@ -1,3 +1,26 @@
+"""Parse ASTs for all source code files in the given directory.
+Produce a pair of files (code, ast) for every source code file.
+
+Usage:
+    ast_dataset_prepare parse-nodes \
+        [--rule-all | --rule-root] \
+        --library-path=<lib> \
+        --language=<lang> \
+        --language-ext=<lang_ext> \
+        --root-input-path=<inp> \
+        --output-path=<out> \
+        --extensions=<exts>
+
+Options:
+    --rule-all                  A rule to parse all statements in source files.
+    --rule-root                 A rule to parse only root nodes in source files.
+    --library-path=<lib>        A path to the built tree-sitter library for supported lanuages.
+    --language=<lang>           A language to parse.
+    --language-ext=<lang_ext>   A language extension to look for while walking through files.
+    --root-input-path=<inp>     An input directory to walk through looking for files to parse.
+    --output-path=<out>         An output directory to write parsed pairs (code, ast) to.
+    --extensions=<exts>         Extensions for parsed pair files (code, ast).
+"""
 import os
 import typing
 from enum import Enum
