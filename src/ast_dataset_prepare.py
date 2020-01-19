@@ -25,7 +25,11 @@ import os
 import typing
 from enum import Enum
 from pathlib import Path
+
+from docopt import docopt
+
 from .ast_parser import ASTParser, LanguageRepr
+from .utils import parse_listed_arg
 from .workable import Workable, WorkableRunner
 
 
@@ -113,8 +117,28 @@ class ASTFileParserWorkable(Workable):
 
 
 def main():
-    lang_repr = LanguageRepr(
-        library_path="/workspace/tmp/ast_test/my-languages.so", lang="python"
+    """
+    Usage:
+        python -m src.ast_dataset_prepare parse-nodes --rule-all \
+            --library-path=/workspace/tmp/code2ast_large/langs.so \
+            --language=python \
+            --language-ext=py \
+            --root-input-path=/workspace/tmp/code2ast_large/repositories \
+            --output-path=/workspace/tmp/code2ast_large/_parsed_files \
+            --extensions="src, ast"
+    """
+
+    # parse arguments
+    arguments = docopt(__doc__, version="Remove duplicates 1.0")
+
+    library_path = str(arguments["--library-path"])
+    language = str(arguments["--language"])
+    language_ext = str(arguments["--language-ext"])
+
+    root_input_path = str(arguments["--root-input-path"])
+    output_path = str(arguments["--output-path"])
+    extensions: typing.Tuple[str, str] = parse_listed_arg(
+        arguments["--extensions"]
     )
 
     parser = ASTParser(lang_repr)
