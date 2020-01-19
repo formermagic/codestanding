@@ -18,6 +18,7 @@ def convert_url_to_name(url: str) -> str:
 
 
 def clone_repository(url: str, output_path: str) -> None:
+    logging.info("started cloning repo with url: %s", url)
     name = convert_url_to_name(url)
     path = os.path.join(output_path, name)
     _ = Repo.clone_from(url, path)
