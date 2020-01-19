@@ -141,13 +141,27 @@ def main():
         arguments["--extensions"]
     )
 
-    parser = ASTParser(lang_repr)
-    dumper = ASTRepoFileDumper(parser, "py")
-    dumper.dump_files(
-        "/workspace/tmp/ast_test/transformers",
-        "/workspace/tmp/ast_test/transformers_output",
-        ("src", "ast"),
-    )
+    # prepare workables to run
+    if arguments["--rule-root"]:
+        parse_rule = ASTParseRule.root_nodes
+    elif arguments["--rule-all"]:
+        parse_rule = ASTParseRule.all_nodes
+    else:
+        parse_rule = ASTParseRule.all_nodes
+
+    parse_builder = ASTParserBuilder(library_path, language)
+    filepaths = Path(root_input_path).glob(f"**/*.{language_ext}")
+
+    workables = [
+        ASTFileParserWorkable(
+            parse_builder, parse_rule, path, output_path, extensions
+        )
+        for path in filepaths
+    ]
+
+    # run workables
+    runner = WorkableRunner()
+    runner.execute(workables, max_workers=16)
 
 
 if __name__ == "__main__":
