@@ -1,5 +1,6 @@
 import os
 import typing
+from enum import Enum
 from pathlib import Path
 from .ast_parser import ASTParser, LanguageRepr
 
