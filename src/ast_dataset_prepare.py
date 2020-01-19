@@ -9,8 +9,8 @@ class ASTParseRule(Enum):
     all_nodes = 2
 
 
-class ASTRepoFileDumper:
     def __init__(self, parser: ASTParser, lang_ext: str):
+class ASTFileParser:
         self.parser = parser
         self.__lang_ext = lang_ext
 
