@@ -20,35 +20,34 @@ class ASTFileParser:
         output_path: str,
         extensions: typing.Tuple[str, str],
     ) -> None:
-        # dirname = os.path.dirname(output_path)
         os.makedirs(output_path, exist_ok=True)
-        repository_path = Path(repository_path)
+        basename = self.__file_basename(filepath)
+        prefix = os.path.dirname(filepath).replace("/", "_") + "_"
 
-        for path in repository_path.glob(f"**/*.{self.__lang_ext}"):
-            file_path = str(path.absolute())
-            basename = self.__file_basename(file_path)
-            input_file = open(file_path, mode="r")
+        source_filepath = os.path.join(
+            output_path, prefix + basename + "." + extensions[0]
+        )
+        target_filepath = os.path.join(
+            output_path, prefix + basename + "." + extensions[1]
+        )
 
-            prefix = output_path.replace("/", "_") + "_"
-            source_filepath = os.path.join(
-                output_path, prefix + basename + "." + exts[0]
-            )
-            target_filepath = os.path.join(
-                output_path, prefix + basename + "." + exts[1]
-            )
+        input_file = open(filepath, mode="r")
+        source_file = open(source_filepath, mode="w")
+        target_file = open(target_filepath, mode="w")
 
-            source_file = open(source_filepath, mode="w")
-            target_file = open(target_filepath, mode="w")
-
-            with input_file, source_file, target_file:
-                program = "".join(input_file.readlines())
+        with input_file, source_file, target_file:
+            program = "".join(input_file.readlines())
+            if self.rule == ASTParseRule.all_nodes:
+                parsed_nodes = self.parser.parse_program(program)
+            else:
                 parsed_nodes = self.parser.parse_root_children(program)
-                for src, ast in parsed_nodes:
-                    source_file.write(src + "\n")
-                    target_file.write(ast + "\n")
-                # break
 
-    def __file_basename(self, filepath: str) -> str:
+            for src, ast in parsed_nodes:
+                source_file.write(src + "\n")
+                target_file.write(ast + "\n")
+
+    @staticmethod
+    def __file_basename(filepath: str) -> str:
         basename = os.path.basename(filepath)
         basename, _ = os.path.splitext(basename)
         return basename
