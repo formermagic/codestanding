@@ -3,6 +3,7 @@ import typing
 from enum import Enum
 from pathlib import Path
 from .ast_parser import ASTParser, LanguageRepr
+from .workable import Workable, WorkableRunner
 
 
 class ASTParseRule(Enum):
@@ -63,6 +64,30 @@ class ASTParserBuilder:
         lang_repr = LanguageRepr(self.library_path, self.language)
         parser = ASTParser(lang_repr)
         return parser
+
+
+class ASTFileParserWorkable(Workable):
+    # pylint: disable=too-many-arguments
+    def __init__(
+        self,
+        parser_builder: ASTParserBuilder,
+        parser_rule: ASTParseRule,
+        filepath: Path,
+        output_path: str,
+        extensions: typing.Tuple[str, str],
+    ) -> None:
+        self.parser_builder = parser_builder
+        self.parser_rule = parser_rule
+        self.filepath = filepath
+        self.output_path = output_path
+        self.extensions = extensions
+
+    def run(self) -> None:
+        filepath = str(self.filepath)
+        parser = self.parser_builder.build()
+        file_parser = ASTFileParser(parser, self.parser_rule)
+        file_parser.parse_file(filepath, self.output_path, self.extensions)
+
 
 def main():
     lang_repr = LanguageRepr(
