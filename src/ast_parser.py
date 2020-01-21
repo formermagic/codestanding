@@ -298,7 +298,7 @@ def main() -> None:
         base = os.path.base(path)
         joined_path = join(base, "123.json")
         return joined_path
-        
+
     def say_hello(name: str) -> None:
         print(f"Hello, {name}!")\
     """
