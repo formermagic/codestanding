@@ -127,7 +127,7 @@ class ASTFileParserWorkable(Workable):
         self,
         parser_builder: ASTParserBuilder,
         parser_rule: ASTParseRule,
-        filepath: Path,
+        filepath: str,
         output_path: str,
         extensions: typing.Tuple[str, str],
     ) -> None:
