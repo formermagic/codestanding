@@ -150,6 +150,8 @@ class ASTFileParserWorkable(Workable):
 def find_source_files(
     root_input_path: str, language_ext: str, files_path: str
 ) -> None:
+    dirname = os.path.dirname(files_path)
+    os.makedirs(dirname, exist_ok=True)
     with open(files_path, mode="w") as output:
         subprocess.run(
             ["find", root_input_path, "-name", f"*.{language_ext}", "-print"],
