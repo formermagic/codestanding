@@ -188,13 +188,15 @@ def main():
         python -m src.ast_dataset_prepare parse-nodes --rule-all \
             --library-path=/workspace/tmp/code2ast_large/langs.so \
             --language=python \
-            --language-ext=py \
-            --root-input-path=/workspace/tmp/code2ast_large/repositories \
+            --files-path=/workspace/tmp/code2ast_files.txt \
             --output-path=/workspace/tmp/code2ast_large/_parsed_files \
             --extensions="src, ast"
+
+        python -m src.ast_dataset_prepare find-source-files \
+            --root-input-path=/workspace \
+            --language-ext=py \
+            --files-path=/workspace/tmp/code2ast_files.txt
     """
-
-
 
     log_dir = "/workspace/logs/"
     log_name = os.path.basename(__file__).replace(".py", ".log")
