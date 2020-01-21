@@ -196,6 +196,13 @@ def main():
 
 
 
+    log_dir = "/workspace/logs/"
+    log_name = os.path.basename(__file__).replace(".py", ".log")
+    logging.basicConfig(
+        filename=os.path.join(log_dir, log_name),
+        filemode="w",
+        format="%(asctime)s %(levelname)s: %(message)s",
+        level=logging.INFO,
     )
 
     # parse arguments
