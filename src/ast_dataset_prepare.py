@@ -46,6 +46,7 @@ class ASTFileParser:
         self.parser = parser
         self.rule = rule
 
+    # pylint: disable=broad-except
     def parse_file(
         self,
         filepath: str,
