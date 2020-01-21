@@ -196,8 +196,16 @@ class ASTParser:
         ast = ast.split(" body:")[0] + ")"
 
         return src, ast
+    def parse_node(
+        self, node: TreeNode, program_lines: List[str]
+    ) -> Optional[str]:
+        # this is a workaround for segfault due to underlying implementation
+        # tree_sitter's `sexp` might crash for long sequences
+        max_point_dist = 1024
+        point_dist = self.distance(node.start_point, node.end_point)
+        if point_dist > max_point_dist:
+            return None
 
-    def parse_node(self, node: TreeNode, program_lines: List[str]) -> str:
         source_sexp = node.sexp()
         for child_node in self.traverse_tree(node):
             if child_node.type == "identifier":
