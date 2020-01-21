@@ -198,9 +198,38 @@ def main():
 
     )
 
+    # parse arguments
+    arguments = docopt(__doc__, version="Remove duplicates 1.0")
 
+    if arguments["find-source-files"]:
+        root_input_path = str(arguments["--root-input-path"])
+        language_ext = str(arguments["--language-ext"])
+        files_path = str(arguments["--files-path"])
+        find_source_files(root_input_path, language_ext, files_path)
+    elif arguments["parse-nodes"]:
+        library_path = str(arguments["--library-path"])
+        language = str(arguments["--language"])
+        files_path = str(arguments["--files-path"])
+        output_path = str(arguments["--output-path"])
+        extensions: typing.Tuple[str, str] = parse_listed_arg(
+            arguments["--extensions"]
         )
 
+        if arguments["--rule-root"]:
+            parse_rule = ASTParseRule.root_nodes
+        elif arguments["--rule-all"]:
+            parse_rule = ASTParseRule.all_nodes
+        else:
+            parse_rule = ASTParseRule.all_nodes
+
+        parse_nodes(
+            parse_rule,
+            library_path,
+            language,
+            files_path,
+            output_path,
+            extensions,
+        )
 
 
 if __name__ == "__main__":
