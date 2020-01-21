@@ -22,6 +22,7 @@ Options:
     --extensions=<exts>         Extensions for parsed pair files (code, ast).
 """
 import os
+import subprocess
 import typing
 from enum import Enum
 from pathlib import Path
@@ -114,6 +115,18 @@ class ASTFileParserWorkable(Workable):
         parser = self.parser_builder.build()
         file_parser = ASTFileParser(parser, self.parser_rule)
         file_parser.parse_file(filepath, self.output_path, self.extensions)
+
+def find_source_files(
+    root_input_path: str, language_ext: str, files_path: str
+) -> None:
+    with open(files_path, mode="w") as output:
+        subprocess.run(
+            ["find", root_input_path, "-name", f"*.{language_ext}", "-print"],
+            check=True,
+            stdout=output,
+        )
+
+
 
 
 def main():
