@@ -168,8 +168,12 @@ def parse_nodes(
     output_path: str,
     extensions: typing.Tuple[str, str],
 ) -> None:
-    with open(files_path, mode="r") as files:
-        filepaths = [filepath.strip() for filepath in files.readlines()]
+    try:
+        with open(files_path, mode="r") as files:
+            filepaths = [filepath.strip() for filepath in files.readlines()]
+    except FileNotFoundError:
+        logging.error("No such file at %s", files_path)
+        return
 
     parser_builder = ASTParserBuilder(library_path, language)
     parser_workables = [
