@@ -183,7 +183,7 @@ class ASTParser:
         self, node: TreeNode, program_lines: List[str]
     ) -> Optional[Tuple[str, str]]:
         start_point = node.children[0].start_point
-        def_nodes = node.children[1].children
+        def_nodes = node.children[-1].children
         end_point = def_nodes[0].end_point
         for child in def_nodes:
             if child.type == "block":
