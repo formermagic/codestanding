@@ -21,6 +21,7 @@ Options:
     --output-path=<out>         An output directory to write parsed pairs (code, ast) to.
     --extensions=<exts>         Extensions for parsed pair files (code, ast).
 """
+import logging
 import os
 import subprocess
 import typing
@@ -63,20 +64,43 @@ class ASTFileParser:
             output_path, prefix + "." + extensions[1]
         )
 
-        input_file = open(filepath, mode="r")
-        source_file = open(source_filepath, mode="w")
-        target_file = open(target_filepath, mode="w")
+        logging.info("Parsing file %s", filepath)
 
-        with input_file, source_file, target_file:
-            program = "".join(input_file.readlines())
-            if self.rule == ASTParseRule.all_nodes:
-                parsed_nodes = self.parser.parse_program(program)
-            else:
-                parsed_nodes = self.parser.parse_root_children(program)
+        try:
+            input_file = open(filepath, mode="r")
+            source_file = open(source_filepath, mode="w")
+            target_file = open(target_filepath, mode="w")
 
-            for src, ast in parsed_nodes:
-                source_file.write(src + "\n")
-                target_file.write(ast + "\n")
+            with input_file, source_file, target_file:
+                program = "".join(input_file.readlines())
+                if self.rule == ASTParseRule.all_nodes:
+                    parsed_nodes = self.parser.parse_program(program)
+                else:
+                    parsed_nodes = self.parser.parse_root_children(program)
+
+                for src, ast in parsed_nodes:
+                    source_file.write(src + "\n")
+                    target_file.write(ast + "\n")
+        except OSError as error:
+            logging.error(
+                "OSError ocurred while parsing file: %s, exception: %s",
+                filepath,
+                str(error),
+            )
+        except UnicodeError as error:
+            logging.error(
+                "UnicodeError ocurred while parsing file: %s, exception: %s",
+                filepath,
+                str(error),
+            )
+        except BaseException as error:
+            logging.error(
+                "Exception ocurred while parsing file: %s, exception: %s",
+                filepath,
+                str(error),
+            )
+
+        logging.info("Finished parsing file %s", filepath)
 
     @staticmethod
     def __file_basename(filepath: str) -> str:
