@@ -4,6 +4,7 @@ import typing
 from collections import deque
 from typing import List, Optional, Tuple
 
+import numpy as np
 from git import Repo
 from tree_sitter import Language, Node, Parser
 
@@ -203,6 +204,14 @@ class ASTParser:
                 identifier = self.find_substring(program_lines, child_node)
                 source_sexp = source_sexp.replace("identifier", identifier, 1)
         return source_sexp
+
+    @staticmethod
+    def distance(
+        lhs: typing.Tuple[int, int], rhs: typing.Tuple[int, int]
+    ) -> float:
+        return np.math.sqrt(
+            np.math.pow(rhs[0] - lhs[0], 2) + np.math.pow(rhs[1] - lhs[1], 2)
+        )
 
     # def parse_program(self, program: str) -> str:
     #     tree = self.parser.parse(bytes(program, "utf8"))
