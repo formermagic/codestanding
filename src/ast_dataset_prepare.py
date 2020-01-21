@@ -194,40 +194,13 @@ def main():
             --extensions="src, ast"
     """
 
-    # parse arguments
-    arguments = docopt(__doc__, version="Remove duplicates 1.0")
 
-    library_path = str(arguments["--library-path"])
-    language = str(arguments["--language"])
-    language_ext = str(arguments["--language-ext"])
 
-    root_input_path = str(arguments["--root-input-path"])
-    output_path = str(arguments["--output-path"])
-    extensions: typing.Tuple[str, str] = parse_listed_arg(
-        arguments["--extensions"]
     )
 
-    # prepare workables to run
-    if arguments["--rule-root"]:
-        parse_rule = ASTParseRule.root_nodes
-    elif arguments["--rule-all"]:
-        parse_rule = ASTParseRule.all_nodes
-    else:
-        parse_rule = ASTParseRule.all_nodes
 
-    parse_builder = ASTParserBuilder(library_path, language)
-    filepaths = Path(root_input_path).glob(f"**/*.{language_ext}")
-
-    workables = [
-        ASTFileParserWorkable(
-            parse_builder, parse_rule, path, output_path, extensions
         )
-        for path in filepaths
-    ]
 
-    # run workables
-    runner = WorkableRunner()
-    runner.execute(workables, max_workers=16)
 
 
 if __name__ == "__main__":
