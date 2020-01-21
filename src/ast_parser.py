@@ -5,7 +5,7 @@ from collections import deque
 from typing import List, Optional, Tuple
 
 from git import Repo
-from tree_sitter import Language, Node, Parser, TreeCursor
+from tree_sitter import Language, Node, Parser
 
 
 class TreeNode:
