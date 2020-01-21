@@ -10,6 +10,10 @@ Usage:
         --root-input-path=<inp> \
         --output-path=<out> \
         --extensions=<exts>
+    ast_dataset_prepare find-source-files \
+        --root-input-path=<inp> \
+        --language-ext=<lang_ext> \
+        --files-path=<files>
 
 Options:
     --rule-all                  A rule to parse all statements in source files.
@@ -20,6 +24,7 @@ Options:
     --root-input-path=<inp>     An input directory to walk through looking for files to parse.
     --output-path=<out>         An output directory to write parsed pairs (code, ast) to.
     --extensions=<exts>         Extensions for parsed pair files (code, ast).
+    --files-path=<files>            A path to the list with found source files.
 """
 import logging
 import os
