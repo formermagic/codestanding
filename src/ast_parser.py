@@ -206,7 +206,6 @@ class ASTParser:
 
         return None
 
-        return src, ast
     def parse_node(
         self, node: TreeNode, program_lines: List[str]
     ) -> Optional[str]:
