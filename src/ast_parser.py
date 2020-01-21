@@ -179,7 +179,7 @@ class ASTParser:
 
     def __parse_decorated_def(
         self, node: TreeNode, program_lines: List[str]
-    ) -> Tuple[str, str]:
+    ) -> Optional[Tuple[str, str]]:
         start_point = node.children[0].start_point
         def_nodes = node.children[1].children
         end_point = def_nodes[0].end_point
@@ -192,8 +192,12 @@ class ASTParser:
         src = self.find_substring(program_lines, definition_node)
         ast = self.parse_node(definition_node, program_lines)
 
-        # drop body from node definition
-        ast = ast.split(" body:")[0] + ")"
+        if src and ast:
+            # drop body from node definition
+            ast = ast.split(" body:")[0] + ")" + ")"
+            return src, ast
+
+        return None
 
         return src, ast
     def parse_node(
