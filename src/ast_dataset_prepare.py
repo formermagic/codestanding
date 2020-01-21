@@ -15,14 +15,14 @@ Usage:
         --files-path=<files>
 
 Options:
-    --rule-all                  A rule to parse all statements in source files.
-    --rule-root                 A rule to parse only root nodes in source files.
-    --library-path=<lib>        A path to the built tree-sitter library for supported lanuages.
-    --language=<lang>           A language to parse.
-    --language-ext=<lang_ext>   A language extension to look for while walking through files.
-    --root-input-path=<inp>     An input directory to walk through looking for files to parse.
-    --output-path=<out>         An output directory to write parsed pairs (code, ast) to.
-    --extensions=<exts>         Extensions for parsed pair files (code, ast).
+    --rule-all                      A rule to parse all statements in source files.
+    --rule-root                     A rule to parse only root nodes in source files.
+    --library-path=<lib>            A path to the built tree-sitter library for supported lanuages.
+    --language=<lang>               A language to parse.
+    --language-ext=<lang_ext>       A language extension to look for while walking through files.
+    --root-input-path=<inp>         An input directory to walk through looking for files to parse.
+    --output-path=<out>             An output directory to write parsed pairs (code, ast) to.
+    --extensions=<exts>             Extensions for parsed pair files (code, ast).
     --files-path=<files>            A path to the list with found source files.
 """
 import logging
