@@ -24,6 +24,7 @@ Options:
 import os
 import subprocess
 import typing
+import uuid
 from enum import Enum
 from pathlib import Path
 
@@ -51,14 +52,15 @@ class ASTFileParser:
         extensions: typing.Tuple[str, str],
     ) -> None:
         os.makedirs(output_path, exist_ok=True)
-        basename = self.__file_basename(filepath)
-        prefix = os.path.dirname(filepath).replace("/", "_") + "_"
+        # basename = self.__file_basename(filepath)
+        # prefix = os.path.dirname(filepath).replace("/", "_") + "_"
+        prefix = str(uuid.uuid4())
 
         source_filepath = os.path.join(
-            output_path, prefix + basename + "." + extensions[0]
+            output_path, prefix + "." + extensions[0]
         )
         target_filepath = os.path.join(
-            output_path, prefix + basename + "." + extensions[1]
+            output_path, prefix + "." + extensions[1]
         )
 
         input_file = open(filepath, mode="r")
