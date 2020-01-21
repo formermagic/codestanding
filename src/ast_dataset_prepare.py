@@ -154,6 +154,28 @@ def find_source_files(
         )
 
 
+def parse_nodes(
+    parse_rule: ASTParseRule,
+    library_path: str,
+    language: str,
+    files_path: str,
+    output_path: str,
+    extensions: typing.Tuple[str, str],
+) -> None:
+    with open(files_path, mode="r") as files:
+        filepaths = [filepath.strip() for filepath in files.readlines()]
+
+    parser_builder = ASTParserBuilder(library_path, language)
+    parser_workables = [
+        ASTFileParserWorkable(
+            parser_builder, parse_rule, path, output_path, extensions
+        )
+        for path in filepaths
+    ]
+
+    # run workables
+    runner = WorkableRunner()
+    runner.execute(parser_workables, max_workers=16)
 
 
 def main():
