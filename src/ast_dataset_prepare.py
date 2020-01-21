@@ -6,8 +6,7 @@ Usage:
         [--rule-all | --rule-root] \
         --library-path=<lib> \
         --language=<lang> \
-        --language-ext=<lang_ext> \
-        --root-input-path=<inp> \
+        --files-path=<files> \
         --output-path=<out> \
         --extensions=<exts>
     ast_dataset_prepare find-source-files \
