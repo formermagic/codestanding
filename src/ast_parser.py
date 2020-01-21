@@ -104,16 +104,21 @@ class ASTParser:
                 or node.type == "function_definition"
             ):
                 src, ast = self.__parse_def(node, program_lines)
-                src_lines.append(src)
-                ast_lines.append(ast)
+                if src and ast:
+                    src_lines.append(src)
+                    ast_lines.append(ast)
             elif node.type == "decorated_definition":
                 src, ast = self.__parse_decorated_def(node, program_lines)
-                src_lines.append(src)
-                ast_lines.append(ast)
+                if src and ast:
+                    src_lines.append(src)
+                    ast_lines.append(ast)
 
             if "statement" in node.type or "definition" in node.type:
-                src_lines.append(self.find_substring(program_lines, node))
-                ast_lines.append(self.parse_node(node, program_lines))
+                src = self.find_substring(program_lines, node)
+                ast = self.parse_node(node, program_lines)
+                if src and ast:
+                    src_lines.append(src)
+                    ast_lines.append(ast)
                 # print(f"NodeType: {node.type}")
 
         return list(zip(src_lines, ast_lines))
