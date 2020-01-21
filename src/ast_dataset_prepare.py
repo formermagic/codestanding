@@ -138,10 +138,10 @@ class ASTFileParserWorkable(Workable):
         self.extensions = extensions
 
     def run(self) -> None:
-        filepath = str(self.filepath)
         parser = self.parser_builder.build()
         file_parser = ASTFileParser(parser, self.parser_rule)
-        file_parser.parse_file(filepath, self.output_path, self.extensions)
+        file_parser.parse_file(self.filepath, self.output_path, self.extensions)
+
 
 def find_source_files(
     root_input_path: str, language_ext: str, files_path: str
