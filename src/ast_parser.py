@@ -209,18 +209,24 @@ class ASTParser:
     def parse_node(
         self, node: TreeNode, program_lines: List[str]
     ) -> Optional[str]:
-        # this is a workaround for segfault due to underlying implementation
-        # tree_sitter's `sexp` might crash for long sequences
-        max_point_dist = 1024
-        point_dist = self.distance(node.start_point, node.end_point)
-        if point_dist > max_point_dist:
-            return None
-
-        source_sexp = node.sexp()
+        identifiers = []
         for child_node in self.traverse_tree(node):
             if child_node.type == "identifier":
                 identifier = self.find_substring(program_lines, child_node)
-                source_sexp = source_sexp.replace("identifier", identifier, 1)
+                identifiers.append(identifier)
+
+            # workaround tree_sitter escape sequences string buggy parsing
+            elif child_node.type == "string":
+                distance = self.distance(
+                    child_node.start_point, child_node.end_point
+                )
+                if distance > 100:
+                    return None
+
+        source_sexp = node.sexp()
+        for identifier in identifiers:
+            source_sexp = source_sexp.replace("identifier", identifier, 1)
+
         return source_sexp
 
     @staticmethod
