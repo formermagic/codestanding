@@ -245,6 +245,8 @@ def main():
         level=logging.INFO,
     )
 
+    os.makedirs(log_dir, exist_ok=True)
+
     # parse arguments
     arguments = docopt(__doc__, version="Remove duplicates 1.0")
 
