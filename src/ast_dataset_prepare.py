@@ -165,8 +165,8 @@ def find_source_files(
 
 
 class HistoryWriter:
-    def __init__(self, restore_filepath: str) -> None:
-        self.restore_filepath = restore_filepath
+    def __init__(self, history_filepath: str) -> None:
+        self.history_filepath = history_filepath
 
     def difference(self, files: typing.List[str]) -> typing.List[str]:
         files = set(files)
@@ -177,14 +177,14 @@ class HistoryWriter:
     @property
     def saved_files(self) -> typing.List[str]:
         try:
-            with open(self.restore_filepath, mode="r") as file:
+            with open(self.history_filepath, mode="r") as file:
                 return [line.strip() for line in file.readlines()]
         except BaseException:
             return []
         return []
 
     def handle_success_workable(self, filepath: str) -> None:
-        with open(self.restore_filepath, mode="a") as file:
+        with open(self.history_filepath, mode="a") as file:
             file.write(f"{filepath}\n")
 
 
