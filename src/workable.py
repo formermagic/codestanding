@@ -1,4 +1,5 @@
 import faulthandler
+import logging
 import typing
 from abc import ABC, abstractmethod
 from concurrent.futures import as_completed
@@ -26,6 +27,7 @@ class WorkableRunner:
     def run_workable(self, workable: Workable) -> Workable.ResultType:
         return workable.run()
 
+    # pylint: disable=broad-except
     def execute(
         self, workables: typing.List[Workable], max_workers: int = 16
     ) -> None:
@@ -42,5 +44,12 @@ class WorkableRunner:
                 for workable in workables
             ]
 
-            for _ in tqdm(as_completed(futures), **kwargs):
-                continue
+            for future in tqdm(as_completed(futures), **kwargs):
+                try:
+                    result = future.result()
+                    self.success_fn(result)
+                except BaseException as error:
+                    logging.error(
+                        "Unable to complete a future due to error: %s",
+                        str(error),
+                    )
