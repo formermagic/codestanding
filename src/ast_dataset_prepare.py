@@ -56,7 +56,7 @@ class ASTFileParser:
         filepath: str,
         output_path: str,
         extensions: typing.Tuple[str, str],
-    ) -> None:
+    ) -> str:
         os.makedirs(output_path, exist_ok=True)
         # basename = self.__file_basename(filepath)
         # prefix = os.path.dirname(filepath).replace("/", "_") + "_"
@@ -107,6 +107,8 @@ class ASTFileParser:
 
         logging.info("Finished parsing file %s", filepath)
 
+        return filepath
+
     @staticmethod
     def __file_basename(filepath: str) -> str:
         basename = os.path.basename(filepath)
@@ -141,10 +143,12 @@ class ASTFileParserWorkable(Workable):
         self.output_path = output_path
         self.extensions = extensions
 
-    def run(self) -> None:
+    def run(self) -> str:
         parser = self.parser_builder.build()
         file_parser = ASTFileParser(parser, self.parser_rule)
-        file_parser.parse_file(self.filepath, self.output_path, self.extensions)
+        return file_parser.parse_file(
+            self.filepath, self.output_path, self.extensions
+        )
 
 
 def find_source_files(
