@@ -18,8 +18,8 @@ class Workable(ABC):
 
 
 class WorkableRunner:
-    def run_workable(self, workable: Workable) -> None:
-        workable.run()
+    def run_workable(self, workable: Workable) -> Workable.ResultType:
+        return workable.run()
 
     def execute(
         self, workables: typing.List[Workable], max_workers: int = 16
