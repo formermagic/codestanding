@@ -195,10 +195,14 @@ def parse_nodes(
     files_path: str,
     output_path: str,
     extensions: typing.Tuple[str, str],
+    history_filepath: str,
 ) -> None:
+    history_writer = HistoryWriter(history_filepath)
+
     try:
         with open(files_path, mode="r") as files:
             filepaths = [filepath.strip() for filepath in files.readlines()]
+            filepaths = history_writer.difference(filepaths)
     except FileNotFoundError:
         logging.error("No such file at %s", files_path)
         return
@@ -212,7 +216,7 @@ def parse_nodes(
     ]
 
     # run workables
-    runner = WorkableRunner()
+    runner = WorkableRunner(history_writer.handle_success_workable)
     runner.execute(parser_workables, max_workers=16)
 
 
