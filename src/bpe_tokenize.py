@@ -205,6 +205,8 @@ class PairTokenizerWrapper:
         self, input_files: Tuple[str, str], output_files: Tuple[str, str]
     ) -> None:
         for output_path in output_files:
+            dirname = os.path.dirname(output_path)
+            os.makedirs(dirname, exist_ok=True)
             if os.path.exists(output_path):
                 os.remove(output_path)
 
@@ -256,6 +258,8 @@ class PairTokenizerWrapper:
         self, input_files: Tuple[str, str], output_files: Tuple[str, str]
     ) -> None:
         for output_path in output_files:
+            dirname = os.path.dirname(output_path)
+            os.makedirs(dirname, exist_ok=True)
             if os.path.exists(output_path):
                 os.remove(output_path)
 
