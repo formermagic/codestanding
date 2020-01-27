@@ -10,8 +10,10 @@ faulthandler.enable()
 
 
 class Workable(ABC):
+    ResultType = typing.TypeVar("T")
+
     @abstractmethod
-    def run(self) -> None:
+    def run(self) -> "Workable.ResultType":
         pass
 
 
