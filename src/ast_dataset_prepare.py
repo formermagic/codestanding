@@ -164,6 +164,30 @@ def find_source_files(
         )
 
 
+class HistoryWriter:
+    def __init__(self, restore_filepath: str) -> None:
+        self.restore_filepath = restore_filepath
+
+    def difference(self, files: typing.List[str]) -> typing.List[str]:
+        files = set(files)
+        saved_files = set(self.saved_files)
+        return files.difference(saved_files)
+
+    # pylint: disable=broad-except
+    @property
+    def saved_files(self) -> typing.List[str]:
+        try:
+            with open(self.restore_filepath, mode="r") as file:
+                return [line.strip() for line in file.readlines()]
+        except BaseException:
+            return []
+        return []
+
+    def handle_success_workable(self, filepath: str) -> None:
+        with open(self.restore_filepath, mode="a") as file:
+            file.write(f"{filepath}\n")
+
+
 def parse_nodes(
     parse_rule: ASTParseRule,
     library_path: str,
