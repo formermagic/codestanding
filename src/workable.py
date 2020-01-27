@@ -18,6 +18,11 @@ class Workable(ABC):
 
 
 class WorkableRunner:
+    def __init__(
+        self, success_fn: typing.Callable[[Workable.ResultType], None]
+    ) -> None:
+        self.success_fn = success_fn
+
     def run_workable(self, workable: Workable) -> Workable.ResultType:
         return workable.run()
 
