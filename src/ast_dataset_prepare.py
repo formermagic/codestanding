@@ -271,6 +271,8 @@ def main():
         else:
             parse_rule = ASTParseRule.all_nodes
 
+        history_filepath = "/workspace/tmp/restore_file.txt"
+
         parse_nodes(
             parse_rule,
             library_path,
@@ -278,6 +280,7 @@ def main():
             files_path,
             output_path,
             extensions,
+            history_filepath,
         )
 
 
