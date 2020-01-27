@@ -1,9 +1,12 @@
+import faulthandler
 import typing
 from abc import ABC, abstractmethod
 from concurrent.futures import as_completed
 from concurrent.futures.process import ProcessPoolExecutor
 
 from tqdm import tqdm
+
+faulthandler.enable()
 
 
 class Workable(ABC):
