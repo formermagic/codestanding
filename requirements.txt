@@ -26,3 +26,4 @@ docopt
 sentencepiece
 tensorboard
 tree_sitter
+tokenizers
