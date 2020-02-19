@@ -97,7 +97,7 @@ class UnsupervisedMASSTask(FairseqTask):
     ) -> None:
         epoch = getattr(kwargs, "epoch", 0)
         paths = self.args.data.split(":")
-        assert paths
+        assert len(paths) > 0
         data_path = paths[epoch % len(paths)]
         split_path = os.path.join(data_path, split)
 
