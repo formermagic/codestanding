@@ -18,6 +18,10 @@ from .masked_language_pair_dataset import MaskedLanguagePairDataset
 
 @register_task("unsupervised_mass")
 class UnsupervisedMASSTask(FairseqTask):
+    def __init__(self, args: Namespace, dictionary: MaskedDictionary) -> None:
+        super().__init__(args)
+        self.dictionary = dictionary
+
     @staticmethod
     def add_args(parser):
         """Add task-specific arguments to the parser."""
@@ -62,10 +66,6 @@ class UnsupervisedMASSTask(FairseqTask):
             type=str,
             help="Word prediction probability for decoder mask",
         )
-
-    def __init__(self, args: Namespace, dictionary: MaskedDictionary) -> None:
-        super().__init__(args)
-        self.dictionary = dictionary
 
     @classmethod
     def setup_task(
