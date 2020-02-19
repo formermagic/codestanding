@@ -203,12 +203,16 @@ class MaskedLanguagePairDataset(FairseqDataset):
 
     def num_tokens(self, index: int) -> int:
         source_size = self.source_sizes[index]
-        target_size = self.target_sizes[index] if self.target_sizes else 0
+        target_size = (
+            self.target_sizes[index] if self.target_sizes is not None else 0
+        )
         return max(source_size, target_size)
 
     def size(self, index: int) -> Tuple[int, int]:
         source_size = self.source_sizes[index]
-        target_size = self.target_sizes[index] if self.target_sizes else 0
+        target_size = (
+            self.target_sizes[index] if self.target_sizes is not None else 0
+        )
         return source_size, target_size
 
     def ordered_indices(self) -> List[int]:
