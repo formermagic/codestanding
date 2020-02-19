@@ -224,7 +224,8 @@ class MaskedLanguagePairDataset(FairseqDataset):
         if self.target_sizes:
             indices = indices[torch.argsort(self.target_sizes[indices])]
 
-        return indices[torch.argsort(self.source_sizes[indices])]
+        ordered_sizes = torch.Tensor(self.source_sizes[indices])
+        return indices[torch.argsort(ordered_sizes)]
 
     @property
     def supports_prefetch(self) -> bool:
