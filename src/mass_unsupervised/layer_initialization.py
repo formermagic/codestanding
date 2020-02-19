@@ -29,6 +29,10 @@ class Embedding(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.embedding(x)
 
+    @property
+    def weight(self) -> torch.Tensor:
+        return self.embedding.weight
+
 
 class Linear(nn.Module):
     def __init__(
