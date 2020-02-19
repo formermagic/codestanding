@@ -177,7 +177,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         if self.share_decoder_input_output_embeddings:
             # shape: [Batch, Time, Channel]
             # Channel=len(target_dict)
-            x = F.linear(features, self.embedding_tokens.weights)
+            x = F.linear(features, self.embedding_tokens.weight)
         else:
             # shape: [Batch, Time, Channel]
             # Channel=len(target_dict)
