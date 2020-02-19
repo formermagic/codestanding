@@ -92,7 +92,8 @@ class TransformerEncoder(FairseqEncoder):
 
         for layer in self.layers:
             # shape: [Batch, Time]
-            encoder_padding_mask = encoder_padding_mask.squeeze(-1)
+            if encoder_padding_mask is not None:
+                encoder_padding_mask = encoder_padding_mask.squeeze(-1)
             x, _ = layer(x, self_attn_padding_mask=encoder_padding_mask)
 
         return {
