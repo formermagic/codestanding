@@ -110,7 +110,7 @@ class UnsupervisedMASSTask(FairseqTask):
                 f"Dataset not found: {split} ({split_path})"
             )
 
-        self.datasets[split] = dataset
+        self.datasets[split] = self.build_masked_dataset(dataset)
 
     def build_masked_dataset(
         self, dataset: FairseqDataset
