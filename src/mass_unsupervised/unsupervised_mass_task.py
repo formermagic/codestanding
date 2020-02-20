@@ -180,7 +180,7 @@ class UnsupervisedMASSTask(FairseqTask):
         criterion: FairseqCriterion,
         optimizer: FairseqOptimizer,
         ignore_grad: bool = False,
-    ) -> Tuple[torch.Tensor, torch.Tensor, Dict[str, Any]]:
+    ) -> Tuple[torch.Tensor, int, Dict[str, int]]:
         model.train()
         loss, sample_size, logging_output = criterion(model, sample)
         if ignore_grad:
@@ -190,7 +190,7 @@ class UnsupervisedMASSTask(FairseqTask):
 
     def valid_step(
         self, sample: Dict, model: BaseFairseqModel, criterion: FairseqCriterion
-    ) -> Tuple[torch.Tensor, torch.Tensor, Dict[str, Any]]:
+    ) -> Tuple[torch.Tensor, int, Dict[str, int]]:
         model.eval()
         with torch.no_grad():
             loss, sample_size, logging_output = criterion(model, sample)
