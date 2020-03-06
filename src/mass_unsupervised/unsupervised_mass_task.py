@@ -237,6 +237,11 @@ class UnsupervisedMASSTask(FairseqTask):
             )
             args.dataset_impl = "lazy"
 
+        # prepare mass task masking params
+        keep_rand = args.mask_s2s_mask_keep_rand.split(",")
+        pred_probs = torch.FloatTensor([float(x) for x in keep_rand])
+        setattr(args, "pred_probs", pred_probs)
+
 
         return cls(args, dictionary)
 
