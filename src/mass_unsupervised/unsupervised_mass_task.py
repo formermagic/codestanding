@@ -163,6 +163,15 @@ class UnsupervisedMASSTask(FairseqTask):
         args.memt_steps = [s for s in args.memt_steps.split(",") if len(s) > 0]
         args.bt_steps = [s for s in args.bt_steps.split(",") if len(s) > 0]
 
+        # infer monolingual lang pairs
+        mono_lang_pairs = infer_mono_lang_pairs(args.mass_steps + args.bt_steps)
+        setattr(args, "mono_lang_pairs", mono_lang_pairs)
+
+        # check if mono lang pairs are in source-target pairs
+        for lang_pair in args.mono_lang_pairs:
+            src, tgt = lang_pair.split("-")
+            assert src in args.source_langs and tgt in args.target_langs
+
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
