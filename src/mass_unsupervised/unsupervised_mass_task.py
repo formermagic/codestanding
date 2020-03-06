@@ -198,6 +198,16 @@ class UnsupervisedMASSTask(FairseqTask):
         if args.target_lang is not None:
             assert args.target_lang in args.target_langs
 
+        # prepare langs lookup dicts
+        lang2idx = {}
+        idx2lang = {}
+        for idx, lang in enumerate(args.langs):
+            lang2idx[lang] = idx
+            idx2lang[idx] = lang
+        setattr(args, "lang2idx", lang2idx)
+        setattr(args, "idx2lang", idx2lang)
+        setattr(args, "n_langs", len(lang2idx))
+
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
