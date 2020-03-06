@@ -429,7 +429,7 @@ def transformer_base(args: Namespace) -> None:
         args, "share_decoder_input_output_embed", True
     )
 
-    args.share_all_embeddings = getattr(args, "share_all_embeddings", True)
+    args.share_all_embeddings = getattr(args, "share_all_embeddings", False)
 
     base_architecture(args)
 
