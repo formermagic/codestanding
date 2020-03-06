@@ -288,9 +288,17 @@ class UnsupervisedMASSTask(FairseqTask):
                 return True
             return False
 
-        if dataset is None:
-            raise FileNotFoundError(
-                f"Dataset not found: {split} ({split_path})"
+        def indexed_dataset(
+            path: str, dictionary: MaskedDictionary
+        ) -> Optional[IndexedDataset]:
+            if self.args.dataset_impl == "raw":
+                return IndexedRawTextDataset(path, dictionary)
+            if IndexedDataset.exists(path):
+                if self.args.dataset_impl == "lazy":
+                    return IndexedDataset(path, fix_lua_indexing=True)
+                return IndexedCachedDataset(path, fix_lua_indexing=True)
+            return None
+
             )
 
         self.datasets[split] = self.build_masked_dataset(dataset)
