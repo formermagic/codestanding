@@ -279,6 +279,14 @@ class UnsupervisedMASSTask(FairseqTask):
                 return True
             return False
 
+        def split_para_exists(split: str, key: str, lang: str) -> bool:
+            filename = os.path.join(data_path, f"{split}.{key}.{lang}")
+            raw_text = self.args.dataset_impl == "raw"
+            if raw_text and IndexedRawTextDataset.exists(filename):
+                return True
+            if not raw_text and IndexedDataset.exists(filename):
+                return True
+            return False
 
         if dataset is None:
             raise FileNotFoundError(
