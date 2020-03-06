@@ -18,6 +18,7 @@ from .layer_initialization import Embedding, Linear
 from .masked_dictionary import MaskedDictionary
 from .transformer_decoder import TransformerDecoder
 from .transformer_encoder import TransformerEncoder
+from .unsupervised_mass_task import UnsupervisedMASSTask
 
 DEFAULT_MAX_SOURCE_POSITIONS = 512
 DEFAULT_MAX_TARGET_POSITIONS = 512
