@@ -346,7 +346,30 @@ class TransformerMASSModel(FairseqMultiModel):
         src_tokens: torch.Tensor,
         src_lengths: torch.Tensor,
         prev_output_tokens: torch.Tensor,
-        **kwargs: Any
+        **kwargs: Any,
+    ) -> Union[DecoderOutput, Dict[str, DecoderOutput]]:
+        lang_pair = kwargs.get("lang_pair", None)
+        if lang_pair is not None:
+            encoder = self.models[lang_pair].encoder
+            decoder = self.models[lang_pair].decoder
+            encoder_output = encoder(src_tokens, src_lengths, **kwargs)
+            decoder_output = decoder(
+                prev_output_tokens, encoder_output, **kwargs
+            )
+
+            return decoder_output
+
+        decoder_outputs = {}
+        for key in self.keys:
+            encoder = self.models[key].encoder
+            decoder = self.models[key].decoder
+            encoder_output = encoder(src_tokens, src_lengths, **kwargs)
+            decoder_outputs[key] = decoder(
+                prev_output_tokens, encoder_output, **kwargs
+            )
+
+        return decoder_outputs
+
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
         encoder_out = self.encoder(src_tokens, src_lengths, **kwargs)
         decoder_out = self.decoder(prev_output_tokens, encoder_out, **kwargs)
