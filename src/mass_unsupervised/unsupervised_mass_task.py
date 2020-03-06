@@ -70,6 +70,16 @@ class UnsupervisedMASSTask(FairseqTask):
         super().__init__(args)
         self.dicts = dicts
         self.training = training
+        self.langs = list(dicts.keys())
+
+        if training:
+            self.lang_pairs = set(
+                args.mono_lang_pairs
+                + args.para_lang_pairs
+                + [args.eval_lang_pair]
+            )
+        else:
+            self.lang_pairs = [f"{args.source_lang}-{args.target_lang}"]
 
     @staticmethod
     def add_args(parser):
