@@ -9,8 +9,15 @@ import torch
 
 from fairseq import models, options
 from fairseq.criterions import FairseqCriterion
-from fairseq.data import FairseqDataset, TokenBlockDataset
-from fairseq.data.data_utils import load_indexed_dataset
+from fairseq.data import (
+    BacktranslationDataset,
+    FairseqDataset,
+    IndexedCachedDataset,
+    IndexedDataset,
+    IndexedRawTextDataset,
+    LanguagePairDataset,
+    RoundRobinZipDatasets,
+)
 from fairseq.models import BaseFairseqModel
 from fairseq.optim import FairseqOptimizer
 from fairseq.tasks import FairseqTask, register_task
