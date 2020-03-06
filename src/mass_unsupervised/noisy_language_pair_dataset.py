@@ -56,7 +56,7 @@ class NoisyLanguagePairDataset(FairseqDataset):
         for idx, word in enumerate(source_list):
             keep = torch.rand(1).item()
             if all([idx > 0, idx < len(source_list) - 1, keep <= self.ratio]):
-                source.append(self.source_dict.mask_idx)
+                source.append(self.source_dict.mask())
             else:
                 source.append(word)
 
@@ -72,8 +72,8 @@ class NoisyLanguagePairDataset(FairseqDataset):
     def collater(self, samples: List[Dict]) -> Dict:
         return self.collate(
             samples,
-            self.source_dict.pad_idx,
-            self.source_dict.eos_idx,
+            self.source_dict.pad(),
+            self.source_dict.eos(),
             self.left_pad_source,
             self.left_pad_target,
             self.input_feeding,
