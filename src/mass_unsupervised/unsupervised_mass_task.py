@@ -1,9 +1,13 @@
 import os
+import typing
 from argparse import Namespace
-from typing import Any, Dict, List, Optional, Tuple
+from collections import OrderedDict
+from enum import Enum
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 import torch
-from fairseq import models
+
+from fairseq import models, options
 from fairseq.criterions import FairseqCriterion
 from fairseq.data import FairseqDataset, TokenBlockDataset
 from fairseq.data.data_utils import load_indexed_dataset
