@@ -135,7 +135,10 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         )
 
     @classmethod
-    def build_model(cls, args: Namespace, task: FairseqTask):
+    def build_model(
+        cls, args: Namespace, task: FairseqTask
+    ) -> "TransformerMASSModel":
+        assert isinstance(task, UnsupervisedMASSTask)
         base_architecture(args)
 
         if not hasattr(args, "max_source_positions"):
