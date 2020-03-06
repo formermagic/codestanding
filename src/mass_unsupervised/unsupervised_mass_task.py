@@ -192,6 +192,12 @@ class UnsupervisedMASSTask(FairseqTask):
         args.left_pad_source = options.eval_bool(args.left_pad_source)
         args.left_pad_target = options.eval_bool(args.left_pad_target)
 
+        # check if inference langs are listed in source/target langs
+        if args.source_lang is not None:
+            assert args.source_lang in args.source_langs
+        if args.target_lang is not None:
+            assert args.target_lang in args.target_langs
+
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
