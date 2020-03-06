@@ -20,6 +20,7 @@ from fairseq.data import (
 )
 from fairseq.models import BaseFairseqModel
 from fairseq.optim import FairseqOptimizer
+from fairseq.sequence_generator import SequenceGenerator
 from fairseq.tasks import FairseqTask, register_task
 from fairseq.utils import deprecation_warning
 
