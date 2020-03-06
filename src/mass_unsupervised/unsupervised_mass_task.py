@@ -157,6 +157,12 @@ class UnsupervisedMASSTask(FairseqTask):
             src, tgt = lang_pair.split("-")
             assert src in args.source_langs and tgt in args.target_langs
 
+        # split task steps language pairs
+        args.mass_steps = [s for s in args.mass_steps.split(",") if len(s) > 0]
+        args.mt_steps = [s for s in args.mt_steps.split(",") if len(s) > 0]
+        args.memt_steps = [s for s in args.memt_steps.split(",") if len(s) > 0]
+        args.bt_steps = [s for s in args.bt_steps.split(",") if len(s) > 0]
+
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
