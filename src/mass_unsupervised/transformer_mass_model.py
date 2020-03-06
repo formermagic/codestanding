@@ -25,8 +25,9 @@ DEFAULT_MAX_TARGET_POSITIONS = 512
 
 DecoderOutput = Tuple[torch.Tensor, Dict[str, torch.Tensor]]
 
+
 @register_model("transformer_mass")
-class TransformerMASSModel(FairseqEncoderDecoderModel):
+class TransformerMASSModel(FairseqMultiModel):
     def __init__(
         self, encoder: TransformerEncoder, decoder: TransformerDecoder
     ) -> None:
