@@ -265,11 +265,10 @@ class UnsupervisedMASSTask(FairseqTask):
     def load_dataset(
         self, split: str, combine: bool = False, **kwargs: Any
     ) -> None:
-        epoch = getattr(kwargs, "epoch", 0)
-        paths = self.args.data.split(":")
+        paths = self.args.data.split(os.pathsep)
+        epoch = kwargs.get("epoch", None)
         assert len(paths) > 0
         data_path = paths[epoch % len(paths)]
-        split_path = os.path.join(data_path, split)
 
         dataset = load_indexed_dataset(
             split_path, self.dictionary, self.args.dataset_impl, combine
