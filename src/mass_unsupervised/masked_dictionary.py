@@ -8,7 +8,7 @@ class MaskedDictionary(Dictionary):
         super().__init__(pad, eos, unk)
         self.mask_word = mask
         self.mask_index = self.add_symbol(mask)
-        self.nspecial = len(self.symbols)
+        self.nspecial = 99
 
     def mask(self) -> int:
         return self.mask_index
@@ -24,6 +24,6 @@ class MaskedDictionary(Dictionary):
                 key, _ = line.split(" ")
                 dictionary.add_symbol(key)
 
-        dictionary.nspecial = 199
+        dictionary.nspecial = 99
 
         return dictionary
