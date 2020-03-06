@@ -188,6 +188,10 @@ class UnsupervisedMASSTask(FairseqTask):
             src, tgt = lang_pair.split("-")
             assert src in args.source_langs and tgt in args.target_langs
 
+        # prepare left pad options
+        args.left_pad_source = options.eval_bool(args.left_pad_source)
+        args.left_pad_target = options.eval_bool(args.left_pad_target)
+
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
