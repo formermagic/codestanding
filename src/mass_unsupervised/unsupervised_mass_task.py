@@ -85,47 +85,53 @@ class UnsupervisedMASSTask(FairseqTask):
     @staticmethod
     def add_args(parser):
         """Add task-specific arguments to the parser."""
-        parser.add_argument(
-            "data", help="column separated paths to data directories"
-        )
-        parser.add_argument(
-            "--sample-break-mode",
-            default="none",
-            choices=["none", "complete", "complete_doc", "eos"],
-            help='If omitted or "none", fills each sample with tokens-per-sample '
-            'tokens. If set to "complete", splits samples only at the end '
-            "of sentence, but may include multiple sentences per sample. "
-            '"complete_doc" is similar but respects doc boundaries. '
-            'If set to "eos", includes only one sentence per sample.',
-        )
-        parser.add_argument(
-            "--tokens-per-sample",
-            default=512,
-            type=int,
-            help="max number of tokens per sample for text dataset",
-        )
-        parser.add_argument(
-            "--lazy-load", action="store_true", help="load the dataset lazily"
-        )
-        parser.add_argument(
-            "--raw-text",
-            default=False,
-            action="store_true",
-            help="load raw text dataset",
-        )
 
-        parser.add_argument(
-            "--mask-s2s-prob",
-            default=0.15,
-            type=float,
-            help="probability of replacing a token with mask",
-        )
-        parser.add_argument(
-            "--mask-s2s-mask-keep-rand",
-            default="0.8,0.1,0.1",
-            type=str,
-            help="Word prediction probability for decoder mask",
-        )
+        # fmt: off
+        parser.add_argument("data",
+                            help="column separated paths to data directories")
+
+        parser.add_argument("--langs", default=None, metavar="LANGS",
+                            help="comma-separated list of languages in tasks: en,de,fr")
+        parser.add_argument("--source-langs", default=None, metavar="LANGS",
+                            help="comma-separated list of source languages: en,fr")
+        parser.add_argument("--target-langs", default=None, metavar="LANGS",
+                            help="comma-separated list of target languages: en,fr")
+        parser.add_argument("--valid-lang-pairs", default="", metavar="LANG-PAIRS",
+                            help="comma-separated list of language pairs: en-en, zh-zh")
+
+        parser.add_argument("--mass_steps", default="", metavar="LANG-PAIRS",
+                            help="mass for monolingual data (en-en,zh-zh)")
+        parser.add_argument("--mt_steps", default="", metavar="LANG-PAIRS",
+                            help="supervised machine translation data (en-zh,zh-en)")
+        parser.add_argument("--memt_steps", default="", metavar="LANG-PAIRS",
+                            help="Masked encoder for machine translation")
+        parser.add_argument("--bt_steps", default="", metavar="LANG-TRIPLETS",
+                            help="backtranslation triplets (en-fr-en, fr-en-fr)")
+
+        parser.add_argument("--left-pad-source", default="True", type=str, metavar="BOOL",
+                            help="pad the source on the left (default: True)")
+        parser.add_argument("--left-pad-target", default="False", type=str, metavar="BOOL",
+                            help="pad the target on the left (default: False)")
+        parser.add_argument("--max-source-positions", default=1024, type=int, metavar="N",
+                            help="max number of tokens in the source sequence")
+        parser.add_argument("--max-target-positions", default=1024, type=int, metavar="N",
+                            help="max number of tokens in the target sequence")
+
+        parser.add_argument("-s", "--source-lang", default=None, metavar="SRC",
+                            help='source language (only needed for inference)')
+        parser.add_argument("-t", "--target-lang", default=None, metavar="TARGET",
+                            help="target language (only needed for inference)")
+
+        parser.add_argument("--lazy-load", action="store_true",
+                            help="load the dataset lazily")
+        parser.add_argument("--raw-text", default=False, action="store_true",
+                            help="load raw text dataset")
+
+        parser.add_argument("--mask-s2s-prob", default=0.15, type=float,
+                            help="probability of replacing a token with mask")
+        parser.add_argument("--mask-s2s-mask-keep-rand", default="0.8,0.1,0.1", type=str,
+                            help="Word prediction probability for decoder mask")
+        # fmt: on
 
     @classmethod
     def setup_task(
