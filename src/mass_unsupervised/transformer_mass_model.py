@@ -168,10 +168,21 @@ class TransformerMASSModel(FairseqMultiModel):
             embedding = Embedding(num_embeddings, embedding_dim, padding_idx)
             return embedding
 
+        if args.share_encoders:
+            args.share_encoder_embeddings = True
+        if args.share_decoders:
+            args.share_decoder_embeddings = True
+
+        shared_encoder_embedding_tokens: Optional[Embedding] = None
+        shared_decoder_embedding_tokens: Optional[Embedding] = None
+
         if args.share_all_embeddings:
-            if src_dict != tgt_dict:
+            if args.decoder_embed_path and (
+                args.decoder_embed_path != args.encoder_embed_path
+            ):
                 raise ValueError(
-                    "--share-all-embeddings requires a joined dictionary"
+                    "--share-all-embeddings not compatible "
+                    "with --decoder-embed-path"
                 )
             if args.encoder_embed_dim != args.decoder_embed_dim:
                 raise ValueError(
@@ -179,10 +190,14 @@ class TransformerMASSModel(FairseqMultiModel):
                     "--encoder-embed-dim to match --decoder-embed-dim"
                 )
 
-            encoder_embedding_tokens = build_embedding(
-                src_dict, args.encoder_embed_dim
+            shared_encoder_embedding_tokens = FairseqMultiModel.build_shared_embeddings(
+                dicts=task.dicts,
+                langs=task.langs,
+                embed_dim=args.encoder_embed_dim,
+                build_embedding=build_embedding,
+                pretrained_embed_path=args.encoder_embed_path,
             )
-            decoder_embedding_tokens = encoder_embedding_tokens
+            shared_decoder_embedding_tokens = shared_encoder_embedding_tokens
 
             args.share_decoder_input_output_embed = True
         else:
