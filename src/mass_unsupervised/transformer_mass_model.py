@@ -328,6 +328,11 @@ class TransformerMASSModel(FairseqMultiModel):
             for key in self.keys
         }
 
+    def max_decoder_positions(self) -> int:
+        return min(
+            model.decoder.max_positions() for model in self.models.values()
+        )
+
 
     def forward(
         self,
