@@ -159,7 +159,9 @@ class TransformerMASSModel(FairseqMultiModel):
         tgt_langs = args.target_langs
 
         def build_embedding(
-            dictionary: MaskedDictionary, embedding_dim: int
+            dictionary: MaskedDictionary,
+            embedding_dim: int,
+            embedding_path: Optional[str] = None,
         ) -> Embedding:
             num_embeddings = len(dictionary)
             padding_idx = dictionary.pad()
