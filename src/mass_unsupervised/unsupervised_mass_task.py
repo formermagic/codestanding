@@ -270,9 +270,6 @@ class UnsupervisedMASSTask(FairseqTask):
         assert len(paths) > 0
         data_path = paths[epoch % len(paths)]
 
-        dataset = load_indexed_dataset(
-            split_path, self.dictionary, self.args.dataset_impl, combine
-        )
 
         if dataset is None:
             raise FileNotFoundError(
