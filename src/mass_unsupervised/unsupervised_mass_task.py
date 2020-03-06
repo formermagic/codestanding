@@ -301,47 +301,10 @@ class UnsupervisedMASSTask(FairseqTask):
 
             )
 
-        self.datasets[split] = self.build_masked_dataset(dataset)
 
-    def build_masked_dataset(
-        self, dataset: FairseqDataset
-    ) -> MaskedLanguagePairDataset:
-        block_dataset = TokenBlockDataset(
-            dataset,
-            dataset.sizes,
-            self.args.tokens_per_sample,
-            self.dictionary.pad(),
-            self.dictionary.eos(),
-            self.args.sample_break_mode,
+
         )
 
-        keep_rand = self.args.mask_s2s_mask_keep_rand.split(",")
-        pred_probs = torch.FloatTensor([float(x) for x in keep_rand])
-
-        max_source_positions, _ = self.max_positions()
-
-        masked_dataset = MaskedLanguagePairDataset(
-            source_dataset=block_dataset,
-            source_sizes=block_dataset.sizes,
-            target_dataset=None,
-            target_sizes=None,
-            source_dict=self.source_dictionary,
-            target_dict=None,
-            source_lang_id=0,
-            target_lang_id=None,
-            left_pad_source=False,
-            left_pad_target=None,
-            max_source_positions=max_source_positions,
-            max_target_positions=None,
-            mask_prob=0.15,
-            block_size=64,
-            shuffle=True,
-            ratio=None,
-            training=True,
-            pred_probs=pred_probs,
-        )
-
-        return masked_dataset
 
     @property
     def source_dictionary(self) -> MaskedDictionary:
