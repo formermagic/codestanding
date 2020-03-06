@@ -307,8 +307,7 @@ class TransformerMASSModel(FairseqMultiModel):
                     lang=tgt_lang, decoders=lang_decoders
                 )
 
-        )
-
+        model = TransformerMASSModel(encoders, decoders)
 
         if args.load_from_pretrained_model is not None:
             state_dict = torch.load(
