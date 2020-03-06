@@ -248,7 +248,15 @@ class UnsupervisedMASSTask(FairseqTask):
             filename = os.path.join(args.data, f"dict.{lang}.txt")
             dicts[lang] = cls.load_dictionary(filename)
 
-        return cls(args, dictionary)
+            if len(dicts) > 0:
+                assert dicts[lang].pad() == dicts[args.langs[0]].pad()
+                assert dicts[lang].eos() == dicts[args.langs[0]].eos()
+                assert dicts[lang].unk() == dicts[args.langs[0]].unk()
+                assert dicts[lang].mask() == dicts[args.langs[0]].mask()
+
+            print("| [{}] dictionary: {} types".format(lang, len(dicts[lang])))
+
+        return cls(args, dicts, training)
 
     @classmethod
     def load_dictionary(cls, filename: str) -> MaskedDictionary:
