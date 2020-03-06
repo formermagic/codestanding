@@ -277,39 +277,11 @@ class TransformerMASSModel(FairseqMultiModel):
             return decoders[lang]
 
             )
-            decoder_embedding_tokens = build_embedding(
-                tgt_dict, args.decoder_embed_dim
             )
 
-        encoder = TransformerEncoder(
-            src_dict,
-            args.dropout,
-            args.max_source_positions,
-            args.encoder_layers,
-            encoder_embedding_tokens,
-            args.encoder_ffn_embed_dim,
-            args.encoder_attention_heads,
-            args.attention_dropout,
-            args.activation_dropout,
-            args.activation_fn,
+
         )
 
-        decoder = TransformerDecoder(
-            tgt_dict,
-            args.dropout,
-            args.max_target_positions,
-            args.decoder_layers,
-            decoder_embedding_tokens,
-            args.encoder_embed_dim,
-            args.decoder_ffn_embed_dim,
-            args.decoder_attention_heads,
-            args.attention_dropout,
-            args.activation_dropout,
-            args.activation_fn,
-            args.share_decoder_input_output_embed,
-        )
-
-        model = TransformerMASSModel(encoder, decoder)
 
         if args.load_from_pretrained_model is not None:
             state_dict = torch.load(
