@@ -276,7 +276,16 @@ class TransformerMASSModel(FairseqMultiModel):
 
             return decoders[lang]
 
+        shared_encoder: Optional[TransformerEncoder] = None
+        shared_decoder: Optional[TransformerDecoder] = None
+
+        if args.share_encoders:
+            shared_encoder = build_encoder(
+                lang=src_langs[0], encoders=lang_encoders
             )
+        if args.share_decoders:
+            shared_decoder = build_decoder(
+                lang=tgt_langs[0], decoders=lang_decoders
             )
 
 
