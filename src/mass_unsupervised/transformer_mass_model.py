@@ -370,10 +370,10 @@ class TransformerMASSModel(FairseqMultiModel):
 
         return decoder_outputs
 
+    def forward_decoder(
+        self, prev_output_tokens: torch.Tensor, **kwargs: Any
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
-        encoder_out = self.encoder(src_tokens, src_lengths, **kwargs)
-        decoder_out = self.decoder(prev_output_tokens, encoder_out, **kwargs)
-        return decoder_out
+        return self.decoder(prev_output_tokens, **kwargs)
 
 
 @register_model_architecture("transformer_mass", "transformer_mass_cased")
