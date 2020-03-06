@@ -201,8 +201,23 @@ class TransformerMASSModel(FairseqMultiModel):
 
             args.share_decoder_input_output_embed = True
         else:
-            encoder_embedding_tokens = build_embedding(
-                src_dict, args.encoder_embed_dim
+            if args.share_encoder_embeddings:
+                shared_encoder_embedding_tokens = FairseqMultiModel.build_shared_embeddings(
+                    dicts=task.dicts,
+                    langs=src_langs,
+                    embed_dim=args.encoder_embed_dim,
+                    build_embedding=build_embedding,
+                    pretrained_embed_path=args.encoder_embed_path,
+                )
+
+            if args.share_decoder_embeddings:
+                shared_decoder_embedding_tokens = FairseqMultiModel.build_shared_embeddings(
+                    dicts=task.dicts,
+                    langs=tgt_langs,
+                    embed_dim=args.decoder_embed_dim,
+                    build_embedding=build_embedding,
+                    pretrained_embed_path=args.decoder_embed_path,
+                )
             )
             decoder_embedding_tokens = build_embedding(
                 tgt_dict, args.decoder_embed_dim
