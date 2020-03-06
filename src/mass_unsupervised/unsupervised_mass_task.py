@@ -242,6 +242,11 @@ class UnsupervisedMASSTask(FairseqTask):
         pred_probs = torch.FloatTensor([float(x) for x in keep_rand])
         setattr(args, "pred_probs", pred_probs)
 
+        # load dicts for all listed langs
+        dicts = OrderedDict()
+        for lang in args.langs:
+            filename = os.path.join(args.data, f"dict.{lang}.txt")
+            dicts[lang] = cls.load_dictionary(filename)
 
         return cls(args, dictionary)
 
