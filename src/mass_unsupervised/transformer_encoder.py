@@ -121,5 +121,5 @@ class TransformerEncoder(FairseqEncoder):
         if self.embedding_positions is None:
             return self.max_source_positions
         return min(
-            self.max_source_positions, self.embedding_positions.max_positions()
+            self.max_source_positions, self.embedding_positions.max_positions
         )
