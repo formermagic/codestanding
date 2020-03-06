@@ -202,5 +202,5 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         if self.embedding_tokens is None:
             return self.max_target_positions
         return min(
-            self.max_target_positions, self.embedding_positions.max_positions()
+            self.max_target_positions, self.embedding_positions.max_positions
         )
