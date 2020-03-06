@@ -393,11 +393,19 @@ def base_architecture(args: Namespace) -> None:
     args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 2048)
     args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
 
+    args.share_encoder_embeddings = getattr(
+        args, "share_encoder_embeddings", False
+    )
+    args.share_decoder_embeddings = getattr(
+        args, "share_decoder_embeddings", False
+    )
     args.share_decoder_input_output_embed = getattr(
         args, "share_decoder_input_output_embed", False
     )
 
     args.share_all_embeddings = getattr(args, "share_all_embeddings", False)
+    args.share_encoders = getattr(args, "share_encoders", False)
+    args.share_decoders = getattr(args, "share_decoders", False)
 
 
 @register_model_architecture("transformer_mass", "transformer_mass_base")
