@@ -337,6 +337,9 @@ class TransformerMASSModel(FairseqMultiModel):
     def encoder(self) -> TransformerEncoder:
         return self.models[self.keys[0]].encoder
 
+    @property
+    def decoder(self) -> TransformerDecoder:
+        return self.models[self.keys[0]].decoder
 
     def forward(
         self,
