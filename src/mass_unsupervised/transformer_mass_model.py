@@ -23,6 +23,7 @@ from .unsupervised_mass_task import UnsupervisedMASSTask
 DEFAULT_MAX_SOURCE_POSITIONS = 512
 DEFAULT_MAX_TARGET_POSITIONS = 512
 
+DecoderOutput = Tuple[torch.Tensor, Dict[str, torch.Tensor]]
 
 @register_model("transformer_mass")
 class TransformerMASSModel(FairseqEncoderDecoderModel):
