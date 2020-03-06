@@ -61,9 +61,15 @@ class DatasetKey(Enum):
 
 @register_task("unsupervised_mass")
 class UnsupervisedMASSTask(FairseqTask):
-    def __init__(self, args: Namespace, dictionary: MaskedDictionary) -> None:
+    def __init__(
+        self,
+        args: Namespace,
+        dicts: Dict[str, MaskedDictionary],
+        training: bool,
+    ) -> None:
         super().__init__(args)
-        self.dictionary = dictionary
+        self.dicts = dicts
+        self.training = training
 
     @staticmethod
     def add_args(parser):
