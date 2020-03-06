@@ -35,6 +35,13 @@ def infer_mono_lang_pairs(steps: List[str]) -> List[str]:
     return lang_pairs
 
 
+def infer_para_lang_pairs(steps: List[str]) -> List[str]:
+    pairs = [pair for pair in set(steps) if len(pair) > 0]
+    pairs = ["-".join(sorted(pair.split("-"))) for pair in pairs]
+    lang_pairs = list(set(pairs))
+    return lang_pairs
+
+
 @register_task("unsupervised_mass")
 class UnsupervisedMASSTask(FairseqTask):
     def __init__(self, args: Namespace, dictionary: MaskedDictionary) -> None:
