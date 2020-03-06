@@ -155,7 +155,8 @@ class TransformerMASSModel(FairseqMultiModel):
         if not hasattr(args, "max_target_positions"):
             args.max_target_positions = DEFAULT_MAX_TARGET_POSITIONS
 
-        src_dict, tgt_dict = task.source_dictionary, task.target_dictionary
+        src_langs = args.source_langs
+        tgt_langs = args.target_langs
 
         def build_embedding(
             dictionary: MaskedDictionary, embedding_dim: int
