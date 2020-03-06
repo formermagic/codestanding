@@ -21,7 +21,7 @@ class MaskedDictionary(Dictionary):
             filepath, mode="r", encoding="utf-8", errors="ignore"
         ) as input_file:
             for line in input_file:
-                key, _ = line.split()
+                key, _ = line.split(" ")
                 dictionary.add_symbol(key)
 
         dictionary.nspecial = 199
