@@ -316,6 +316,37 @@ class UnsupervisedMASSTask(FairseqTask):
             n_samples = len(src_mono_datasets[lang_pair])
             print(f"| monolingual {split}-{lang}: {n_samples} examples")
 
+        src_para_datasets = {}
+        for lang_pair in self.args.para_lang_pairs:
+            src, tgt = lang_pair.split("-")
+            key = "-".join(sorted([src, tgt]))
+            if not split_para_exists(split, key, src):
+                raise FileNotFoundError(
+                    "Not Found available {}-{} para dataset for ({}) lang".format(
+                        split, key, src
+                    )
+                )
+            if not split_para_exists(split, key, tgt):
+                raise FileNotFoundError(
+                    "Not Found available {}-{} para dataset for ({}) lang".format(
+                        split, key, tgt
+                    )
+                )
+
+            prefix = os.path.join(data_path, f"{split}.{key}")
+            if f"{key}.{src}" not in src_para_datasets:
+                src_para_datasets[key + "." + src] = indexed_dataset(
+                    prefix + "." + src, self.dicts[src]
+                )
+            if f"{key}.{tgt}" not in src_para_datasets:
+                src_para_datasets[key + "." + tgt] = indexed_dataset(
+                    prefix + "." + tgt, self.dicts[tgt]
+                )
+
+            src_len = len(src_para_datasets[key + "." + src])
+            trt_len = len(src_para_datasets[key + "." + tgt])
+            print(f"| bilingual {split} {src}-{tgt}.{src}: {src_len} examples")
+            print(f"| bilingual {split} {src}-{tgt}.{tgt}: {trt_len} examples")
 
         )
 
