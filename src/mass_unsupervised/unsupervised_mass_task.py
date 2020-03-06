@@ -29,6 +29,12 @@ from .masked_language_pair_dataset import MaskedLanguagePairDataset
 from .noisy_language_pair_dataset import NoisyLanguagePairDataset
 
 
+def infer_mono_lang_pairs(steps: List[str]) -> List[str]:
+    langs = [s.split("-")[0] for s in steps if len(s) > 0]
+    lang_pairs = [f"{lang}-{lang}" for lang in langs]
+    return lang_pairs
+
+
 @register_task("unsupervised_mass")
 class UnsupervisedMASSTask(FairseqTask):
     def __init__(self, args: Namespace, dictionary: MaskedDictionary) -> None:
