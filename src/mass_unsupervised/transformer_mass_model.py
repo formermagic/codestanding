@@ -319,8 +319,15 @@ class TransformerMASSModel(FairseqMultiModel):
 
         return model
 
-    def max_positions(self) -> Tuple[int, int]:
-        return (self.encoder.max_positions(), self.decoder.max_positions())
+    def max_positions(self) -> typing.OrderedDict[str, Tuple[int, int]]:
+        return {
+            key: (
+                self.models[key].encoder.max_positions(),
+                self.models[key].decoder.max_positions(),
+            )
+            for key in self.keys
+        }
+
 
     def forward(
         self,
