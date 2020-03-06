@@ -5,6 +5,8 @@ from fairseq.data import FairseqDataset, data_utils
 
 from .masked_dictionary import MaskedDictionary
 
+import numpy as np
+
 
 class NoisyLanguagePairDataset(FairseqDataset):
     def __init__(
@@ -161,14 +163,15 @@ class NoisyLanguagePairDataset(FairseqDataset):
 
     def ordered_indices(self) -> List[int]:
         if self.shuffle:
-            indices = torch.randperm(len(self))
+            indices = np.random.permutation(len(self))
         else:
-            indices = torch.arange(len(self))
+            indices = np.arange(len(self))
 
-        if self.target_sizes:
-            indices = indices[torch.argsort(self.target_sizes[indices])]
+        if self.target_sizes is not None:
+            indices = indices[np.argsort(self.target_sizes[indices])]
 
-        return indices[torch.argsort(self.source_sizes[indices])]
+        ordered_sizes = self.source_sizes[indices]
+        return indices[np.argsort(ordered_sizes)]
 
     @property
     def supports_prefetch(self) -> bool:
