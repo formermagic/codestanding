@@ -333,6 +333,10 @@ class TransformerMASSModel(FairseqMultiModel):
             model.decoder.max_positions() for model in self.models.values()
         )
 
+    @property
+    def encoder(self) -> TransformerEncoder:
+        return self.models[self.keys[0]].encoder
+
 
     def forward(
         self,
