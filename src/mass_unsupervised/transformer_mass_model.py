@@ -7,6 +7,7 @@ import torch
 import torch.nn.functional as F
 from fairseq.models import (
     FairseqEncoderDecoderModel,
+    FairseqMultiModel,
     register_model,
     register_model_architecture,
 )
