@@ -137,6 +137,15 @@ class UnsupervisedMASSTask(FairseqTask):
     def setup_task(
         cls, args: Namespace, **kwargs: Any
     ) -> "UnsupervisedMASSTask":
+
+        # split and prepare lang pairs
+        args.langs = args.langs.split(",")
+        args.source_langs = args.source_langs.split(",")
+        args.target_langs = args.target_langs.split(",")
+        args.valid_lang_pairs = [
+            s for s in args.valid_lang_pairs.split(",") if len(s) > 0
+        ]
+
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
