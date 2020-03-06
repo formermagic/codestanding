@@ -218,6 +218,36 @@ class TransformerMASSModel(FairseqMultiModel):
                     build_embedding=build_embedding,
                     pretrained_embed_path=args.decoder_embed_path,
                 )
+
+        lang_encoders: Dict[str, TransformerEncoder] = {}
+        lang_decoders: Dict[str, TransformerDecoder] = {}
+
+        def build_encoder(
+            lang: str, encoders: Dict[str, TransformerEncoder]
+        ) -> TransformerEncoder:
+            if lang not in encoders:
+                if shared_encoder_embedding_tokens is not None:
+                    encoder_embedding_tokens = shared_encoder_embedding_tokens
+                else:
+                    encoder_embedding_tokens = build_embedding(
+                        task.dicts[lang], args.encoder_embed_dim
+                    )
+
+                encoders[lang] = TransformerEncoder(
+                    task.dicts[lang],
+                    args.dropout,
+                    args.max_source_positions,
+                    args.encoder_layers,
+                    encoder_embedding_tokens,
+                    args.encoder_ffn_embed_dim,
+                    args.encoder_attention_heads,
+                    args.attention_dropout,
+                    args.activation_dropout,
+                    args.activation_fn,
+                )
+
+            return encoders[lang]
+
             )
             decoder_embedding_tokens = build_embedding(
                 tgt_dict, args.decoder_embed_dim
