@@ -153,12 +153,16 @@ class NoisyLanguagePairDataset(FairseqDataset):
 
     def num_tokens(self, index: int) -> int:
         source_size: int = self.source_sizes[index]
-        target_size: int = self.target_sizes[index] if self.target_sizes else 0
+        target_size: int = self.target_sizes[
+            index
+        ] if self.target_sizes is not None else 0
         return max(source_size, target_size)
 
     def size(self, index: int) -> Tuple[int, int]:
-        source_size: int = self.source_sizes[index]
-        target_size: int = self.target_sizes[index] if self.target_sizes else 0
+        source_size = self.source_sizes[index]
+        target_size = (
+            self.target_sizes[index] if self.target_sizes is not None else 0
+        )
         return source_size, target_size
 
     def ordered_indices(self) -> List[int]:
@@ -178,7 +182,7 @@ class NoisyLanguagePairDataset(FairseqDataset):
         source_support = getattr(
             self.source_dataset, "supports_prefetch", False
         )
-        if self.target_dataset:
+        if self.target_dataset is not None:
             target_support = getattr(
                 self.target_dataset, "supports_prefetch", False
             )
@@ -189,5 +193,5 @@ class NoisyLanguagePairDataset(FairseqDataset):
 
     def prefetch(self, indices: List[int]) -> None:
         self.source_dataset.prefetch(indices)
-        if self.target_dataset:
+        if self.target_dataset is not None:
             self.target_dataset.prefetch(indices)
