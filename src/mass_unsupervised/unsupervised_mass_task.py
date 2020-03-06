@@ -70,6 +70,7 @@ class UnsupervisedMASSTask(FairseqTask):
         super().__init__(args)
         self.dicts = dicts
         self.training = training
+        self.backtranslators: Dict[str, Callable] = {}
         self.langs = list(dicts.keys())
 
         if training:
