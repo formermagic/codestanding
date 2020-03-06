@@ -237,9 +237,6 @@ class UnsupervisedMASSTask(FairseqTask):
             )
             args.dataset_impl = "lazy"
 
-        paths = args.data.split(":")
-        dictionary = cls.load_dictionary(os.path.join(paths[0], "dict.txt"))
-        print(f"| dictionary: {len(dictionary)} types")
 
         return cls(args, dictionary)
 
