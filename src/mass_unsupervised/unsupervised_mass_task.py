@@ -179,6 +179,15 @@ class UnsupervisedMASSTask(FairseqTask):
             assert tgt in args.target_langs
             assert src == src_out and src != tgt
 
+        # infer paralingual lang pairs
+        para_lang_pairs = infer_para_lang_pairs(args.mt_steps + args.memt_steps)
+        setattr(args, "para_lang_pairs", para_lang_pairs)
+
+        # check if para lang pairs are in source-target pairs
+        for lang_pair in args.mt_steps + args.memt_steps:
+            src, tgt = lang_pair.split("-")
+            assert src in args.source_langs and tgt in args.target_langs
+
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
