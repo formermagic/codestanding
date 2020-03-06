@@ -299,8 +299,22 @@ class UnsupervisedMASSTask(FairseqTask):
                 return IndexedCachedDataset(path, fix_lua_indexing=True)
             return None
 
+        src_mono_datasets = {}
+        for lang_pair in self.args.mono_lang_pairs:
+            lang = lang_pair.split("-")[0]
+            if split_exists(split, lang):
+                prefix = os.path.join(data_path, f"{split}.{lang}")
+            else:
+                raise FileNotFoundError(
+                    f"Not Found available {split} dataset for ({lang}) lang"
+                )
+
+            src_mono_datasets[lang_pair] = indexed_dataset(
+                prefix, self.dicts[lang]
             )
 
+            n_samples = len(src_mono_datasets[lang_pair])
+            print(f"| monolingual {split}-{lang}: {n_samples} examples")
 
 
         )
