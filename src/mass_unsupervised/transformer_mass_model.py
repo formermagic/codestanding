@@ -119,11 +119,19 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
             help="share encoder, decoder and output embeddings"
             " (requires shared dictionary and embed dim)",
         )
+
         parser.add_argument(
             "--load-from-pretrained-model",
             type=str,
             default=None,
             help="Load from pretrained model",
+        )
+
+        parser.add_argument(
+            "--decoder-embed-path",
+            type=str,
+            metavar="STR",
+            help="path to pre-trained decoder embedding",
         )
 
     @classmethod
