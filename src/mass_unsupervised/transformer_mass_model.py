@@ -4,6 +4,7 @@ from collections import OrderedDict
 from typing import Any, Dict, Tuple, Optional, Union
 
 import torch
+import torch.nn.functional as F
 from fairseq.models import (
     FairseqEncoderDecoderModel,
     register_model,
