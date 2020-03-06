@@ -270,6 +270,15 @@ class UnsupervisedMASSTask(FairseqTask):
         assert len(paths) > 0
         data_path = paths[epoch % len(paths)]
 
+        def split_exists(split: str, lang: str) -> bool:
+            filename = os.path.join(data_path, f"{split}.{lang}")
+            raw_text = self.args.dataset_impl == "raw"
+            if raw_text and IndexedRawTextDataset.exists(filename):
+                return True
+            if not raw_text and IndexedDataset.exists(filename):
+                return True
+            return False
+
 
         if dataset is None:
             raise FileNotFoundError(
