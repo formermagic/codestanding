@@ -94,6 +94,26 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         )
 
         parser.add_argument(
+            "--share-encoder-embeddings",
+            action="store_true",
+            help="share encoder embeddings across languages",
+        )
+        parser.add_argument(
+            "--share-decoder-embeddings",
+            action="store_true",
+            help="share decoder embeddings across languages",
+        )
+        parser.add_argument(
+            "--share-encoders",
+            action="store_true",
+            help="share encoders across languages",
+        )
+        parser.add_argument(
+            "--share-decoders",
+            action="store_true",
+            help="share decoders across languages",
+        )
+        parser.add_argument(
             "--share-all-embeddings",
             action="store_true",
             help="share encoder, decoder and output embeddings"
