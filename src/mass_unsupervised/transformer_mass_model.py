@@ -29,9 +29,11 @@ DecoderOutput = Tuple[torch.Tensor, Dict[str, torch.Tensor]]
 @register_model("transformer_mass")
 class TransformerMASSModel(FairseqMultiModel):
     def __init__(
-        self, encoder: TransformerEncoder, decoder: TransformerDecoder
+        self,
+        encoders: typing.OrderedDict[str, TransformerEncoder],
+        decoders: typing.OrderedDict[str, TransformerDecoder],
     ) -> None:
-        super().__init__(encoder, decoder)
+        super().__init__(encoders, decoders)
 
     @staticmethod
     def add_args(parser: ArgumentParser) -> None:
