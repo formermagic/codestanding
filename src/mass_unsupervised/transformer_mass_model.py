@@ -288,6 +288,24 @@ class TransformerMASSModel(FairseqMultiModel):
                 lang=tgt_langs[0], decoders=lang_decoders
             )
 
+        encoders: typing.OrderedDict[str, TransformerEncoder] = OrderedDict()
+        decoders: typing.OrderedDict[str, TransformerDecoder] = OrderedDict()
+
+        for lang_pair in task.lang_pairs:
+            src_lang, tgt_lang = lang_pair.split("-")[:2]
+            if shared_encoder is not None:
+                encoders[lang_pair] = shared_encoder
+            else:
+                encoders[lang_pair] = build_encoder(
+                    lang=src_lang, encoders=lang_encoders
+                )
+
+            if shared_decoder is not None:
+                decoders[lang_pair] = shared_decoder
+            else:
+                decoders[lang_pair] = build_decoder(
+                    lang=tgt_lang, decoders=lang_decoders
+                )
 
         )
 
