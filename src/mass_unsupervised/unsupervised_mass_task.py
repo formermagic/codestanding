@@ -152,6 +152,11 @@ class UnsupervisedMASSTask(FairseqTask):
         for lang in args.target_langs:
             assert lang in args.langs
 
+        # check if valid langs are in source-target pairs
+        for lang_pair in args.valid_lang_pairs:
+            src, tgt = lang_pair.split("-")
+            assert src in args.source_langs and tgt in args.target_langs
+
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
