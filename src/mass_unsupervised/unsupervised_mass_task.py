@@ -42,6 +42,23 @@ def infer_para_lang_pairs(steps: List[str]) -> List[str]:
     return lang_pairs
 
 
+class DatasetKey(Enum):
+    MT = ""
+    MEMT = "memt: "
+    MASS = "mass: "
+    BT = "bt: "
+    EVAL = ""
+
+    def paired_with(self, name: str) -> str:
+        return self.value + name
+
+    def keyed_dataset(self, datasets: Dict) -> List[Tuple[str, FairseqDataset]]:
+        return [
+            (self.paired_with(lang_pair), dataset)
+            for lang_pair, dataset in datasets.items()
+        ]
+
+
 @register_task("unsupervised_mass")
 class UnsupervisedMASSTask(FairseqTask):
     def __init__(self, args: Namespace, dictionary: MaskedDictionary) -> None:
