@@ -37,111 +37,52 @@ class TransformerMASSModel(FairseqMultiModel):
 
     @staticmethod
     def add_args(parser: ArgumentParser) -> None:
-        parser.add_argument(
-            "--activation-fn",
-            choices=get_available_activation_fns(),
-            help="activation function to use",
-        )
-        parser.add_argument(
-            "--dropout", type=float, metavar="D", help="dropout probability"
-        )
-        parser.add_argument(
-            "--attention-dropout",
-            type=float,
-            metavar="D",
-            help="dropout probability for attention weights",
-        )
-        parser.add_argument(
-            "--activation-dropout",
-            type=float,
-            metavar="D",
-            help="dropout probability after activation in FFN.",
-        )
+        # fmt: off
+        parser.add_argument("--activation-fn", choices=get_available_activation_fns(),
+                            help="activation function to use")
+        parser.add_argument("--dropout", type=float, metavar="D", 
+                            help="dropout probability")
+        parser.add_argument("--attention-dropout", type=float, metavar="D",
+                            help="dropout probability for attention weights")
+        parser.add_argument("--activation-dropout", type=float, metavar="D",
+                            help="dropout probability after activation in FFN.")
 
-        parser.add_argument(
-            "--encoder-embed-dim",
-            type=int,
-            metavar="N",
-            help="encoder embedding dimension",
-        )
-        parser.add_argument(
-            "--encoder-ffn-embed-dim",
-            type=int,
-            metavar="N",
-            help="encoder embedding dimension for FFN",
-        )
-        parser.add_argument(
-            "--encoder-layers", type=int, metavar="N", help="num encoder layers"
-        )
-        parser.add_argument(
-            "--encoder-attention-heads",
-            type=int,
-            metavar="N",
-            help="num encoder attention heads",
-        )
+        parser.add_argument("--encoder-embed-dim", type=int, metavar="N",
+                            help="encoder embedding dimension")
+        parser.add_argument("--encoder-ffn-embed-dim", type=int, metavar="N",
+                            help="encoder embedding dimension for FFN")
+        parser.add_argument("--encoder-layers", type=int, metavar="N", 
+                            help="num encoder layers")
+        parser.add_argument("--encoder-attention-heads", type=int, metavar="N",
+                            help="num encoder attention heads")
 
-        parser.add_argument(
-            "--decoder-embed-dim",
-            type=int,
-            metavar="N",
-            help="decoder embedding dimension",
-        )
-        parser.add_argument(
-            "--decoder-ffn-embed-dim",
-            type=int,
-            metavar="N",
-            help="decoder embedding dimension for FFN",
-        )
-        parser.add_argument(
-            "--decoder-layers", type=int, metavar="N", help="num decoder layers"
-        )
-        parser.add_argument(
-            "--decoder-attention-heads",
-            type=int,
-            metavar="N",
-            help="num decoder attention heads",
-        )
+        parser.add_argument("--decoder-embed-dim", type=int, metavar="N",
+                            help="decoder embedding dimension")
+        parser.add_argument("--decoder-ffn-embed-dim", type=int, metavar="N",
+                            help="decoder embedding dimension for FFN")
+        parser.add_argument("--decoder-layers", type=int, metavar="N", 
+                            help="num decoder layers")
+        parser.add_argument("--decoder-attention-heads", type=int, metavar="N",
+                            help="num decoder attention heads")
 
-        parser.add_argument(
-            "--share-encoder-embeddings",
-            action="store_true",
-            help="share encoder embeddings across languages",
-        )
-        parser.add_argument(
-            "--share-decoder-embeddings",
-            action="store_true",
-            help="share decoder embeddings across languages",
-        )
-        parser.add_argument(
-            "--share-encoders",
-            action="store_true",
-            help="share encoders across languages",
-        )
-        parser.add_argument(
-            "--share-decoders",
-            action="store_true",
-            help="share decoders across languages",
-        )
-        parser.add_argument(
-            "--share-all-embeddings",
-            action="store_true",
-            help="share encoder, decoder and output embeddings"
-            " (requires shared dictionary and embed dim)",
-        )
+        parser.add_argument("--share-encoder-embeddings", action="store_true",
+                            help="share encoder embeddings across languages")
+        parser.add_argument("--share-decoder-embeddings", action="store_true",
+                            help="share decoder embeddings across languages")
+        parser.add_argument("--share-encoders", action="store_true",
+                            help="share encoders across languages")
+        parser.add_argument("--share-decoders", action="store_true",
+                            help="share decoders across languages")
+        parser.add_argument("--share-all-embeddings", action="store_true",
+                            help="share encoder, decoder and output embeddings"
+                                " (requires shared dictionary and embed dim)")
 
-        parser.add_argument(
-            "--load-from-pretrained-model",
-            type=str,
-            default=None,
-            help="Load from pretrained model",
-        )
+        parser.add_argument("--load-from-pretrained-model", type=str, default=None,
+                            help="Load from pretrained model")
 
-        parser.add_argument(
-            "--decoder-embed-path",
-            type=str,
-            metavar="STR",
-            help="path to pre-trained decoder embedding",
-        )
+        parser.add_argument("--decoder-embed-path", type=str, metavar="STR",
+                            help="path to pre-trained decoder embedding")
+        # fmt: on
 
     @classmethod
     def build_model(
