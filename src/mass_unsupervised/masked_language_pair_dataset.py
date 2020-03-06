@@ -233,7 +233,7 @@ class MaskedLanguagePairDataset(FairseqDataset):
             self.source_dataset, "supports_prefetch", False
         )
 
-        if self.target_dataset:
+        if self.target_dataset is not None:
             target_support = getattr(
                 self.target_dataset, "supports_prefetch", False
             )
@@ -244,5 +244,5 @@ class MaskedLanguagePairDataset(FairseqDataset):
 
     def prefetch(self, indices: List[int]) -> None:
         self.source_dataset.prefetch(indices)
-        if self.target_dataset:
+        if self.target_dataset is not None:
             self.target_dataset.prefetch(indices)
