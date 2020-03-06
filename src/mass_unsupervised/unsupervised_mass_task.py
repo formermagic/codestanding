@@ -208,6 +208,23 @@ class UnsupervisedMASSTask(FairseqTask):
         setattr(args, "idx2lang", idx2lang)
         setattr(args, "n_langs", len(lang2idx))
 
+        # prepare eval lang pairs
+        if args.source_lang is not None and args.target_lang is not None:
+            eval_lang_pair = f"{args.source_lang}-{args.target_lang}"
+            setattr(args, "eval_lang_pair", eval_lang_pair)
+            training = False
+        else:
+            if len(args.para_lang_pairs) > 0:
+                lang_pairs = list(set(args.mt_steps + args.memt_steps))
+                setattr(args, "eval_lang_pair", lang_pairs[0])
+            else:
+                setattr(args, "eval_lang_pair", args.mono_lang_pairs[0])
+            training = True
+
+        eval_para = len(args.para_lang_pairs) > 0
+        setattr(args, "eval_para", eval_para)
+
+        # prepare dataset_impl option
         if getattr(args, "raw_text", False):
             deprecation_warning(
                 "--raw-text is deprecated, please use --dataset-impl=raw"
