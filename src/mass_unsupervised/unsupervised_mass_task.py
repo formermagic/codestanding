@@ -230,7 +230,8 @@ class UnsupervisedMASSTask(FairseqTask):
                 "--raw-text is deprecated, please use --dataset-impl=raw"
             )
             args.dataset_impl = "raw"
-        elif getattr(args, "lazy_load", False):
+
+        if getattr(args, "lazy_load", False):
             deprecation_warning(
                 "--lazy-load is deprecated, please use --dataset-impl=lazy"
             )
