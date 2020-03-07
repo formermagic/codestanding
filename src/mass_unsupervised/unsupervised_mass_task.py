@@ -507,6 +507,13 @@ class UnsupervisedMASSTask(FairseqTask):
             + DatasetKey.EVAL.keyed_dataset(eval_para_dataset)
         )
 
+        eval_key: Optional[str] = None
+        if not self.training:
+            eval_key = self.args.eval_lang_pair
+
+        print(f"| Prepared datasets: {list(datasets.keys())}, split: {split}")
+
+        self.datasets[split] = RoundRobinZipDatasets(datasets, eval_key)
 
     @property
     def source_dictionary(self) -> MaskedDictionary:
