@@ -561,11 +561,6 @@ class UnsupervisedMASSTask(FairseqTask):
         ignore_grad: bool = False,
     ) -> Tuple[torch.Tensor, int, Dict[str, int]]:
         model.train()
-        loss, sample_size, logging_output = criterion(model, sample)
-        if ignore_grad:
-            loss *= 0
-        optimizer.backward(loss)
-        return loss, sample_size, logging_output
 
     def valid_step(
         self, sample: Dict, model: BaseFairseqModel, criterion: FairseqCriterion
