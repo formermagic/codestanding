@@ -523,7 +523,9 @@ class UnsupervisedMASSTask(FairseqTask):
 
     @property
     def target_dictionary(self) -> MaskedDictionary:
-        return self.dictionary
+        if self.training:
+            return next(iter(self.dicts.values()))
+        return self.dicts[self.args.target_lang]
 
     def max_positions(self) -> Tuple[int, int]:
         max_positions = 1024
