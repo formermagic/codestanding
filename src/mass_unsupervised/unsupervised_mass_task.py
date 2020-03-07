@@ -561,6 +561,58 @@ class UnsupervisedMASSTask(FairseqTask):
         ignore_grad: bool = False,
     ) -> Tuple[torch.Tensor, int, Dict[str, int]]:
         model.train()
+        agg_loss = 0.0
+        agg_sample_size = 0.0
+        agg_logging_output = {}
+
+        def forward_backward(
+            model: BaseFairseqModel,
+            samples: Dict,
+            logging_output_key: str,
+            lang_pair: str,
+        ) -> None:
+            nonlocal agg_loss, agg_sample_size, agg_logging_output
+            if samples is None or len(samples) == 0:
+                return
+
+            samples["net_input"]["lang_pair"] = lang_pair
+
+            loss, sample_size, logging_output = criterion(model, samples)
+            if ignore_grad:
+                loss *= 0
+            optimizer.backward(loss)
+
+            if loss.detach().item() == 0.0:
+                logging.warning(
+                    "Loss turned into zero which might indicate an issue while computing one. "
+                    "Make sure the masked dataset has values to compute loss for. "
+                    "Check the sample used to compute the loss: "
+                    "%s",
+                    samples,
+                )
+
+            agg_loss += loss.detach().item()
+            agg_sample_size += sample_size
+            agg_logging_output[logging_output_key] = logging_output
+
+        for lang_pair in self.args.mt_steps:
+            sample_key = DatasetKey.MT.paired_with(lang_pair)
+            forward_backward(model, sample[sample_key], sample_key, lang_pair)
+
+        for lang_pair in self.args.memt_steps:
+            sample_key = DatasetKey.MEMT.paired_with(lang_pair)
+            forward_backward(model, sample[sample_key], sample_key, lang_pair)
+
+        for lang_pair in self.args.mass_steps:
+            sample_key = DatasetKey.MASS.paired_with(lang_pair)
+            print(f"MASS STEP: {lang_pair}")
+            forward_backward(model, sample[sample_key], sample_key, lang_pair)
+
+        for lang_pair in self.args.bt_steps:
+            sample_key = DatasetKey.BT.paired_with(lang_pair)
+            forward_backward(model, sample[sample_key], sample_key, lang_pair)
+
+        return agg_loss, agg_sample_size, agg_logging_output
 
     def valid_step(
         self, sample: Dict, model: BaseFairseqModel, criterion: FairseqCriterion
