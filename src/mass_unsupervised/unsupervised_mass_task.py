@@ -453,6 +453,51 @@ class UnsupervisedMASSTask(FairseqTask):
                     pred_probs=self.args.pred_probs,
                 )
 
+        backtranslate_datasets = {}
+        if len(self.args.bt_steps) > 0 and split == "train":
+            for lang_pair in self.args.bt_steps:
+                src, tgt, _ = lang_pair.split("-")
+                if not split_exists(split, tgt):
+                    raise FileNotFoundError(
+                        "Dataset not found: backtranslation {} ({})".format(
+                            split, tgt
+                        )
+                    )
+
+                prefix = os.path.join(data_path, f"{split}.{tgt}")
+                dataset = indexed_dataset(prefix, self.dicts[tgt])
+                lang_pair_dataset_tgt = LanguagePairDataset(
+                    dataset,
+                    dataset.sizes,
+                    self.dicts[tgt],
+                    left_pad_source=self.args.left_pad_source,
+                    left_pad_target=self.args.left_pad_target,
+                )
+                lang_pair_dataset = LanguagePairDataset(
+                    dataset,
+                    dataset.sizes,
+                    src_dict=self.dicts[src],
+                    tgt=dataset,
+                    tgt_sizes=dataset.sizes,
+                    tgt_dict=self.dicts[tgt],
+                    left_pad_source=self.args.left_pad_source,
+                    left_pad_target=self.args.left_pad_target,
+                )
+
+                backtranslate_datasets[lang_pair] = BacktranslationDataset(
+                    tgt_dataset=lang_pair_dataset_tgt,
+                    src_dict=self.dicts[src],
+                    tgt_dict=self.dicts[tgt],
+                    backtranslation_fn=self.backtranslators[lang_pair],
+                    output_collater=lang_pair_dataset.collater,
+                )
+
+                print(
+                    f"| backtranslate-{tgt}: {split} "
+                    + f"{data_path} "
+                    + f"{len(backtranslate_datasets[lang_pair])} examples"
+                )
+
         )
 
 
