@@ -656,3 +656,57 @@ class UnsupervisedMASSTask(FairseqTask):
                 models, sample, prefix_tokens=prefix_tokens
             )
 
+    def reduce_metrics(
+        self,
+        logging_outputs: List[Dict[str, Dict[str, float]]],
+        criterion: FairseqCriterion,
+    ) -> None:
+        def sum_over_dataset(
+            key: str, agg_logging_outputs: Dict[str, Dict[str, float]]
+        ) -> float:
+            return sum(
+                logging_output[key]
+                for logging_output in agg_logging_outputs.values()
+            )
+
+        dataset_keys: Set[str] = {
+            dataset_key
+            for logging_output in logging_outputs
+            for dataset_key in logging_output.keys()
+        }
+
+        agg_logging_outputs: Dict[str, List[Dict[str, float]]] = {
+            dataset_key: [
+                logging_output.get(dataset_key, {})
+                for logging_output in logging_outputs
+            ]
+            for dataset_key in dataset_keys
+        }
+
+        sum_logging_outputs: Dict[str, Dict[str, float]] = {}
+        for dataset_key, _logging_outputs in agg_logging_outputs.items():
+            loss, nll_loss, ntokens, sample_size = [], [], [], []
+
+            for log in _logging_outputs:
+                loss.append(log["loss"])
+                nll_loss.append(log["nll_loss"])
+                ntokens.append(log["ntokens"])
+                sample_size.append(log["sample_size"])
+
+            sum_logging_outputs[dataset_key] = {
+                "loss": sum(loss),
+                "nll_loss": sum(nll_loss),
+                "ntokens": sum(ntokens),
+                "sample_size": sum(sample_size),
+            }
+
+        # flatten logging outputs
+        flat_logging_outputs: Dict[str, float] = {
+            "loss": sum_over_dataset("loss", sum_logging_outputs),
+            "nll_loss": sum_over_dataset("nll_loss", sum_logging_outputs),
+            "ntokens": sum_over_dataset("ntokens", sum_logging_outputs),
+            "sample_size": sum_over_dataset("sample_size", sum_logging_outputs),
+        }
+
+        # log metrics
+        criterion.__class__.reduce_metrics([flat_logging_outputs])
