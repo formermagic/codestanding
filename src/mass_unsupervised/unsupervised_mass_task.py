@@ -527,7 +527,7 @@ class UnsupervisedMASSTask(FairseqTask):
             return next(iter(self.dicts.values()))
         return self.dicts[self.args.target_lang]
 
-    def max_positions(self) -> Tuple[int, int]:
+    def max_positions(self) -> typing.OrderedDict[str, Tuple[int, int]]:
         max_positions = 1024
         if hasattr(self.args, "max_positions"):
             max_positions = min(max_positions, self.args.max_positions)
@@ -535,7 +535,18 @@ class UnsupervisedMASSTask(FairseqTask):
             max_positions = min(max_positions, self.args.max_source_positions)
         if hasattr(self.args, "max_target_positions"):
             max_positions = min(max_positions, self.args.max_target_positions)
-        return (max_positions, max_positions)
+
+        positions = (max_positions, max_positions)
+
+        datasets = [
+            zip_dataset.datasets for split, zip_dataset in self.datasets.items()
+        ]
+
+        key_positions = OrderedDict(
+            [(key, positions) for dataset in datasets for key in dataset.keys()]
+        )
+
+        return key_positions
 
     def build_model(self, args: Namespace) -> BaseFairseqModel:
         return models.build_model(args, self)
