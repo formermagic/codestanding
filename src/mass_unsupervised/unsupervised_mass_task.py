@@ -399,6 +399,38 @@ class UnsupervisedMASSTask(FairseqTask):
                     max_target_positions=self.args.max_target_positions,
                 )
 
+        memt_para_dataset = {}
+        if split == "train":
+            for lang_pair in self.args.memt_steps:
+                src, tgt = lang_pair.split("-")
+                key = "-".join(sorted([src, tgt]))
+                src_key = key + "." + src
+                tgt_key = key + "." + tgt
+
+                src_id, tgt_id = (
+                    self.args.lang2idx[src],
+                    self.args.lang2idx[tgt],
+                )
+                src_dataset = src_para_datasets[src_key]
+                tgt_dataset = src_para_datasets[tgt_key]
+
+                memt_para_dataset[lang_pair] = NoisyLanguagePairDataset(
+                    src_dataset,
+                    src_dataset.sizes,
+                    tgt_dataset,
+                    tgt_dataset.sizes,
+                    self.dicts[src],
+                    self.dicts[tgt],
+                    src_id,
+                    tgt_id,
+                    left_pad_source=self.args.left_pad_source,
+                    left_pad_target=self.args.left_pad_target,
+                    max_source_positions=self.args.max_source_positions,
+                    max_target_positions=self.args.max_target_positions,
+                    ratio=self.args.mask_s2s_prob,
+                    pred_probs=self.args.pred_probs,
+                )
+
         )
 
 
