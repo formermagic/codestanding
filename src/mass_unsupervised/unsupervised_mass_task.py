@@ -560,7 +560,35 @@ class UnsupervisedMASSTask(FairseqTask):
         return key_positions
 
     def build_model(self, args: Namespace) -> BaseFairseqModel:
-        return models.build_model(args, self)
+        model = models.build_model(args, self)
+
+        if len(self.args.bt_steps) > 0 and self.training:
+            for lang_pair in self.args.bt_steps:
+                src, tgt, _ = lang_pair.split("-")
+                key = f"{tgt}-{src}"
+
+                decoder_lang_tok_idx = self.dicts[src].eos()
+                sequence_generator = SequenceGenerator(
+                    tgt_dict=self.dicts[src],
+                    beam_size=args.bt_beam_size,
+                    max_len_a=args.bt_max_len_a,
+                    max_len_b=args.bt_max_len_b,
+                )
+
+                def backtranslate_fn(
+                    sample: Dict,
+                    model: BaseFairseqModel = model,
+                    bos_token: int = decoder_lang_tok_idx,
+                    sequence_generator: SequenceGenerator = sequence_generator,
+                ) -> Dict:
+                    return sequence_generator.generate(
+                        [model], sample, bos_token=bos_token,
+                    )
+
+                self.sequence_generators[key] = sequence_generator
+                self.backtranslators[lang_pair] = backtranslate_fn
+
+        return model
 
     def train_step(
         self,
