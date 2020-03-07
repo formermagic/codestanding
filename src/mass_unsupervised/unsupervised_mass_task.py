@@ -517,7 +517,9 @@ class UnsupervisedMASSTask(FairseqTask):
 
     @property
     def source_dictionary(self) -> MaskedDictionary:
-        return self.dictionary
+        if self.training:
+            return next(iter(self.dicts.values()))
+        return self.dicts[self.args.source_lang]
 
     @property
     def target_dictionary(self) -> MaskedDictionary:
