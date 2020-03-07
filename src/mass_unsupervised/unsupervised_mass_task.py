@@ -619,8 +619,30 @@ class UnsupervisedMASSTask(FairseqTask):
     ) -> Tuple[torch.Tensor, int, Dict[str, int]]:
         model.eval()
         with torch.no_grad():
-            loss, sample_size, logging_output = criterion(model, sample)
-        return loss, sample_size, logging_output
+            agg_loss = 0.0
+            agg_sample_size = 0.0
+            agg_logging_output = {}
+
+            for lang_pair in self.args.valid_lang_pairs:
+                sample_key = lang_pair
+                if (
+                    sample_key not in sample
+                    or sample[sample_key] is None
+                    or len(sample[sample_key]) == 0
+                ):
+                    continue
+
+                sample["net_input"]["lang_pair"] = lang_pair
+
+                loss, sample_size, logging_output = criterion(
+                    model, sample[sample_key]
+                )
+
+                agg_loss += loss.data.item()
+                agg_sample_size += sample_size
+                agg_logging_output[lang_pair] = logging_output
+
+        return agg_loss, agg_sample_size, agg_logging_output
 
     def inference_step(
         self,
