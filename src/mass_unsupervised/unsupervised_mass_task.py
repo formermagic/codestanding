@@ -431,6 +431,28 @@ class UnsupervisedMASSTask(FairseqTask):
                     pred_probs=self.args.pred_probs,
                 )
 
+        mass_mono_datasets = {}
+        if split == "train":
+            for lang_pair in self.args.mass_steps:
+                src_dataset = src_mono_datasets[lang_pair]
+                lang = lang_pair.split("-")[0]
+                src_id = self.args.lang2idx[lang]
+
+                mass_mono_datasets[lang_pair] = MaskedLanguagePairDataset(
+                    source_dataset=src_dataset,
+                    source_sizes=src_dataset.sizes,
+                    target_dataset=None,
+                    target_sizes=None,
+                    source_dict=self.dicts[lang],
+                    target_dict=None,
+                    source_lang_id=src_id,
+                    target_lang_id=None,
+                    left_pad_source=self.args.left_pad_source,
+                    left_pad_target=self.args.left_pad_target,
+                    ratio=self.args.mask_s2s_prob,
+                    pred_probs=self.args.pred_probs,
+                )
+
         )
 
 
