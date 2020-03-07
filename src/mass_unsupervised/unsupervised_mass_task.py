@@ -132,6 +132,15 @@ class UnsupervisedMASSTask(FairseqTask):
                             help="probability of replacing a token with mask")
         parser.add_argument("--mask-s2s-mask-keep-rand", default="0.8,0.1,0.1", type=str,
                             help="Word prediction probability for decoder mask")
+
+        parser.add_argument("--bt-max-len-a", default=1.1, type=float, metavar="N",
+                            help="generate back-translated sequences of maximum length ax + b, where x is the "
+                                 "source length")
+        parser.add_argument("--bt-max-len-b", default=10.0, type=float, metavar="N",
+                            help="generate back-translated sequences of maximum length ax + b, where x is the "
+                                 "source length")
+        parser.add_argument("--bt-beam-size", default=1, type=int, metavar="N",
+                            help="beam size used in beam search of online back-translation")
         # fmt: on
 
     @classmethod
