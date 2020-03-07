@@ -646,9 +646,13 @@ class UnsupervisedMASSTask(FairseqTask):
 
     def inference_step(
         self,
-        generator,  # TODO: Figure out the type
-        models: List[BaseFairseqModel],  # TODO: Figure out the type
+        generator: SequenceGenerator,
+        models: List[BaseFairseqModel],
         sample: Dict,
         prefix_tokens: Optional[torch.Tensor] = None,
-    ):
-        pass
+    ) -> Dict:
+        with torch.no_grad():
+            return generator.generate(
+                models, sample, prefix_tokens=prefix_tokens
+            )
+
