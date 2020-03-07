@@ -498,6 +498,13 @@ class UnsupervisedMASSTask(FairseqTask):
                     + f"{len(backtranslate_datasets[lang_pair])} examples"
                 )
 
+        # combine all datasets together
+        datasets = OrderedDict(
+            DatasetKey.MT.keyed_dataset(mt_para_dataset)
+            + DatasetKey.MEMT.keyed_dataset(memt_para_dataset)
+            + DatasetKey.MASS.keyed_dataset(mass_mono_datasets)
+            + DatasetKey.BT.keyed_dataset(backtranslate_datasets)
+            + DatasetKey.EVAL.keyed_dataset(eval_para_dataset)
         )
 
 
