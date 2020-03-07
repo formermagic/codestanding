@@ -370,6 +370,35 @@ class UnsupervisedMASSTask(FairseqTask):
                 max_target_positions=self.args.max_target_positions,
             )
 
+        eval_para_dataset = {}
+        if split != "train":
+            for lang_pair in self.args.valid_lang_pairs:
+                src, tgt = lang_pair.split("-")
+                if src == tgt:
+                    src_key = src + "-" + tgt
+                    tgt_key = src + "-" + tgt
+                    src_dataset = src_mono_datasets[src_key]
+                    tgt_dataset = src_mono_datasets[tgt_key]
+                else:
+                    key = "-".join(sorted([src, tgt]))
+                    src_key = key + "." + src
+                    tgt_key = key + "." + tgt
+                    src_dataset = src_para_datasets[src_key]
+                    tgt_dataset = src_para_datasets[tgt_key]
+
+                eval_para_dataset[lang_pair] = LanguagePairDataset(
+                    src_dataset,
+                    src_dataset.sizes,
+                    self.dicts[src],
+                    tgt_dataset,
+                    tgt_dataset.sizes,
+                    self.dicts[tgt],
+                    left_pad_source=self.args.left_pad_source,
+                    left_pad_target=self.args.left_pad_target,
+                    max_source_positions=self.args.max_source_positions,
+                    max_target_positions=self.args.max_target_positions,
+                )
+
         )
 
 
