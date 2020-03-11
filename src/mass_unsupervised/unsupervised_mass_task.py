@@ -539,7 +539,7 @@ class UnsupervisedMASSTask(FairseqTask):
             return next(iter(self.dicts.values()))
         return self.dicts[self.args.target_lang]
 
-    def max_positions(self) -> typing.OrderedDict[str, Tuple[int, int]]:
+    def max_positions(self) -> OrderedDictType[str, Tuple[int, int]]:
         max_positions = 1024
         if hasattr(self.args, "max_positions"):
             max_positions = min(max_positions, self.args.max_positions)
