@@ -1,7 +1,7 @@
 import typing
 from argparse import ArgumentParser, Namespace
 from collections import OrderedDict
-from typing import Any, Dict, Tuple, Optional, Union
+from typing import Any, Dict, Optional, Tuple, Union
 
 import torch
 import torch.nn.functional as F
