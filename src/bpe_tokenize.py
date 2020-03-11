@@ -99,7 +99,7 @@ class CodeBPETokenizer(BaseTokenizer):
     ):
         """ Train the model using the given files """
 
-        trainer = trainers.BpeTrainer.new(
+        trainer = trainers.BpeTrainer(
             vocab_size=vocab_size,
             min_frequency=min_frequency,
             special_tokens=special_tokens,
