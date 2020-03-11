@@ -670,7 +670,7 @@ class UnsupervisedMASSTask(FairseqTask):
                 ):
                     continue
 
-                sample["net_input"]["lang_pair"] = lang_pair
+                sample[sample_key]["net_input"]["lang_pair"] = lang_pair
 
                 loss, sample_size, logging_output = criterion(
                     model, sample[sample_key]
