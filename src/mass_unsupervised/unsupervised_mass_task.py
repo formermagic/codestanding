@@ -76,11 +76,7 @@ class UnsupervisedMASSTask(FairseqTask):
         self.sequence_generators: Dict[str, SequenceGenerator] = {}
 
         if training:
-            self.lang_pairs = set(
-                args.mono_lang_pairs
-                + args.para_lang_pairs
-                + [args.eval_lang_pair]
-            )
+            self.lang_pairs = set(args.mono_lang_pairs + args.para_lang_pairs)
         else:
             self.lang_pairs = [f"{args.source_lang}-{args.target_lang}"]
 
