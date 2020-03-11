@@ -21,6 +21,11 @@ from .transformer_decoder import TransformerDecoder
 from .transformer_encoder import TransformerEncoder
 from .unsupervised_mass_task import UnsupervisedMASSTask
 
+try:
+    from typing import OrderedDict as OrderedDictType
+except ImportError:
+    from typing import MutableMapping as OrderedDictType
+
 DEFAULT_MAX_SOURCE_POSITIONS = 512
 DEFAULT_MAX_TARGET_POSITIONS = 512
 
