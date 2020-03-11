@@ -36,8 +36,8 @@ DecoderOutput = Tuple[torch.Tensor, Dict[str, torch.Tensor]]
 class TransformerMASSModel(FairseqMultiModel):
     def __init__(
         self,
-        encoders: typing.OrderedDict[str, TransformerEncoder],
-        decoders: typing.OrderedDict[str, TransformerDecoder],
+        encoders: OrderedDictType[str, TransformerEncoder],
+        decoders: OrderedDictType[str, TransformerDecoder],
     ) -> None:
         super().__init__(encoders, decoders)
 
@@ -235,8 +235,8 @@ class TransformerMASSModel(FairseqMultiModel):
                 lang=tgt_langs[0], decoders=lang_decoders
             )
 
-        encoders: typing.OrderedDict[str, TransformerEncoder] = OrderedDict()
-        decoders: typing.OrderedDict[str, TransformerDecoder] = OrderedDict()
+        encoders: OrderedDictType[str, TransformerEncoder] = OrderedDict()
+        decoders: OrderedDictType[str, TransformerDecoder] = OrderedDict()
 
         for lang_pair in task.lang_pairs:
             src_lang, tgt_lang = lang_pair.split("-")[:2]
@@ -266,7 +266,7 @@ class TransformerMASSModel(FairseqMultiModel):
 
         return model
 
-    def max_positions(self) -> typing.OrderedDict[str, Tuple[int, int]]:
+    def max_positions(self) -> OrderedDictType[str, Tuple[int, int]]:
         return {
             key: (
                 self.models[key].encoder.max_positions(),
