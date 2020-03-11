@@ -45,7 +45,7 @@ from tokenizers.implementations import BaseTokenizer
 from tokenizers.normalizers import Lowercase, Sequence
 from tqdm import tqdm
 
-from .utils import iterate_lines
+from .utils import iterate_lines, lines_in_file
 
 
 class CodeBPETokenizer(BaseTokenizer):
