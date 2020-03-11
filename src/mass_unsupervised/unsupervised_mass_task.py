@@ -643,8 +643,12 @@ class UnsupervisedMASSTask(FairseqTask):
             forward_backward(model, sample[sample_key], sample_key, lang_pair)
 
         for lang_pair in self.args.bt_steps:
+            # src-tgt-src => src-tgt
+            bt_lang_pair = "-".join(lang_pair.split("-")[:2])
             sample_key = DatasetKey.BT.paired_with(lang_pair)
-            forward_backward(model, sample[sample_key], sample_key, lang_pair)
+            forward_backward(
+                model, sample[sample_key], sample_key, bt_lang_pair
+            )
 
         return agg_loss, agg_sample_size, agg_logging_output
 
