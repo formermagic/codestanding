@@ -213,6 +213,12 @@ class PairTokenizerWrapper:
             if os.path.exists(output_path):
                 os.remove(output_path)
 
+        source_n_lines = lines_in_file(input_files[0])
+        target_n_lines = lines_in_file(input_files[1])
+        assert (
+            source_n_lines == target_n_lines
+        ), "Number of lines must match in both files!"
+
         input_lines = zip(
             iterate_lines(input_files[0]), iterate_lines(input_files[1])
         )
@@ -228,8 +234,15 @@ class PairTokenizerWrapper:
                 force_flush=force_flush,
             )
 
+        kwargs = {
+            "total": source_n_lines,
+            "unit": "it",
+            "unit_scale": True,
+            "leave": True,
+        }
+
         with output_file_one, output_file_two:
-            for line_one, line_two in input_lines:
+            for line_one, line_two in tqdm(input_lines, **kwargs):
                 if len(self.batch) >= self.batch_size:
                     process_batch()
                 self.batch.append((line_one, line_two))
