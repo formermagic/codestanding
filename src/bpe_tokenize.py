@@ -70,9 +70,9 @@ class CodeBPETokenizer(BaseTokenizer):
         else:
             tokenizer = Tokenizer(models.BPE.empty())
 
-        tokenizer.normalizer = Sequence.new([Lowercase.new()])
-        tokenizer.pre_tokenizer = pre_tokenizers.WhitespaceSplit.new()
-        tokenizer.decoder = decoders.BPEDecoder.new(suffix=suffix)
+        tokenizer.normalizer = Sequence([Lowercase()])
+        tokenizer.pre_tokenizer = pre_tokenizers.WhitespaceSplit()
+        tokenizer.decoder = decoders.BPEDecoder(suffix=suffix)
 
         tokenizer.add_special_tokens(["<nl>"])
         tokenizer.add_tokens(["<nl>"])
