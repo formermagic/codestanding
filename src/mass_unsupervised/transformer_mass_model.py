@@ -5,6 +5,7 @@ from typing import Any, Dict, Optional, Tuple, Union
 
 import torch
 import torch.nn.functional as F
+
 from fairseq.models import (
     FairseqEncoderDecoderModel,
     FairseqMultiModel,
