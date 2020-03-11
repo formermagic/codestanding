@@ -639,7 +639,6 @@ class UnsupervisedMASSTask(FairseqTask):
 
         for lang_pair in self.args.mass_steps:
             sample_key = DatasetKey.MASS.paired_with(lang_pair)
-            print(f"MASS STEP: {lang_pair}")
             forward_backward(model, sample[sample_key], sample_key, lang_pair)
 
         for lang_pair in self.args.bt_steps:
