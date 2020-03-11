@@ -43,6 +43,7 @@ from docopt import docopt
 from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
 from tokenizers.implementations import BaseTokenizer
 from tokenizers.normalizers import Lowercase, Sequence
+from tqdm import tqdm
 
 from .utils import iterate_lines
 
