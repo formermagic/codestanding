@@ -120,6 +120,8 @@ def train_tokenizer(
     output_name = os.path.basename(output_suffix)
     output_name = os.path.splitext(output_name)[0]
 
+    os.makedirs(output_dir, exist_ok=True)
+
     tokenizer = CodeBPETokenizer()
     tokenizer.train(files, vocab_size, min_frequency)
     tokenizer.save(output_dir, output_name)
