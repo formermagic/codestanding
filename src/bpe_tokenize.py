@@ -378,8 +378,10 @@ def main() -> None:
         output_files = (output_file_one, output_file_two)
 
         tokenizer = CodeBPETokenizer(vocab_file, merges_file)
-        buffer_writer = PairTokenBufferWriter()
-        pair_tokenizer = PairTokenizerWrapper(tokenizer, buffer_writer)
+        buffer_writer = PairTokenBufferWriter(buffer_threshold=100000)
+        pair_tokenizer = PairTokenizerWrapper(
+            tokenizer, buffer_writer, batch_size=50000
+        )
 
         if arguments["tokenize"]:
             pair_tokenizer.pair_batch_encode(
