@@ -29,6 +29,11 @@ from .masked_dictionary import MaskedDictionary
 from .masked_language_pair_dataset import MaskedLanguagePairDataset
 from .noisy_language_pair_dataset import NoisyLanguagePairDataset
 
+try:
+    from typing import OrderedDict as OrderedDictType
+except ImportError:
+    from typing import MutableMapping as OrderedDictType
+
 
 def infer_mono_lang_pairs(steps: List[str]) -> List[str]:
     langs = [s.split("-")[0] for s in steps if len(s) > 0]
