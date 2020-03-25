@@ -658,7 +658,11 @@ class UnsupervisedMASSTask(FairseqTask):
         return agg_loss, agg_sample_size, agg_logging_output
 
     def valid_step(
-        self, sample: Dict, model: BaseFairseqModel, criterion: FairseqCriterion
+        self,
+        sample: Dict,
+        model: BaseFairseqModel,
+        criterion: FairseqCriterion,
+        **unused: Any,
     ) -> Tuple[torch.Tensor, int, Dict[str, int]]:
         model.eval()
         with torch.no_grad():
