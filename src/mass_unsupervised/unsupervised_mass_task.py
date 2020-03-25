@@ -598,6 +598,7 @@ class UnsupervisedMASSTask(FairseqTask):
         criterion: FairseqCriterion,
         optimizer: FairseqOptimizer,
         ignore_grad: bool = False,
+        **unused: Any,
     ) -> Tuple[torch.Tensor, int, Dict[str, int]]:
         model.train()
         agg_loss = 0.0
