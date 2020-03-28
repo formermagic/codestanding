@@ -105,8 +105,8 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         prev_output_tokens: torch.Tensor,
         encoder_out: Optional[Dict[str, torch.Tensor]] = None,
         incremental_state: Optional[Dict[str, TensorDict]] = None,
-        **kwargs: typing.Any
-    ) -> ExtractedFeatures:
+        **kwargs: typing.Any,
+    ) -> DecoderOutput:
         if "positions" in kwargs:
             # shape: [Batch, Time, Channel]
             positions = self.embedding_positions(kwargs["positions"])
