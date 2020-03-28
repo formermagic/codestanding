@@ -4,7 +4,7 @@ import typing
 from argparse import Namespace
 from collections import OrderedDict
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 import torch
 
