@@ -70,7 +70,7 @@ class TransformerEncoder(FairseqEncoder):
         self,
         src_tokens: torch.Tensor,
         src_lengths: torch.Tensor,
-        **kwargs: typing.Any
+        **kwargs: typing.Any,
     ) -> Dict[str, torch.Tensor]:
         # shape: [Batch, Time]
         encoder_padding_mask = src_tokens == self.pad_index
