@@ -323,6 +323,13 @@ class TransformerMASSModel(FairseqMultiModel):
     ) -> Tuple[torch.Tensor, Dict[str, torch.Tensor]]:
         return self.decoder(prev_output_tokens, **kwargs)
 
+    def get_targets(
+        self, sample: Dict[str, torch.Tensor], net_output: DecoderOutput
+    ) -> torch.Tensor:
+        """Get targets from either the sample or the net's output."""
+        tgt = sample["target"]
+        return tgt
+
 
 @register_model_architecture("transformer_mass", "transformer_mass_cased")
 def base_architecture(args: Namespace) -> None:
