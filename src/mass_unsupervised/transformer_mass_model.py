@@ -29,7 +29,8 @@ except ImportError:
 DEFAULT_MAX_SOURCE_POSITIONS = 512
 DEFAULT_MAX_TARGET_POSITIONS = 512
 
-DecoderOutput = Tuple[torch.Tensor, Dict[str, torch.Tensor]]
+Extras = Dict[str, Union[torch.Tensor, List[Optional[torch.Tensor]]]]
+DecoderOutput = Tuple[torch.Tensor, Extras]
 
 
 @register_model("transformer_mass")
