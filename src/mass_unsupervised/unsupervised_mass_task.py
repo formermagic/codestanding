@@ -34,6 +34,8 @@ try:
 except ImportError:
     from typing import MutableMapping as OrderedDictType
 
+MetricType = Union[torch.Tensor, int]
+
 
 def infer_mono_lang_pairs(steps: List[str]) -> List[str]:
     langs = [s.split("-")[0] for s in steps if len(s) > 0]
