@@ -204,3 +204,15 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         return min(
             self.max_target_positions, self.embedding_positions.max_positions
         )
+
+    def get_normalized_probs(
+        self,
+        net_output: DecoderOutput,
+        log_probs: bool,
+        sample: Optional[Dict[str, torch.Tensor]] = None,
+    ) -> torch.Tensor:
+        logits = net_output[0]
+        if log_probs:
+            return log_softmax(logits, dim=-1, onnx_trace=self.onnx_trace)
+        else:
+            return softmax(logits, dim=-1, onnx_trace=self.onnx_trace)
