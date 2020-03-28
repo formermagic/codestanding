@@ -92,8 +92,8 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         prev_output_tokens: torch.Tensor,
         encoder_out: Optional[Dict[str, torch.Tensor]] = None,
         incremental_state: Optional[Dict[str, TensorDict]] = None,
-        **kwargs: typing.Any
-    ) -> ExtractedFeatures:
+        **kwargs: typing.Any,
+    ) -> DecoderOutput:
         x, extras = self.extract_features(
             prev_output_tokens, encoder_out, incremental_state, **kwargs
         )
