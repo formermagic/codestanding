@@ -10,6 +10,7 @@ from fairseq.modules import LayerNorm, LearnedPositionalEmbedding
 from fairseq.modules.transformer_sentence_encoder import init_bert_params
 
 from .masked_dictionary import MaskedDictionary
+from .transformer_decoder import DecoderOutput
 from .transformer_encoder_layer import TransformerEncoderLayer
 
 TensorDict = Dict[str, Optional[torch.Tensor]]
