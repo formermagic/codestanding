@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from fairseq.models import FairseqIncrementalDecoder
 from fairseq.modules import LayerNorm, LearnedPositionalEmbedding
 from fairseq.modules.transformer_sentence_encoder import init_bert_params
-from fairseq.utils import fill_with_neg_inf
+from fairseq.utils import fill_with_neg_inf, log_softmax, softmax
 
 from .masked_dictionary import MaskedDictionary
 from .transformer_decoder_layer import TransformerDecoderLayer
