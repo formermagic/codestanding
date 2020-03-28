@@ -14,8 +14,8 @@ from .masked_dictionary import MaskedDictionary
 from .transformer_decoder_layer import TransformerDecoderLayer
 
 TensorDict = Dict[str, Optional[torch.Tensor]]
-ExtractedFeatures = Tuple[torch.Tensor, Extras]
 Extras = Dict[str, Union[torch.Tensor, List[Optional[torch.Tensor]]]]
+DecoderOutput = Tuple[torch.Tensor, Extras]
 
 
 class TransformerDecoder(FairseqIncrementalDecoder):
