@@ -5,6 +5,7 @@ from typing import Dict, Optional
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
 from fairseq.models import FairseqEncoder
 from fairseq.modules import LayerNorm, LearnedPositionalEmbedding
 from fairseq.modules.transformer_sentence_encoder import init_bert_params
