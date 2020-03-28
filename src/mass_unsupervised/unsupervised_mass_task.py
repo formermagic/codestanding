@@ -735,10 +735,9 @@ class UnsupervisedMASSTask(FairseqTask):
         sum_logging_outputs: Dict[str, Dict[str, MetricType]] = {}
         for dataset_key, _logging_outputs in agg_logging_outputs.items():
             loss, nll_loss, ntokens, sample_size = [], [], [], []
-
             for log in _logging_outputs:
-                loss.append(log["loss"])
-                nll_loss.append(log["nll_loss"])
+                loss.append(log["loss"].cpu().item())
+                nll_loss.append(log["nll_loss"].cpu().item())
                 ntokens.append(log["ntokens"])
                 sample_size.append(log["sample_size"])
 
