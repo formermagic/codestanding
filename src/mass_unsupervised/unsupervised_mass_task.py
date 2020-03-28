@@ -707,11 +707,11 @@ class UnsupervisedMASSTask(FairseqTask):
 
     def reduce_metrics(
         self,
-        logging_outputs: List[Dict[str, Dict[str, float]]],
+        logging_outputs: List[Dict[str, Dict[str, MetricType]]],
         criterion: FairseqCriterion,
     ) -> None:
         def sum_over_dataset(
-            key: str, agg_logging_outputs: Dict[str, Dict[str, float]]
+            key: str, agg_logging_outputs: Dict[str, Dict[str, MetricType]]
         ) -> float:
             return sum(
                 logging_output[key]
@@ -724,7 +724,7 @@ class UnsupervisedMASSTask(FairseqTask):
             for dataset_key in logging_output.keys()
         }
 
-        agg_logging_outputs: Dict[str, List[Dict[str, float]]] = {
+        agg_logging_outputs: Dict[str, List[Dict[str, MetricType]]] = {
             dataset_key: [
                 logging_output.get(dataset_key, {})
                 for logging_output in logging_outputs
@@ -732,7 +732,7 @@ class UnsupervisedMASSTask(FairseqTask):
             for dataset_key in dataset_keys
         }
 
-        sum_logging_outputs: Dict[str, Dict[str, float]] = {}
+        sum_logging_outputs: Dict[str, Dict[str, MetricType]] = {}
         for dataset_key, _logging_outputs in agg_logging_outputs.items():
             loss, nll_loss, ntokens, sample_size = [], [], [], []
 
