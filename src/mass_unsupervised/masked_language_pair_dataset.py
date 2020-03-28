@@ -59,12 +59,16 @@ class MaskedLanguagePairDataset(FairseqDataset):
         for idx in range(1, len(source_item), self.block_size):
             block = positions[idx : idx + self.block_size]
             masked_len = int(len(block) * self.mask_prob)
-            masked_start = np.random.choice(
-                block[: len(block) - masked_len + 1], 1
-            ).item()
-            masked_idx.extend(
-                positions[masked_start : masked_start + masked_len]
-            )
+            if masked_len == 0:
+                masked_token_idx = np.random.choice(block, size=1).item()
+                masked_idx.append(masked_token_idx)
+            else:
+                masked_start = np.random.choice(
+                    block[: len(block) - masked_len + 1], size=1
+                ).item()
+                masked_idx.extend(
+                    positions[masked_start : masked_start + masked_len]
+                )
         masked_indices = torch.LongTensor(masked_idx)
 
         # given `x1 x2 _ _ _ x6 x7` predict masked `x3 x4 x5` (target)
