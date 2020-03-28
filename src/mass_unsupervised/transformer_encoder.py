@@ -124,3 +124,19 @@ class TransformerEncoder(FairseqEncoder):
         return min(
             self.max_source_positions, self.embedding_positions.max_positions
         )
+
+    def get_normalized_probs(
+        self,
+        net_output: DecoderOutput,
+        log_probs: bool,
+        sample: Optional[Dict[str, torch.Tensor]] = None,
+    ) -> torch.Tensor:
+        """Get normalized probabilities (or log probs) from a net's output."""
+        encoder_out = net_output["encoder_out"]
+        if torch.is_tensor(encoder_out):
+            logits = encoder_out.float()
+            if log_probs:
+                return F.log_softmax(logits, dim=-1)
+            else:
+                return F.softmax(logits, dim=-1)
+        raise NotImplementedError
