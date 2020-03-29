@@ -120,6 +120,14 @@ class TransformerDecoder(FairseqIncrementalDecoder):
                 prev_output_tokens, incremental_state=incremental_state
             )
 
+        if "languages" in kwargs:
+            # shape: [Batch, Time, Channel]
+            languages = self.embedding_languages(kwargs["languages"])
+            language = kwargs["languages"].max().cpu().item()
+        else:
+            languages = None
+            language = 0
+
         if incremental_state is not None:
             # shape: [Batch, Time]
             prev_output_tokens = prev_output_tokens[:, -1:]
@@ -133,6 +141,8 @@ class TransformerDecoder(FairseqIncrementalDecoder):
 
         if positions is not None:
             x += positions
+        if languages is not None:
+            x += languages
 
         x = self.embedding_layer_norm(x)
         x = F.dropout(x, self.dropout, self.training)
@@ -160,6 +170,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
 
             x, attn = layer(
                 x,
+                language,
                 encoder_out=encoder_out_tensor,
                 encoder_padding_mask=encoder_padding_mask,
                 incremental_state=incremental_state,
