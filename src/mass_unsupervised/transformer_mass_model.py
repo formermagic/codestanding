@@ -137,6 +137,37 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         )
 
     @classmethod
+    def build_encoder(
+        cls,
+        args: Namespace,
+        langs: int,
+        dictionary: MaskedDictionary,
+        shared_embedding_tokens: Optional[Embedding],
+    ) -> TransformerEncoder:
+        if shared_embedding_tokens is not None:
+            embedding_tokens = shared_embedding_tokens
+        else:
+            embedding_tokens = cls.build_embedding(
+                dictionary, args.encoder_embed_dim, args.encoder_embed_path
+            )
+
+        embedding_languages = Embedding(langs, args.encoder_embed_dim)
+
+        return TransformerEncoder(
+            dictionary,
+            args.dropout,
+            args.max_source_positions,
+            args.encoder_layers,
+            embedding_languages,
+            embedding_tokens,
+            args.encoder_ffn_embed_dim,
+            args.encoder_attention_heads,
+            args.attention_dropout,
+            args.activation_dropout,
+            args.activation_fn,
+        )
+
+    @classmethod
     def build_model(
         cls, args: Namespace, task: FairseqTask
     ) -> "TransformerMASSModel":
