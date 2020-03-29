@@ -24,6 +24,7 @@ class TransformerDecoderLayer(nn.Module):
         add_bias_kv: bool = False,
         add_zero_attn: bool = False,
         export: bool = False,
+        langs: int = 1,
     ) -> None:
         super().__init__()
 
@@ -46,14 +47,20 @@ class TransformerDecoderLayer(nn.Module):
         # layer norm associated with the self attention layer
         self.self_attn_layer_norm = LayerNorm(self.embedding_dim, export=export)
 
-        # encoder attention block
-        self.encoder_attn = MultiheadAttention(
-            embedding_dim,
-            num_attention_heads,
-            kdim=encoder_embedding_dim,
-            vdim=encoder_embedding_dim,
-            dropout=attention_dropout,
-            encoder_decoder_attention=True,
+        # encoder attention block builder
+        def build_multihead_attention() -> MultiheadAttention:
+            return MultiheadAttention(
+                embedding_dim,
+                num_attention_heads,
+                kdim=encoder_embedding_dim,
+                vdim=encoder_embedding_dim,
+                dropout=attention_dropout,
+                encoder_decoder_attention=True,
+            )
+
+        # encoder attention by languages
+        self.encoder_attn = nn.ModuleList(
+            [build_multihead_attention() for _ in range(langs)]
         )
 
         # layer norm associated with the encoder attention layer
