@@ -126,7 +126,7 @@ class TransformerEncoder(FairseqEncoder):
             ].index_select(0, new_order)
         return encoder_out
 
-    def max_position(self) -> int:
+    def max_positions(self) -> int:
         if self.embedding_positions is None:
             return self.max_source_positions
         return min(
