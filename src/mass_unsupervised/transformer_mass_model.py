@@ -308,10 +308,16 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         tgt_langs = torch.LongTensor([tgt_idx]).expand_as(prev_output_tokens)
 
         encoder_output = self.encoder(
-            src_tokens, src_lengths, languages=src_langs, **kwargs
+            src_tokens,
+            src_lengths,
+            languages=src_langs.to(src_tokens.device),
+            **kwargs,
         )
         decoder_output = self.decoder(
-            prev_output_tokens, encoder_output, languages=tgt_langs, **kwargs
+            prev_output_tokens,
+            encoder_output,
+            languages=tgt_langs.to(prev_output_tokens.device),
+            **kwargs,
         )
 
         return decoder_output
