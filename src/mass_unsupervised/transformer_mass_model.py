@@ -101,6 +101,21 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         # fmt: on
 
     @classmethod
+    def build_embedding(
+        cls,
+        dictionary: MaskedDictionary,
+        embedding_dim: int,
+        pretrained_embedding_path: Optional[str] = None,
+    ) -> Embedding:
+        num_embeddings = len(dictionary)
+        padding_idx = dictionary.pad()
+        embedding = Embedding(num_embeddings, embedding_dim, padding_idx)
+        if pretrained_embedding_path:
+            embedding_dict = parse_embedding(pretrained_embedding_path)
+            load_embedding(embedding_dict, dictionary, embedding)
+        return embedding
+
+    @classmethod
     def build_model(
         cls, args: Namespace, task: FairseqTask
     ) -> "TransformerMASSModel":
