@@ -83,6 +83,7 @@ class TransformerEncoder(FairseqEncoder):
         # prepare source positions
         src_len = src_tokens.size(1)
         positions = torch.arange(src_len).unsqueeze(0)
+        positions = positions.to(src_tokens.device)
         # shape: [Batch=1, Time, Channel]
         positions = self.embedding_positions(positions)
 
