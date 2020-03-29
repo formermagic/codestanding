@@ -237,33 +237,30 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
                     "--encoder-embed-dim to match --decoder-embed-dim"
                 )
 
-            shared_encoder_embedding_tokens = FairseqMultiModel.build_shared_embeddings(
+            shared_encoder_embedding_tokens = cls.build_shared_embeddings(
                 dicts=task.dicts,
                 langs=task.langs,
-                embed_dim=args.encoder_embed_dim,
-                build_embedding=build_embedding,
-                pretrained_embed_path=args.encoder_embed_path,
+                embedding_dim=args.encoder_embed_dim,
+                pretrained_embedding_path=args.encoder_embed_path,
             )
             shared_decoder_embedding_tokens = shared_encoder_embedding_tokens
 
             args.share_decoder_input_output_embed = True
         else:
             if args.share_encoder_embeddings:
-                shared_encoder_embedding_tokens = FairseqMultiModel.build_shared_embeddings(
+                shared_encoder_embedding_tokens = cls.build_shared_embeddings(
                     dicts=task.dicts,
                     langs=src_langs,
-                    embed_dim=args.encoder_embed_dim,
-                    build_embedding=build_embedding,
-                    pretrained_embed_path=args.encoder_embed_path,
+                    embedding_dim=args.encoder_embed_dim,
+                    pretrained_embedding_path=args.encoder_embed_path,
                 )
 
             if args.share_decoder_embeddings:
-                shared_decoder_embedding_tokens = FairseqMultiModel.build_shared_embeddings(
+                shared_decoder_embedding_tokens = cls.build_shared_embeddings(
                     dicts=task.dicts,
                     langs=tgt_langs,
-                    embed_dim=args.decoder_embed_dim,
-                    build_embedding=build_embedding,
-                    pretrained_embed_path=args.decoder_embed_path,
+                    embedding_dim=args.decoder_embed_dim,
+                    pretrained_embedding_path=args.decoder_embed_path,
                 )
 
         lang_encoders: Dict[str, TransformerEncoder] = {}
