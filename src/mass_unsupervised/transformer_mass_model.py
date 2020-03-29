@@ -374,6 +374,7 @@ def base_architecture(args: Namespace) -> None:
     args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 8)
 
     args.decoder_layers = getattr(args, "decoder_layers", 6)
+    args.decoder_embed_path = getattr(args, "decoder_embed_path", None)
     args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
     args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 2048)
     args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 8)
