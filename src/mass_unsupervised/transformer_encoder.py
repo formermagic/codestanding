@@ -85,15 +85,18 @@ class TransformerEncoder(FairseqEncoder):
         positions = torch.arange(src_len).unsqueeze(0)
         # shape: [Batch=1, Time, Channel]
         positions = self.embedding_positions(positions)
+
+        if "languages" in kwargs:
             # shape: [Batch, Time, Channel]
-            positions = self.embedding_positions(kwargs["positions"])
+            languages = self.embedding_languages(kwargs["languages"])
         else:
-            # shape: [Batch, Time, Channel]
-            positions = self.embedding_positions(src_tokens)
+            languages = None
 
         # shape: [Batch, Time, Channel]
         x = self.embedding_scale * self.embedding_tokens(src_tokens)
         x += positions.expand_as(x)
+        if languages is not None:
+            x += languages
         x = self.embedding_layer_norm(x)
         x = F.dropout(x, self.dropout, self.training)
 
