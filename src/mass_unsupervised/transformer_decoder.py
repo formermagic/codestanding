@@ -25,6 +25,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         dropout: float,
         max_target_positions: int,
         num_layers: int,
+        embedding_languages: torch.nn.Embedding,
         embedding_tokens: torch.nn.Embedding,
         encoder_embedding_dim: int,
         decoder_ffn_embed_dim: int,
@@ -51,6 +52,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         self.padding_index = dictionary.pad()
         self.max_target_positions = max_target_positions
         self.embedding_dim = embedding_tokens.embedding_dim
+        self.embedding_languages = embedding_languages
         self.embedding_tokens = embedding_tokens
         self.embedding_scale = math.sqrt(self.embedding_dim)
 
@@ -60,6 +62,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
             self.padding_index,
         )
 
+        langs = max(embedding_languages.num_embeddings, 1)
         self.layers = nn.ModuleList(
             [
                 TransformerDecoderLayer(
@@ -71,6 +74,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
                     decoder_attention_dropout,
                     decoder_activation_dropout,
                     decoder_activation_fn,
+                    langs=langs,
                 )
                 for _ in range(num_layers)
             ]
