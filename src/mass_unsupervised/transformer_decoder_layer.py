@@ -79,6 +79,7 @@ class TransformerDecoderLayer(nn.Module):
     def forward(
         self,
         x: torch.Tensor,
+        language: int,
         encoder_out=torch.Tensor,
         encoder_padding_mask: Optional[torch.ByteTensor] = None,
         incremental_state: Optional[Dict[str, TensorDict]] = None,
@@ -133,7 +134,8 @@ class TransformerDecoderLayer(nn.Module):
 
         residual = x
         # TODO: make encoder_attn optional
-        x, attn = self.encoder_attn(
+        encoder_attn = self.encoder_attn[language]
+        x, attn = encoder_attn(
             query=x,
             key=encoder_out,
             value=encoder_out,
