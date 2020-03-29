@@ -13,7 +13,11 @@ from fairseq.models import (
     register_model_architecture,
 )
 from fairseq.tasks import FairseqTask
-from fairseq.utils import get_available_activation_fns
+from fairseq.utils import (
+    get_available_activation_fns,
+    parse_embedding,
+    load_embedding,
+)
 
 from .layer_initialization import Embedding, Linear
 from .masked_dictionary import MaskedDictionary
