@@ -263,8 +263,15 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
                     pretrained_embedding_path=args.decoder_embed_path,
                 )
 
+        langs = len(task.langs)
+        encoder = cls.build_encoder(
+            args, langs, task.source_dictionary, shared_encoder_embedding_tokens
+        )
+        decoder = cls.build_decoder(
+            args, langs, task.target_dictionary, shared_decoder_embedding_tokens
+        )
 
-        model = TransformerMASSModel(encoders, decoders)
+        model = TransformerMASSModel(encoder, decoder, args.langs)
 
         if args.load_from_pretrained_model is not None:
             state_dict = torch.load(
