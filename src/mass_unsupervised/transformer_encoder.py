@@ -24,6 +24,7 @@ class TransformerEncoder(FairseqEncoder):
         dropout: float,
         max_source_positions: int,
         num_layers: int,
+        embedding_languages: torch.nn.Embedding,
         embedding_tokens: torch.nn.Embedding,
         encoder_ffn_embedding_dim: int,
         encoder_num_attention_heads: int,
@@ -41,6 +42,7 @@ class TransformerEncoder(FairseqEncoder):
 
         self.dropout = dropout
         self.max_source_positions = max_source_positions
+        self.embedding_languages = embedding_languages
         self.embedding_tokens = embedding_tokens
         self.embedding_scale = math.sqrt(encoder_embedding_dim)
         self.embedding_positions = LearnedPositionalEmbedding(
