@@ -215,16 +215,6 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         src_langs = args.source_langs
         tgt_langs = args.target_langs
 
-        def build_embedding(
-            dictionary: MaskedDictionary,
-            embedding_dim: int,
-            embedding_path: Optional[str] = None,
-        ) -> Embedding:
-            num_embeddings = len(dictionary)
-            padding_idx = dictionary.pad()
-            embedding = Embedding(num_embeddings, embedding_dim, padding_idx)
-            return embedding
-
         if args.share_encoders:
             args.share_encoder_embeddings = True
         if args.share_decoders:
