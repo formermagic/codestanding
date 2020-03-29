@@ -284,13 +284,9 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         return model
 
     def max_positions(self) -> OrderedDictType[str, Tuple[int, int]]:
-        return {
-            key: (
-                self.models[key].encoder.max_positions(),
-                self.models[key].decoder.max_positions(),
-            )
-            for key in self.keys
-        }
+        """Use a workaround to correctly resolve max positions"""
+        positions = self.encoder.max_positions(), self.decoder.max_positions()
+        return OrderedDict([("model", positions)])
 
     def max_decoder_positions(self) -> int:
         return min(
