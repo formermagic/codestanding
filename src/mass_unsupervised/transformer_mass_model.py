@@ -298,7 +298,7 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         prev_output_tokens: torch.Tensor,
         lang_pair: str,
         **kwargs: Any,
-    ) -> Union[DecoderOutput, Dict[str, DecoderOutput]]:
+    ) -> DecoderOutput:
 
             return decoder_output
 
