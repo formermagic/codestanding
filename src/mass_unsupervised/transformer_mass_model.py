@@ -116,6 +116,27 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         return embedding
 
     @classmethod
+    def build_shared_embeddings(
+        cls,
+        dicts: Dict[str, MaskedDictionary],
+        langs: List[str],
+        embedding_dim: int,
+        pretrained_embedding_path: Optional[str] = None,
+    ) -> Embedding:
+        shared_dict = dicts[langs[0]]
+        if any(dicts[lang] != shared_dict for lang in langs):
+            raise ValueError(
+                "--share-*-embeddings requires a joined dictionary: "
+                "--share-encoder-embeddings requires a joined source "
+                "dictionary, --share-decoder-embeddings requires a joined "
+                "target dictionary, and --share-all-embeddings requires a "
+                "joint source + target dictionary."
+            )
+        return cls.build_embedding(
+            shared_dict, embedding_dim, pretrained_embedding_path
+        )
+
+    @classmethod
     def build_model(
         cls, args: Namespace, task: FairseqTask
     ) -> "TransformerMASSModel":
