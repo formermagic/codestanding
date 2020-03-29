@@ -78,9 +78,16 @@ class TransformerEncoder(FairseqEncoder):
         if not encoder_padding_mask.any():
             encoder_padding_mask = None
 
+        if "positions" in kwargs:
+            # shape: [Batch, Time, Channel]
+            positions = self.embedding_positions(kwargs["positions"])
+        else:
+            # shape: [Batch, Time, Channel]
+            positions = self.embedding_positions(src_tokens)
+
         # shape: [Batch, Time, Channel]
         x = self.embedding_scale * self.embedding_tokens(src_tokens)
-        x += self.embedding_positions(src_tokens)
+        x += positions
         x = self.embedding_layer_norm(x)
         x = F.dropout(x, self.dropout, self.training)
 
