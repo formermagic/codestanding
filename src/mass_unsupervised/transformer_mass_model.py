@@ -40,10 +40,16 @@ DecoderOutput = Tuple[torch.Tensor, Extras]
 class TransformerMASSModel(FairseqEncoderDecoderModel):
     def __init__(
         self,
-        encoders: OrderedDictType[str, TransformerEncoder],
-        decoders: OrderedDictType[str, TransformerDecoder],
+        encoder: TransformerEncoder,
+        decoder: TransformerDecoder,
+        langs: List[str],
     ) -> None:
-        super().__init__(encoders, decoders)
+        super().__init__(encoder, decoder)
+        self.lang2idx = {}
+        self.idx2lang = {}
+        for idx, lang in enumerate(langs):
+            self.lang2idx[lang] = idx
+            self.idx2lang[idx] = lang
 
     @staticmethod
     def add_args(parser: ArgumentParser) -> None:
