@@ -38,7 +38,7 @@ DecoderOutput = Tuple[torch.Tensor, Extras]
 
 
 @register_model("transformer_mass")
-class TransformerMASSModel(FairseqMultiModel):
+class TransformerMASSModel(FairseqEncoderDecoderModel):
     def __init__(
         self,
         encoders: OrderedDictType[str, TransformerEncoder],
