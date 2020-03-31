@@ -426,6 +426,21 @@ def transformer_base(args: Namespace) -> None:
     base_architecture(args)
 
 
+@register_model_architecture("transformer_mass", "transformer_mass_light")
+def transformer_middle(args: Namespace) -> None:
+    args.encoder_layers = getattr(args, "encoder_layers", 2)
+    args.encoder_embed_dim = getattr(args, "encoder_embed_dim", 512)
+    args.encoder_ffn_embed_dim = getattr(args, "encoder_ffn_embed_dim", 1024)
+    args.encoder_attention_heads = getattr(args, "encoder_attention_heads", 4)
+
+    args.decoder_layers = getattr(args, "decoder_layers", 2)
+    args.decoder_embed_dim = getattr(args, "decoder_embed_dim", 512)
+    args.decoder_ffn_embed_dim = getattr(args, "decoder_ffn_embed_dim", 1024)
+    args.decoder_attention_heads = getattr(args, "decoder_attention_heads", 4)
+
+    transformer_base(args)
+
+
 @register_model_architecture("transformer_mass", "transformer_mass_middle")
 def transformer_middle(args: Namespace) -> None:
     args.encoder_layers = getattr(args, "encoder_layers", 6)
