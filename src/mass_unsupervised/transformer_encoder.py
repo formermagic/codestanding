@@ -91,11 +91,14 @@ class TransformerEncoder(FairseqEncoder):
             encoder_padding_mask = None
 
         # prepare source positions
-        src_len = src_tokens.size(1)
-        positions = torch.arange(src_len).unsqueeze(0)
-        positions = positions.to(src_tokens.device)
-        # shape: [Batch=1, Time, Channel]
-        positions = self.embedding_positions(positions)
+        if self.use_token_positions:
+            positions = self.embedding_positions(src_tokens)
+        else:
+            src_len = src_tokens.size(1)
+            positions = torch.arange(src_len).unsqueeze(0)
+            positions = positions.to(src_tokens.device)
+            # shape: [Batch=1, Time, Channel]
+            positions = self.embedding_positions(None, positions=positions)
 
         if "languages" in kwargs:
             # shape: [Batch, Time, Channel]
@@ -105,7 +108,9 @@ class TransformerEncoder(FairseqEncoder):
 
         # shape: [Batch, Time, Channel]
         x = self.embedding_scale * self.embedding_tokens(src_tokens)
+        # add positions embeddings
         x += positions.expand_as(x)
+        # add languages embeddings
         if languages is not None:
             x += languages
         x = self.embedding_layer_norm(x)
