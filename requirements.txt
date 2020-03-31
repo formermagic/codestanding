@@ -27,3 +27,4 @@ sentencepiece
 tensorboard
 tree_sitter
 tokenizers
+wandb
