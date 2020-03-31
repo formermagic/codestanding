@@ -31,6 +31,7 @@ class TransformerEncoder(FairseqEncoder):
         encoder_attention_dropout: float,
         encoder_activation_dropout: float,
         encoder_activation_fn: str,
+        use_token_positions: bool = False,
     ) -> None:
         super().__init__(dictionary)
 
@@ -45,11 +46,20 @@ class TransformerEncoder(FairseqEncoder):
         self.embedding_languages = embedding_languages
         self.embedding_tokens = embedding_tokens
         self.embedding_scale = math.sqrt(encoder_embedding_dim)
-        self.embedding_positions = LearnedPositionalEmbedding(
-            max_source_positions + 1 + self.pad_index,
-            encoder_embedding_dim,
-            self.pad_index,
-        )
+        self.use_token_positions = use_token_positions
+
+        if use_token_positions:
+            self.embedding_positions = LearnedPositionalEmbedding(
+                num_embeddings=max_source_positions + 1 + self.pad_index,
+                embedding_dim=encoder_embedding_dim,
+                padding_idx=self.pad_index,
+            )
+        else:
+            self.embedding_positions = LearnedPositionalEmbedding(
+                num_embeddings=max_source_positions,
+                embedding_dim=encoder_embedding_dim,
+                padding_idx=None,
+            )
 
         self.layers = nn.ModuleList(
             [
