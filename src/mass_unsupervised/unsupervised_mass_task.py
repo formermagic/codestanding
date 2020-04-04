@@ -8,7 +8,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 import torch
 
-from fairseq import models, options
+from fairseq import metrics, models, options
 from fairseq.criterions import FairseqCriterion
 from fairseq.data import (
     BacktranslationDataset,
@@ -755,6 +755,11 @@ class UnsupervisedMASSTask(FairseqTask):
             "ntokens": sum_over_dataset("ntokens", sum_logging_outputs),
             "sample_size": sum_over_dataset("sample_size", sum_logging_outputs),
         }
+
+        with metrics.aggregate():
+            ntokens = flat_logging_outputs["ntokens"]
+            metrics.log_scalar("wpb", ntokens, priority=180, round=1)
+            metrics.log_speed("wps", ntokens, priority=90, round=1)
 
         # log metrics
         criterion.__class__.reduce_metrics([flat_logging_outputs])
