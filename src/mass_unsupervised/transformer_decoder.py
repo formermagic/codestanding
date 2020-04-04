@@ -123,6 +123,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         if "languages" in kwargs:
             # shape: [Batch, Time, Channel]
             languages = self.embedding_languages(kwargs["languages"])
+            languages = languages[:, : prev_output_tokens.size(1), :]
             language = kwargs["languages"].max().cpu().item()
         else:
             languages = None
