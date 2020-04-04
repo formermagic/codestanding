@@ -1,3 +1,4 @@
+from argparse import Namespace
 from numbers import Number
 from typing import Any, Dict, Optional, Text
 
@@ -9,8 +10,8 @@ from fairseq.logging.meters import AverageMeter
 
 
 class WandBLogger:
-    def __init__(self, project: Text) -> None:
-        wandb.init(project=project)
+    def __init__(self, project: Text, config: Namespace) -> None:
+        wandb.init(project=project, config=config)
 
     def _extract_stats(self, key: Text) -> Dict[Text, Any]:
         stats = metrics.get_smoothed_values(key)
