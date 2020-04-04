@@ -35,11 +35,12 @@ class WandBLogger:
             stats = self._extract_stats(key)
         if step is None:
             step = stats.get("num_updates", -1)
-        for key in stats.keys() - {"num_updates"}:
-            if isinstance(stats[key], AverageMeter):
-                wandb.log({key: stats[key].val}, step=step)
-            elif isinstance(stats[key], Number):
-                wandb.log({key: stats[key]}, step=step)
+        for stat_key in stats.keys() - {"num_updates"}:
+            log_key = f"{key}/{stat_key}"
+            if isinstance(stats[stat_key], AverageMeter):
+                wandb.log({log_key: stats[stat_key].val}, step=step)
+            elif isinstance(stats[stat_key], Number):
+                wandb.log({log_key: stats[stat_key]}, step=step)
 
     def watch_model(self, model: FairseqModel) -> None:
         wandb.watch(model)
