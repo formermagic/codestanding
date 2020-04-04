@@ -88,6 +88,8 @@ class UnsupervisedMASSTask(FairseqTask):
         else:
             self.lang_pairs = [f"{args.source_lang}-{args.target_lang}"]
 
+        self.logger = WandBLogger(project="codestanding", config=args)
+
     @staticmethod
     def add_args(parser):
         """Add task-specific arguments to the parser."""
@@ -565,6 +567,7 @@ class UnsupervisedMASSTask(FairseqTask):
 
     def build_model(self, args: Namespace) -> BaseFairseqModel:
         model = models.build_model(args, self)
+        self.logger.watch_model(model)
 
         if len(self.args.bt_steps) > 0 and self.training:
             for lang_pair in self.args.bt_steps:
@@ -764,3 +767,8 @@ class UnsupervisedMASSTask(FairseqTask):
 
         # log metrics
         criterion.__class__.reduce_metrics([flat_logging_outputs])
+
+        # write metrics to WandB
+        self.logger.log(key="train")
+        self.logger.log(key="valid")
+
