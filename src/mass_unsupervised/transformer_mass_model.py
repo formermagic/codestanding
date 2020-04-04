@@ -299,25 +299,9 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
         lang_pair: str,
         **kwargs: Any,
     ) -> DecoderOutput:
-        src_lang, tgt_lang = lang_pair.split("-")
-        src_idx = self.lang2idx[src_lang]
-        tgt_idx = self.lang2idx[tgt_lang]
-
-        # shape: [Batch, Time]
-        src_langs = torch.LongTensor([src_idx]).expand_as(src_tokens)
-        tgt_langs = torch.LongTensor([tgt_idx]).expand_as(prev_output_tokens)
-
-        encoder_output = self.encoder(
-            src_tokens,
-            src_lengths,
-            languages=src_langs.to(src_tokens.device),
-            **kwargs,
-        )
+        encoder_output = self.encoder(src_tokens, src_lengths, **kwargs)
         decoder_output = self.decoder(
-            prev_output_tokens,
-            encoder_output,
-            languages=tgt_langs.to(prev_output_tokens.device),
-            **kwargs,
+            prev_output_tokens, encoder_output, **kwargs,
         )
 
         return decoder_output
