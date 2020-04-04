@@ -136,6 +136,10 @@ class TransformerDecoder(FairseqIncrementalDecoder):
                 # shape: [Batch, Time, Channel]
                 positions = positions[:, -1:]
 
+            if languages is not None:
+                # shape: [Batch, Time, Channel]
+                languages = languages[:, -1:]
+
         # shape: [Batch, Time, Channel]
         x = self.embedding_scale * self.embedding_tokens(prev_output_tokens)
 
