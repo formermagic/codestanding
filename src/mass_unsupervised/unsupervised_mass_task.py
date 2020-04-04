@@ -28,6 +28,7 @@ from fairseq.utils import deprecation_warning
 from .masked_dictionary import MaskedDictionary
 from .masked_language_pair_dataset import MaskedLanguagePairDataset
 from .noisy_language_pair_dataset import NoisyLanguagePairDataset
+from .wandb_logger import WandBLogger
 
 try:
     from typing import OrderedDict as OrderedDictType
