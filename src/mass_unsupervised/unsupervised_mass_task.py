@@ -81,6 +81,8 @@ class UnsupervisedMASSTask(FairseqTask):
         self.training = training
         self.backtranslators: Dict[str, Callable] = {}
         self.langs = list(dicts.keys())
+        self.lang2idx = args.lang2idx
+        self.idx2lang = args.idx2lang
         self.sequence_generators: Dict[str, SequenceGenerator] = {}
 
         if training:
