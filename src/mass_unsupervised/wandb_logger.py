@@ -14,6 +14,8 @@ class WandBLogger:
         wandb.init(project=project, config=config)
 
     def _extract_stats(self, key: Text) -> Dict[Text, Any]:
+        if key not in metrics._aggregators:
+            return {}
         stats = metrics.get_smoothed_values(key)
         if "nll_loss" in stats and "ppl" not in stats:
             stats["ppl"] = utils.get_perplexity(stats["nll_loss"])
