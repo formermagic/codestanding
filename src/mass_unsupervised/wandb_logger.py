@@ -7,6 +7,7 @@ import wandb
 from fairseq import utils
 from fairseq.logging import metrics
 from fairseq.logging.meters import AverageMeter
+from fairseq.models import FairseqModel
 
 
 class WandBLogger:
@@ -39,3 +40,6 @@ class WandBLogger:
                 wandb.log({key: stats[key].val}, step=step)
             elif isinstance(stats[key], Number):
                 wandb.log({key: stats[key]}, step=step)
+
+    def watch_model(self, model: FairseqModel) -> None:
+        wandb.watch(model)
