@@ -79,12 +79,15 @@ class MaskedLanguagePairDataset(FairseqDataset):
         positions = masked_indices + 1  # self.source_dict.pad_index=1
         source_item[masked_indices] = self.replace(source_item[masked_indices])
 
+        lang_tokens = source_item.clone().fill_(self.source_lang_id)
+
         samples = {
             "id": index,
             "source": source_item,
             "target": target,
             "prev_output_tokens": prev_output_tokens,
             "positions": positions,
+            "languages": lang_tokens,
         }
 
         return samples
@@ -190,6 +193,13 @@ class MaskedLanguagePairDataset(FairseqDataset):
             target = None
             n_tokens = 0
 
+        # prepare language tokens and sort them by source length descending
+        if samples[0].get("languages", None) is not None:
+            languages = merge("languages", left_pad=left_pad_source)
+            languages = languages.index_select(0, sort_order)
+        else:
+            languages = None
+
         batch = {
             "id": idx,
             "nsentences": len(samples),
@@ -198,6 +208,7 @@ class MaskedLanguagePairDataset(FairseqDataset):
                 "src_tokens": source_tokens,
                 "prev_output_tokens": prev_output_tokens,
                 "positions": positions,
+                "languages": languages,
             },
             "target": target,
             "ntokens": n_tokens,
