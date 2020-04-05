@@ -145,7 +145,10 @@ class MaskedLanguagePairDataset(FairseqDataset):
             return {}
 
         def merge(
-            key: str, left_pad: bool, move_eos_to_beginning: bool = False
+            key: str,
+            pad_idx: int,
+            left_pad: bool,
+            move_eos_to_beginning: bool = False,
         ) -> torch.LongTensor:
             return data_utils.collate_tokens(
                 [s[key] for s in samples],
