@@ -159,7 +159,7 @@ class MaskedLanguagePairDataset(FairseqDataset):
             )
 
         # sort src_tokens by descending source length
-        source_tokens = merge("source", left_pad=left_pad_source)
+        source_tokens = merge("source", pad_idx, left_pad_source)
         source_lengths = torch.LongTensor(
             [s["source"].numel() for s in samples]
         )
@@ -175,21 +175,21 @@ class MaskedLanguagePairDataset(FairseqDataset):
         has_prev_tokens = samples[0].get("prev_output_tokens", None) is not None
         if input_feeding and has_prev_tokens:
             prev_output_tokens = merge(
-                "prev_output_tokens", left_pad=left_pad_target
+                "prev_output_tokens", pad_idx, left_pad_target
             )
 
             prev_output_tokens = prev_output_tokens.index_select(0, sort_order)
 
         # prepare positions to predict and sort them by source length descending
         if samples[0].get("positions", None) is not None:
-            positions = merge("positions", left_pad=left_pad_target)
+            positions = merge("positions", pad_idx, left_pad_target)
             positions = positions.index_select(0, sort_order)
         else:
             positions = None
 
         # prepare masked target tokens and sort them by source length descending
         if samples[0].get("target", None) is not None:
-            target = merge("target", left_pad=left_pad_target)
+            target = merge("target", pad_idx, left_pad_target)
             target = target.index_select(0, sort_order)
             n_tokens = target.numel()
         else:
