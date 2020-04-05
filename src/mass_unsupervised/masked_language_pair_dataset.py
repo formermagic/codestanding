@@ -198,7 +198,7 @@ class MaskedLanguagePairDataset(FairseqDataset):
 
         # prepare language tokens and sort them by source length descending
         if samples[0].get("languages", None) is not None:
-            languages = merge("languages", left_pad=left_pad_source)
+            languages = merge("languages", self.source_lang_id, left_pad_source)
             languages = languages.index_select(0, sort_order)
         else:
             languages = None
