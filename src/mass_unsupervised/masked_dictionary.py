@@ -8,7 +8,6 @@ class MaskedDictionary(Dictionary):
         super().__init__(pad, eos, unk, bos, extra_special_symbols=["<nl>"])
         self.mask_word = mask
         self.mask_index = self.add_symbol(mask)
-        self.nspecial = 99
 
     def mask(self) -> int:
         return self.mask_index
@@ -23,7 +22,5 @@ class MaskedDictionary(Dictionary):
             for line in input_file:
                 key, _ = line.split(" ")
                 dictionary.add_symbol(key)
-
-        dictionary.nspecial = 99
 
         return dictionary
