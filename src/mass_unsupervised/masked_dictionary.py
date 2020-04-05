@@ -3,9 +3,9 @@ from fairseq.data import Dictionary
 
 class MaskedDictionary(Dictionary):
     def __init__(
-        self, pad="<pad>", eos="</s>", unk="<unk>", mask="<mask>",
+        self, pad="[PAD]", eos="</s>", bos="<s>", unk="[UNK]", mask="[MASK]",
     ) -> None:
-        super().__init__(pad, eos, unk)
+        super().__init__(pad, eos, unk, bos, extra_special_symbols=["<nl>"])
         self.mask_word = mask
         self.mask_index = self.add_symbol(mask)
         self.nspecial = 99
