@@ -19,6 +19,7 @@ from fairseq.data import (
     LanguagePairDataset,
     RoundRobinZipDatasets,
 )
+from fairseq.data.data_utils import load_indexed_dataset
 from fairseq.models import BaseFairseqModel
 from fairseq.optim import FairseqOptimizer
 from fairseq.sequence_generator import SequenceGenerator
@@ -310,13 +311,12 @@ class UnsupervisedMASSTask(FairseqTask):
         def indexed_dataset(
             path: str, dictionary: MaskedDictionary
         ) -> Optional[IndexedDataset]:
-            if self.args.dataset_impl == "raw":
-                return IndexedRawTextDataset(path, dictionary)
-            if IndexedDataset.exists(path):
-                if self.args.dataset_impl == "lazy":
-                    return IndexedDataset(path, fix_lua_indexing=True)
-                return IndexedCachedDataset(path, fix_lua_indexing=True)
-            return None
+            return load_indexed_dataset(
+                path,
+                dictionary,
+                dataset_impl=self.args.dataset_impl,
+                combine=combine,
+            )
 
         src_mono_datasets = {}
         for lang_pair in self.args.mono_lang_pairs:
