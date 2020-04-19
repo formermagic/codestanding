@@ -1,0 +1,3 @@
+from .masked_lm_task import MaskedLMTaskWrapper
+from .multilingual_denoising_task import MultilingualDenoisingTaskWrapper
+from .unsupervised_mass_task import UnsupervisedMASSTask
