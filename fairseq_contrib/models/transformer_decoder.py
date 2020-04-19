@@ -10,7 +10,7 @@ from fairseq.modules import LayerNorm, LearnedPositionalEmbedding
 from fairseq.modules.transformer_sentence_encoder import init_bert_params
 from fairseq.utils import fill_with_neg_inf, log_softmax, softmax
 
-from .masked_dictionary import MaskedDictionary
+from fairseq_contrib.data import MaskedDictionary
 from .transformer_decoder_layer import TransformerDecoderLayer
 
 TensorDict = Dict[str, Optional[torch.Tensor]]
@@ -98,6 +98,7 @@ class TransformerDecoder(FairseqIncrementalDecoder):
         incremental_state: Optional[Dict[str, TensorDict]] = None,
         **kwargs: typing.Any,
     ) -> DecoderOutput:
+        # print(f"[Decoder] prev_output_tokens=..., kwargs={kwargs}")
         x, extras = self.extract_features(
             prev_output_tokens, encoder_out, incremental_state, **kwargs
         )
@@ -119,6 +120,12 @@ class TransformerDecoder(FairseqIncrementalDecoder):
             positions = self.embedding_positions(
                 prev_output_tokens, incremental_state=incremental_state
             )
+
+        # kwargs["languages"] = (
+        #     torch.LongTensor([0])
+        #     .expand_as(prev_output_tokens)
+        #     .to(prev_output_tokens.device)
+        # )
 
         if "languages" in kwargs:
             # shape: [Batch, Time, Channel]
