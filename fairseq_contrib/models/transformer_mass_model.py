@@ -1,7 +1,6 @@
-import typing
 from argparse import ArgumentParser, Namespace
 from collections import OrderedDict
-from typing import Any, Dict, Optional, Tuple, Union, List
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import torch
 import torch.nn.functional as F
@@ -14,15 +13,15 @@ from fairseq.models import (
 from fairseq.tasks import FairseqTask
 from fairseq.utils import (
     get_available_activation_fns,
-    parse_embedding,
     load_embedding,
+    parse_embedding,
 )
+from fairseq_contrib.data import MaskedDictionary
+from fairseq_contrib.tasks import UnsupervisedMASSTask
+from fairseq_contrib.utils import Embedding
 
-from .layer_initialization import Embedding, Linear
-from .masked_dictionary import MaskedDictionary
 from .transformer_decoder import TransformerDecoder
 from .transformer_encoder import TransformerEncoder
-from .unsupervised_mass_task import UnsupervisedMASSTask
 
 try:
     from typing import OrderedDict as OrderedDictType
@@ -204,6 +203,7 @@ class TransformerMASSModel(FairseqEncoderDecoderModel):
     def build_model(
         cls, args: Namespace, task: FairseqTask
     ) -> "TransformerMASSModel":
+
         assert isinstance(task, UnsupervisedMASSTask)
         base_architecture(args)
 
