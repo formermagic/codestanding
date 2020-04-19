@@ -844,6 +844,6 @@ class UnsupervisedMASSTask(FairseqTask):
         criterion.__class__.reduce_metrics([flat_logging_outputs])
 
         # write metrics to WandB
-        num_updates = metrics.get_meter(name="default", key="num_updates").val
-        self.logger.log(key="train", step=num_updates)
-        self.logger.log(key="valid", step=num_updates)
+        num_updates = metrics.get_meter(name="default", key="num_updates")
+        self.logger.log(key="train_inner", tag="train", step=num_updates.val)
+        self.logger.log(key="valid", tag="valid", step=num_updates.val)
