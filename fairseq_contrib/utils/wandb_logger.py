@@ -1,4 +1,4 @@
-from argparse import Namespace
+from argparse import ArgumentParser, Namespace
 from numbers import Number
 from typing import Any, Dict, Optional, Text
 
@@ -13,6 +13,16 @@ from fairseq.models import FairseqModel
 class WandBLogger:
     def __init__(self, project: Text, config: Namespace) -> None:
         wandb.init(project=project, config=config)
+    @staticmethod
+    def add_args(parser: ArgumentParser) -> None:
+        # fmt: off
+        parser.add_argument("--wandb-project", type=str, default=None,
+                            help="A WandB project name to use for logging")
+        parser.add_argument("--wandb-name", type=str, default=None,
+                            help="A name for the experiment logged in WandB")
+        parser.add_argument("--wandb-id", type=str, default=None,
+                            help="An id for the experiment logged in WandB")
+        # fmt: on
 
     @staticmethod
     def _extract_stats(key: Text) -> Dict[Text, Any]:
