@@ -38,16 +38,16 @@ class MultilingualDenoisingTaskWrapper(MultilingualDenoisingTask):
         self.mask_idx = dictionary.mask()
 
         self.logger = WandBLogger(
-            project="codestanding", name=args.wandb_name, config=args
+            project=args.wandb_project,
+            exp_id=args.wandb_id,
+            exp_name=args.wandb_name,
+            config=args,
         )
 
     @staticmethod
     def add_args(parser: ArgumentParser) -> None:
         MultilingualDenoisingTask.add_args(parser)
-        # fmt: off
-        parser.add_argument("--wandb-name", type=str, default=None,
-                            help="A name for the experiment logged in WandB")
-        # fmt: on
+        WandBLogger.add_args(parser)
 
     def build_model(self, args) -> FairseqModel:
         model = build_model(args, self)
