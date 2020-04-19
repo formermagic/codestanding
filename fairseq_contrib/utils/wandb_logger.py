@@ -11,8 +11,15 @@ from fairseq.models import FairseqModel
 
 
 class WandBLogger:
-    def __init__(self, project: Text, config: Namespace) -> None:
-        wandb.init(project=project, config=config)
+    def __init__(
+        self,
+        project: Text,
+        exp_id: Optional[Text] = None,
+        exp_name: Optional[Text] = None,
+        config: Optional[Namespace] = None,
+    ) -> None:
+        wandb.init(project=project, id=exp_id, name=exp_name, config=config)
+
     @staticmethod
     def add_args(parser: ArgumentParser) -> None:
         # fmt: off
