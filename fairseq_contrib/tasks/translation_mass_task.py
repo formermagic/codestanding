@@ -4,7 +4,7 @@ from typing import Tuple
 from fairseq.tasks import register_task
 from fairseq.tasks.translation import TranslationTask
 
-from .masked_dictionary import MaskedDictionary
+from fairseq_contrib.mass import MaskedDictionary
 
 
 @register_task("translation_mass")
