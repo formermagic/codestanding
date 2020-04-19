@@ -35,6 +35,12 @@ class MaskedLMTaskWrapper(MaskedLMTask):
         MaskedLMTask.add_args(parser)
         WandBLogger.add_args(parser)
 
+    @classmethod
+    def load_dictionary(cls, filename: str) -> Dictionary:
+        dictionary = Dictionary.load(filename)
+        dictionary.add_symbol("<nl>")
+        return dictionary
+
     def build_model(self, args) -> FairseqModel:
         model = build_model(args, self)
         self.logger.watch_model(model)
