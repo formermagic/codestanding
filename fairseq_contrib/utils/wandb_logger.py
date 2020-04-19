@@ -36,8 +36,9 @@ class WandBLogger:
             stats = self._extract_stats(key)
         if step is None:
             step = stats.get("num_updates", -1)
+        tag = tag or key
         for stat_key in stats.keys() - {"num_updates"}:
-            log_key = f"{key}/{stat_key}"
+            log_key = f"{tag}/{stat_key}"
             if isinstance(stats[stat_key], AverageMeter):
                 wandb.log({log_key: stats[stat_key].val}, step=step)
             elif isinstance(stats[stat_key], Number):
