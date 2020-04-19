@@ -14,7 +14,8 @@ class WandBLogger:
     def __init__(self, project: Text, config: Namespace) -> None:
         wandb.init(project=project, config=config)
 
-    def _extract_stats(self, key: Text) -> Dict[Text, Any]:
+    @staticmethod
+    def _extract_stats(key: Text) -> Dict[Text, Any]:
         if key not in metrics._aggregators:
             return {}
         stats = metrics.get_smoothed_values(key)
