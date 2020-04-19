@@ -1,6 +1,5 @@
 import logging
 import os
-import typing
 from argparse import Namespace
 from collections import OrderedDict
 from enum import Enum
@@ -13,11 +12,11 @@ from fairseq.criterions import FairseqCriterion
 from fairseq.data import (
     BacktranslationDataset,
     FairseqDataset,
-    IndexedCachedDataset,
     IndexedDataset,
     IndexedRawTextDataset,
     LanguagePairDataset,
     RoundRobinZipDatasets,
+    TokenBlockDataset,
 )
 from fairseq.data.data_utils import load_indexed_dataset
 from fairseq.models import BaseFairseqModel
@@ -25,11 +24,12 @@ from fairseq.optim import FairseqOptimizer
 from fairseq.sequence_generator import SequenceGenerator
 from fairseq.tasks import FairseqTask, register_task
 from fairseq.utils import deprecation_warning
-
-from .masked_dictionary import MaskedDictionary
-from .masked_language_pair_dataset import MaskedLanguagePairDataset
-from .noisy_language_pair_dataset import NoisyLanguagePairDataset
-from .wandb_logger import WandBLogger
+from fairseq_contrib.data import (
+    MaskedDictionary,
+    MaskedLanguagePairDataset,
+    NoisyLanguagePairDataset,
+)
+from fairseq_contrib.utils.wandb_logger import WandBLogger
 
 try:
     from typing import OrderedDict as OrderedDictType
@@ -433,6 +433,8 @@ class UnsupervisedMASSTask(FairseqTask):
                 src_dataset = src_para_datasets[src_key]
                 tgt_dataset = src_para_datasets[tgt_key]
 
+                print(f"\n\nMASS lang: {src_id}")
+
                 memt_para_dataset[lang_pair] = NoisyLanguagePairDataset(
                     src_dataset,
                     src_dataset.sizes,
@@ -509,6 +511,7 @@ class UnsupervisedMASSTask(FairseqTask):
                     tgt_dict=self.dicts[tgt],
                     backtranslation_fn=self.backtranslators[lang_pair],
                     output_collater=lang_pair_dataset.collater,
+                    cuda=True,
                 )
 
                 print(
@@ -578,6 +581,7 @@ class UnsupervisedMASSTask(FairseqTask):
 
                 decoder_lang_tok_idx = self.dicts[src].eos()
                 sequence_generator = SequenceGenerator(
+                    models=[model],
                     tgt_dict=self.dicts[src],
                     beam_size=args.bt_beam_size,
                     max_len_a=args.bt_max_len_a,
@@ -706,10 +710,79 @@ class UnsupervisedMASSTask(FairseqTask):
         sample: Dict,
         prefix_tokens: Optional[torch.Tensor] = None,
     ) -> Dict:
+        tgt = sample["target"]
+        print(f"[MASSModel] target={tgt}")
         with torch.no_grad():
             return generator.generate(
                 models, sample, prefix_tokens=prefix_tokens
             )
+
+    # TODO: This is just an idea of how it could work
+    # Also note, that you should use RobinBobin dataset
+    # as it is giving the correct max_positions (w.r.t. dicts in a multilingual manner)
+    # otherwise you have to set max_positions to None to make it work.
+    # def build_dataset_for_inference(
+    #     self, src_tokens: torch.Tensor, src_lengths, **unused: Any
+    # ) -> FairseqDataset:
+    #     # print(
+    #     #     f"src_tokens={src_tokens}, src_lengths={src_lengths}, kwargs={unused}"
+    #     # )
+    #     src_dataset = InteractiveDataset(src_tokens[0], src_lengths)
+    #     source_lang = self.args.source_lang
+    #     target_lang = self.args.target_lang
+    #     source_lang_idx = self.args.lang2idx[source_lang]
+    #     target_lang_idx = self.args.lang2idx[target_lang]
+    #     return MaskedLanguagePairDataset(
+    #         source_dataset=src_dataset,
+    #         source_sizes=src_dataset.sizes,
+    #         target_dataset=None,
+    #         target_sizes=None,
+    #         source_dict=self.source_dictionary,
+    #         target_dict=None,
+    #         source_lang_id=source_lang_idx,
+    #         target_lang_id=None,
+    #         left_pad_source=False,
+    #         left_pad_target=False,
+    #         ratio=0.15,
+    #         pred_probs=torch.FloatTensor([0.8, 0.1, 0.1]),
+    #     )
+    def build_dataset_for_inference(
+        self,
+        src_tokens: List[torch.Tensor],
+        src_lengths: List[int],
+        **unused: Any,
+    ) -> FairseqDataset:
+        src_dataset = TokenBlockDataset(
+            src_tokens,
+            src_lengths,
+            block_size=None,  # ignored for "eos" break mode
+            pad=self.source_dictionary.pad(),
+            eos=self.source_dictionary.eos(),
+            break_mode="eos",
+        )
+
+        masked_dataset = MaskedLanguagePairDataset(
+            source_dataset=src_dataset,
+            source_sizes=src_dataset.sizes,
+            target_dataset=None,
+            target_sizes=None,
+            source_dict=self.source_dictionary,
+            target_dict=None,
+            source_lang_id=self.lang2idx[self.args.source_lang],
+            target_lang_id=None,
+            left_pad_source=self.args.left_pad_source,
+            left_pad_target=self.args.left_pad_target,
+            ratio=self.args.mask_s2s_prob,
+            pred_probs=self.args.pred_probs,
+        )
+
+        lang_pair_dataset = LanguagePairDataset(
+            src_dataset, src_dataset.sizes, self.source_dictionary
+        )
+
+        datasets = OrderedDict([("mass: inference", masked_dataset)])
+
+        return RoundRobinZipDatasets(datasets, eval_key="mass: inference")
 
     def reduce_metrics(
         self,
@@ -774,5 +847,3 @@ class UnsupervisedMASSTask(FairseqTask):
         num_updates = metrics.get_meter(name="default", key="num_updates").val
         self.logger.log(key="train", step=num_updates)
         self.logger.log(key="valid", step=num_updates)
-
-
