@@ -1,5 +1,5 @@
 import logging
-from argparse import Namespace
+from argparse import ArgumentParser, Namespace
 from typing import Dict, List, Text, Union
 
 import torch
@@ -23,7 +23,17 @@ class MaskedLMTaskWrapper(MaskedLMTask):
     def __init__(self, args: Namespace, dictionary: Dictionary) -> None:
         super().__init__(args, dictionary)
 
-        self.logger = WandBLogger(project="codestanding", config=args)
+        self.logger = WandBLogger(
+            project=args.wandb_project,
+            exp_id=args.wandb_id,
+            exp_name=args.wandb_name,
+            config=args,
+        )
+
+    @staticmethod
+    def add_args(parser: ArgumentParser) -> None:
+        MaskedLMTask.add_args(parser)
+        WandBLogger.add_args(parser)
 
     def build_model(self, args) -> FairseqModel:
         model = build_model(args, self)
