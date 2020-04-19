@@ -10,7 +10,7 @@ from fairseq.models import FairseqEncoder
 from fairseq.modules import LayerNorm, LearnedPositionalEmbedding
 from fairseq.modules.transformer_sentence_encoder import init_bert_params
 
-from .masked_dictionary import MaskedDictionary
+from fairseq_contrib.data import MaskedDictionary
 from .transformer_decoder import DecoderOutput
 from .transformer_encoder_layer import TransformerEncoderLayer
 
@@ -85,6 +85,10 @@ class TransformerEncoder(FairseqEncoder):
         src_lengths: torch.Tensor,
         **kwargs: typing.Any,
     ) -> Dict[str, torch.Tensor]:
+        pos_tokens = None  # src_tokens[:, kwargs["positions"]]
+        print(f"[Encoder2] tokens={src_tokens}")
+        # languages = kwargs["languages"]
+        # print(f"[EnCODER] lan={languages}")
         # shape: [Batch, Time]
         encoder_padding_mask = src_tokens == self.pad_index
         if not encoder_padding_mask.any():
@@ -99,6 +103,10 @@ class TransformerEncoder(FairseqEncoder):
             positions = positions.to(src_tokens.device)
             # shape: [Batch=1, Time, Channel]
             positions = self.embedding_positions(None, positions=positions)
+
+        # kwargs["languages"] = (
+        #     torch.LongTensor([0]).expand_as(src_tokens).to(src_tokens.device)
+        # )
 
         if "languages" in kwargs:
             # shape: [Batch, Time, Channel]
