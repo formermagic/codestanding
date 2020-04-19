@@ -91,7 +91,12 @@ class UnsupervisedMASSTask(FairseqTask):
         else:
             self.lang_pairs = [f"{args.source_lang}-{args.target_lang}"]
 
-        self.logger = WandBLogger(project="codestanding", config=args)
+        self.logger = WandBLogger(
+            project=args.wandb_project,
+            exp_id=args.wandb_id,
+            exp_name=args.wandb_name,
+            config=args,
+        )
 
     @staticmethod
     def add_args(parser):
@@ -152,6 +157,9 @@ class UnsupervisedMASSTask(FairseqTask):
         parser.add_argument("--bt-beam-size", default=1, type=int, metavar="N",
                             help="beam size used in beam search of online back-translation")
         # fmt: on
+
+        # add args for WandB logger setup
+        WandBLogger.add_args(parser)
 
     @classmethod
     def setup_task(
