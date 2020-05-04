@@ -28,7 +28,7 @@ class PolynomialDecayScheduler(_LRScheduler):
         else:
             self.warmup_factor = 1
 
-        self._optimizer.set_lr(self.warmup_factor * self.learning_rate)
+        self._update_learning_rate(self.warmup_factor * self.learning_rate)
         super().__init__(optimizer, last_epoch)
 
     def get_lr(self) -> float:
@@ -56,4 +56,8 @@ class PolynomialDecayScheduler(_LRScheduler):
             lr = self.end_learning_rate
 
         self.learning_rate = lr
-        self._optimizer.set_lr(lr)
+        self._update_learning_rate(lr)
+
+    def _update_learning_rate(self, lr: float) -> None:
+        for param_group in self._optimizer.param_groups:
+            param_group["lr"] = lr
