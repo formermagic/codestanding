@@ -143,14 +143,14 @@ class CodeBertLMPretraining(pl.LightningModule):
         setattr(self.hparams, "num_train_epochs", 1000)
         setattr(self.hparams, "warmup_steps", 5000)
 
-        t_total = (
-            (
-                len(data_loader.dataset)
-                // (train_batch_size * max(1, self.hparams.n_gpu))
+        def training_steps(dataset_len: int, batch_size: int) -> int:
+            per_gpu_samples = (
+                dataset_len // batch_size * max(1, self.hparams.n_gpu)
             )
-            // self.hparams.gradient_accumulation_steps
-            * float(self.hparams.num_train_epochs)
-        )
+            per_gpu_samples //= self.hparams.gradient_accumulation_steps
+            return per_gpu_samples * self.hparams.num_train_epochs
+
+        t_total = training_steps(len(data_loader.dataset), train_batch_size)
 
         scheduler = get_linear_schedule_with_warmup(
             self.optimizer,
