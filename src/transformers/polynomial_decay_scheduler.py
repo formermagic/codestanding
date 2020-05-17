@@ -3,8 +3,9 @@ from typing import Optional
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import _LRScheduler
 
-
+# pylint: disable=too-many-instance-attributes
 class PolynomialDecayScheduler(_LRScheduler):
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         optimizer: Optimizer,
