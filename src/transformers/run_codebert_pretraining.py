@@ -37,13 +37,11 @@ class CodeBertLMPretraining(pl.LightningModule):
     def load_model(self) -> RobertaForMaskedLM:
         config = RobertaConfig(
             vocab_size=self.tokenizer.vocab_size,
-            embedding_size=256,
-            hidden_size=3072,
-            num_hidden_layers=2,  # transformer_layers ?
-            num_hidden_groups=1,  # WTF???
-            num_attention_heads=24,
-            intermediate_size=4096,
-            inner_group_num=1,  # WTF???
+            hidden_size=768,
+            num_hidden_layers=2,
+            num_attention_heads=12,
+            intermediate_size=3072,
+            hidden_act="gelu",
             max_position_embeddings=512 + 2,
             pad_token_id=self.tokenizer.pad_token_id,
             bos_token_id=self.tokenizer.bos_token_id,
