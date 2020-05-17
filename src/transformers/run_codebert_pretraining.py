@@ -1,4 +1,4 @@
-from argparse import Namespace
+from argparse import ArgumentParser, Namespace
 from typing import Any, Dict, List, Optional, Text, Tuple, cast
 
 import pytorch_lightning as pl
@@ -159,3 +159,12 @@ class CodeBertLMPretraining(pl.LightningModule):
         )
         self.lr_scheduler = scheduler
         return data_loader
+
+    @staticmethod
+    def add_model_specific_args(
+        parent_parser: ArgumentParser,
+    ) -> ArgumentParser:
+        parser = ArgumentParser(parents=[parent_parser], add_help=False)
+        # parser.add_argument("--encoder_layers", type=int, default=12)
+        # parser.add_argument("--data_path", type=str, default="/some/path")
+        return parser
