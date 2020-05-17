@@ -1,12 +1,11 @@
+import logging
 from typing import List, Optional, Text
 
 from tokenizers import AddedToken, ByteLevelBPETokenizer
-
 from transformers.tokenization_roberta import RobertaProcessing
-from transformers.tokenization_utils import (
-    PreTrainedTokenizer,
-    PreTrainedTokenizerFast,
-)
+from transformers.tokenization_utils import PreTrainedTokenizerFast
+
+logger = logging.getLogger(__name__)
 
 
 VOCAB_FILES_NAMES = {
@@ -21,13 +20,14 @@ PRETRAINED_VOCAB_FILES_MAP = {
 
 PRETRAINED_POSITIONAL_EMBEDDINGS_SIZES = {}
 
-
+# pylint: disable=abstract-method
 class CodeBertTokenizerFast(PreTrainedTokenizerFast):
 
     vocab_files_names = VOCAB_FILES_NAMES
     pretrained_vocab_files_map = PRETRAINED_VOCAB_FILES_MAP
     max_model_input_sizes = PRETRAINED_POSITIONAL_EMBEDDINGS_SIZES
 
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         vocab_file: Text,
@@ -63,13 +63,14 @@ class CodeBertTokenizerFast(PreTrainedTokenizerFast):
             **kwargs
         )
 
-        backend_tokenizer = byte_tokenizer._tokenizer
-        backend_tokenizer.post_processor = RobertaProcessing(
+        self.backend_tokenizer._tokenizer.post_processor = RobertaProcessing(
             sep=(sep_token, self.sep_token_id),
             cls=(cls_token, self.cls_token_id),
             trim_offsets=trim_offsets,
             add_prefix_space=add_prefix_space,
         )
+
+        self.backend_tokenizer.add_special_tokens([kwargs["mask_token"]])
 
     def get_special_tokens_mask(
         self,
@@ -83,26 +84,28 @@ class CodeBertTokenizerFast(PreTrainedTokenizerFast):
                     "You should not supply a second sequence if the provided sequence of "
                     "ids is already formated with special tokens for the model."
                 )
-            return list(
-                map(
-                    lambda x: 1
-                    if x in [self.sep_token_id, self.cls_token_id]
-                    else 0,
-                    token_ids_0,
-                )
-            )
 
+            def decode_idx(value: int) -> int:
+                if value in [self.sep_token_id, self.cls_token_id]:
+                    return 1
+                return 0
+
+            return [decode_idx(idx) for idx in token_ids_0]
+
+        first_seq = [1] + ([0] * len(token_ids_0)) + [1]
         if token_ids_1 is None:
-            return [1] + ([0] * len(token_ids_0)) + [1]
-        return (
-            [1]
-            + ([0] * len(token_ids_0))
-            + [1, 1]
-            + ([0] * len(token_ids_1))
-            + [1]
-        )
+            return first_seq
 
-    @PreTrainedTokenizer.mask_token.setter
+        second_seq = [1] + ([0] * len(token_ids_1)) + [1]
+        return first_seq + second_seq
+
+    @property
+    def mask_token(self):
+        if self._mask_token is None:
+            logger.error("Using mask_token, but it is not set yet.")
+        return self._mask_token
+
+    @mask_token.setter
     def mask_token(self, value):
         if not isinstance(value, AddedToken):
             value = AddedToken(value, lstrip=True)
