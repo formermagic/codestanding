@@ -73,6 +73,7 @@ class CodeBertLMPretraining(pl.LightningModule):
         tensorboard_logs = {"train_loss": loss}
         return {"loss": loss, "log": tensorboard_logs}
 
+    # pylint: disable=too-many-arguments
     def optimizer_step(
         self,
         epoch: int,
@@ -80,7 +81,7 @@ class CodeBertLMPretraining(pl.LightningModule):
         optimizer: torch.optim.Optimizer,
         optimizer_idx: int,
         second_order_closure=None,
-    ):
+    ) -> None:
         optimizer.step()
         optimizer.zero_grad()
         self.lr_scheduler.step()
