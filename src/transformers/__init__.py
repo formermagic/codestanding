@@ -1,4 +1,4 @@
 from .dataset_codebert import CodeBertDataset
 from .optimization import get_polynomial_decay_with_warmup
-from .run_codebert_pretraining import CodeBertLMPretraining
+from .run_codebert_pretraining import CodeBertLMPretraining, ValidSaveCallback
 from .tokenization_codebert import CodeBertTokenizerFast
