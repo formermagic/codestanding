@@ -21,7 +21,6 @@ class CodeBertDataset(Dataset):
     def __init__(
         self, tokenizer: CodeBertTokenizerFast, data_path: Text, max_length: int
     ) -> None:
-        tokenizer._tokenizer.enable_truncation(max_length)
         self.tokenizer = tokenizer
         self.data_path = data_path
         self.max_length = max_length
