@@ -59,6 +59,8 @@ class CodeBertTokenizerFast(RobertaTokenizerFast):
             **kwargs,
         )
 
+        assert self.pad_token_id == 1, "Make sure `pad_token_id==1`"
+
         self.backend_tokenizer._tokenizer.post_processor = RobertaProcessing(
             sep=(sep_token, self.sep_token_id),
             cls=(cls_token, self.cls_token_id),
