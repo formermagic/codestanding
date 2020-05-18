@@ -91,14 +91,10 @@ class CodeBertLMPretraining(pl.LightningModule):
         optimizer.zero_grad()
         self.lr_scheduler.step()
 
-    def get_tqdm_dict(self) -> Dict[Text, Any]:
-        avg_loss = getattr(self.trainer, "avg_loss", 0.0)
-
-        tqdm_dict = {
-            "loss": "{:.3f}".format(avg_loss),
-            "lr": self.lr_scheduler.get_lr(),
-        }
-        return tqdm_dict
+    def get_progress_bar_dict(self) -> Dict[Text, Union[int, str]]:
+        progress_bar_dict = super().get_progress_bar_dict()
+        progress_bar_dict["lr"] = "{:.8f}".format(self.lr_scheduler.get_lr()[-1])  # type: ignore
+        return progress_bar_dict
 
     def configure_optimizers(self) -> List[Optimizer]:
         model = self.model
