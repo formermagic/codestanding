@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Text
+from typing import List, Optional, Text, Union
 
 from tokenizers import AddedToken, ByteLevelBPETokenizer
 from transformers.tokenization_roberta import RobertaProcessing
@@ -100,20 +100,23 @@ class CodeBertTokenizerFast(PreTrainedTokenizerFast):
         return first_seq + second_seq
 
     @property
-    def mask_token(self):
+    def mask_token(self) -> Text:
+        # pylint: disable=arguments-differ
         if self._mask_token is None:
             logger.error("Using mask_token, but it is not set yet.")
         return self._mask_token
 
     @mask_token.setter
-    def mask_token(self, value):
+    def mask_token(self, value: Union[Text, AddedToken]) -> None:
         if not isinstance(value, AddedToken):
             value = AddedToken(value, lstrip=True)
 
         self._mask_token = str(value)
         self._maybe_update_backend([value])
 
-    def build_inputs_with_special_tokens(self, token_ids_0, token_ids_1=None):
+    def build_inputs_with_special_tokens(
+        self, token_ids_0: List[int], token_ids_1: Optional[List[int]] = None
+    ) -> List[int]:
         output = [self.bos_token_id] + token_ids_0 + [self.eos_token_id]
         if token_ids_1 is None:
             return output
