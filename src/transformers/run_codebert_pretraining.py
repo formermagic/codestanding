@@ -171,7 +171,7 @@ class CodeBertLMPretraining(pl.LightningModule):
                 self.optimizer,
                 num_warmup_steps=self.hparams.warmup_steps,
                 num_training_steps=t_total,
-                power=0.95,
+                power=self.hparams.power,
             )
             self.lr_scheduler = scheduler
 
@@ -189,6 +189,8 @@ class CodeBertLMPretraining(pl.LightningModule):
                             help="A number of warmup steps to make.")
         parser.add_argument("--weight_decay", type=float, default=None,
                             help="A weight_decay value for optimizer.")
+        parser.add_argument("--power", type=float, default=1.0,
+                            help="A power of learning rate decay.")
         parser.add_argument("--train_data_path", type=str, default=None,
                             help="A path to the training data file.")
         parser.add_argument("--local_rank", type=int, default=-1,
