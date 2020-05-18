@@ -54,7 +54,7 @@ class CodeBertLMPretraining(pl.LightningModule):
             self.hparams.tokenizer_path
         )
         tokenizer = cast(CodeBertTokenizerFast, tokenizer)
-        # tokenizer.backend_tokenizer.add_special_tokens(["<nl>"])
+        tokenizer.backend_tokenizer.add_special_tokens(["<nl>"])
         return tokenizer
 
     # pylint: disable=arguments-differ
