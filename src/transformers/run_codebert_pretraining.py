@@ -1,11 +1,11 @@
 from argparse import ArgumentParser, Namespace
-from typing import Any, Dict, List, Optional, Text, Tuple, cast
+from typing import Any, Callable, Dict, List, Optional, Text, Tuple, Union, cast
 
 import pytorch_lightning as pl
 import torch
 from torch.optim import Optimizer
-from torch.optim.lr_scheduler import _LRScheduler
-from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import LambdaLR
+from torch.utils.data import DataLoader, RandomSampler
 from transformers import (
     AdamW,
     RobertaConfig,
@@ -21,7 +21,7 @@ from .tokenization_codebert import CodeBertTokenizerFast
 class CodeBertLMPretraining(pl.LightningModule):
     tokenizer: CodeBertTokenizerFast
     optimizer: Optional[Optimizer]
-    lr_scheduler: Optional[_LRScheduler]
+    lr_scheduler: Optional[LambdaLR]
 
     def __init__(self, hparams: Namespace) -> None:
         super().__init__()
@@ -61,10 +61,10 @@ class CodeBertLMPretraining(pl.LightningModule):
         self,
         input_ids: torch.LongTensor,
         masked_lm_labels: torch.LongTensor,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> Tuple[torch.FloatTensor, torch.FloatTensor]:
         self.model.train()
-        outputs = self.model(
+        outputs = self.model.forward(
             input_ids=input_ids, masked_lm_labels=masked_lm_labels
         )
         loss, prediction_scores = outputs[:2]
@@ -83,9 +83,9 @@ class CodeBertLMPretraining(pl.LightningModule):
         self,
         epoch: int,
         batch_idx: int,
-        optimizer: torch.optim.Optimizer,
+        optimizer: Optimizer,
         optimizer_idx: int,
-        second_order_closure=None,
+        second_order_closure: Optional[Callable] = None,
     ) -> None:
         optimizer.step()
         optimizer.zero_grad()
