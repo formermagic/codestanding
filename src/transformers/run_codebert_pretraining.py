@@ -26,10 +26,7 @@ class CodeBertLMPretraining(pl.LightningModule):
     def __init__(self, hparams: Namespace) -> None:
         super().__init__()
         self.hparams = hparams
-        self.tokenizer = cast(
-            CodeBertTokenizerFast,
-            CodeBertTokenizerFast.from_pretrained(hparams.save_dir),
-        )
+        self.tokenizer = self.load_tokenizer()
         self.model = self.load_model()
         self.optimizer = None
         self.lr_scheduler = None
@@ -50,6 +47,14 @@ class CodeBertLMPretraining(pl.LightningModule):
         model = RobertaForMaskedLM(config)
         model.resize_token_embeddings(len(self.tokenizer))
         return model
+
+    def load_tokenizer(self) -> CodeBertTokenizerFast:
+        tokenizer = CodeBertTokenizerFast.from_pretrained(
+            self.hparams.tokenizer_path
+        )
+        tokenizer = cast(CodeBertTokenizerFast, tokenizer)
+        # tokenizer.backend_tokenizer.add_special_tokens(["<nl>"])
+        return tokenizer
 
     # pylint: disable=arguments-differ
     def forward(
