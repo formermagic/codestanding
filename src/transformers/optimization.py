@@ -6,7 +6,7 @@ def get_polynomial_decay_with_warmup(
     optimizer: Optimizer,
     num_warmup_steps: int,
     num_training_steps: int,
-    power: float = 0.5,
+    power: float = 1.0,
     last_epoch: int = -1,
 ) -> LambdaLR:
     def lr_lambda(current_step: int) -> float:
