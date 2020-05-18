@@ -165,6 +165,18 @@ class CodeBertLMPretraining(pl.LightningModule):
         parent_parser: ArgumentParser,
     ) -> ArgumentParser:
         parser = ArgumentParser(parents=[parent_parser], add_help=False)
-        # parser.add_argument("--encoder_layers", type=int, default=12)
-        # parser.add_argument("--data_path", type=str, default="/some/path")
+        # fmt: off
+        parser.add_argument("--tokenizer_path", type=str, default=None,
+                            help="A path to pretrained tokenizer saved files.")
+        parser.add_argument("--warmup_steps", type=int, default=None,
+                            help="A number of warmup steps to make.")
+        parser.add_argument("--weight_decay", type=float, default=None,
+                            help="A weight_decay value for optimizer.")
+        parser.add_argument("--train_data_path", type=str, default=None,
+                            help="A path to the training data file.")
+        parser.add_argument("--local_rank", type=int, default=-1,
+                            help="local_rank for distributed training on gpus")
+        parser.add_argument("--train_batch_size", type=int, default=1,
+                            help="Batch size value for training setup.")
+        # fmt: on
         return parser
