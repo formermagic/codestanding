@@ -200,6 +200,24 @@ class CodeBertLMPretraining(pl.LightningModule):
 
         return data_loader
 
+    def val_dataloader(self) -> DataLoader:
+        dataset = CodeBertDataset(
+            tokenizer=self.tokenizer,
+            data_path=self.hparams.val_data_path,
+            max_length=512,
+        )
+
+        collator = DataCollatorForLanguageModeling(self.tokenizer)
+        data_loader = DataLoader(
+            dataset,
+            batch_size=self.hparams.train_batch_size,
+            num_workers=0,
+            shuffle=False,
+            collate_fn=collator.collate_batch,
+        )
+
+        return data_loader
+
     @staticmethod
     def add_model_specific_args(
         parent_parser: ArgumentParser,
@@ -216,6 +234,8 @@ class CodeBertLMPretraining(pl.LightningModule):
                             help="A power of learning rate decay.")
         parser.add_argument("--train_data_path", type=str, default=None,
                             help="A path to the training data file.")
+        parser.add_argument("--val_data_path", type=str, default=None,
+                            help="A path to the validation data file.")
         parser.add_argument("--local_rank", type=int, default=-1,
                             help="local_rank for distributed training on gpus")
         parser.add_argument("--train_batch_size", type=int, default=1,
