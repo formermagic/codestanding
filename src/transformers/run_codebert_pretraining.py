@@ -1,8 +1,10 @@
+import os
 from argparse import ArgumentParser, Namespace
 from typing import Any, Callable, Dict, List, Optional, Text, Tuple, Union, cast
 
 import pytorch_lightning as pl
 import torch
+from pytorch_lightning.callbacks import Callback, ModelCheckpoint
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader, RandomSampler
@@ -13,6 +15,27 @@ from .dataset_codebert import CodeBertDataset
 from .optimization import get_polynomial_decay_with_warmup
 from .tokenization_codebert import CodeBertTokenizerFast
 from .utils import get_perplexity
+
+
+class ValidSaveCallback(Callback):
+    def __init__(self, filepath: Text) -> None:
+        self.filepath = filepath
+
+    def on_validation_end(
+        self, trainer: pl.Trainer, pl_module: pl.LightningModule
+    ) -> None:
+        save_filepath = os.path.join(self.filepath, "{epoch}-{step}")
+        model_checkpoint = ModelCheckpoint(save_filepath)
+        save_filepath = model_checkpoint.format_checkpoint_name(
+            epoch=trainer.current_epoch,
+            metrics=dict(
+                **trainer.callback_metrics, step=trainer.global_step + 1
+            ),
+        )
+
+        model_checkpoint.save_function = trainer.save_checkpoint
+        # pylint: disable=protected-access
+        model_checkpoint._save_model(save_filepath)
 
 
 class CodeBertLMPretraining(pl.LightningModule):
