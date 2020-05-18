@@ -114,6 +114,25 @@ class CodeBertLMPretraining(pl.LightningModule):
             "log": tensorboard_logs,
         }
 
+    # pylint: disable=arguments-differ, unused-argument
+    def validation_step(
+        self, batch: Dict[Text, torch.Tensor], batch_idx: int
+    ) -> Dict[Text, torch.Tensor]:
+        # prepare loss and ppl
+        loss, _ = self.forward(**batch)
+        perplexity = get_perplexity(loss)
+
+        tensorboard_logs = {
+            "val_loss": loss,
+            "val_ppl": perplexity,
+        }
+
+        return {
+            "loss": loss,
+            "ppl": perplexity,
+            "log": tensorboard_logs,
+        }
+
     # pylint: disable=too-many-arguments
     def optimizer_step(
         self,
