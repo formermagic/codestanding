@@ -174,7 +174,12 @@ class CodeBertLMPretraining(pl.LightningModule):
             },
         ]
 
-        optimizer = AdamW(optimizer_grouped_parameters, lr=self.hparams.lr)
+        optimizer = AdamW(
+            optimizer_grouped_parameters,
+            betas=(0.9, 0.98),
+            eps=1e-6,
+            lr=self.hparams.lr,
+        )
         self.optimizer = optimizer
         return [optimizer]
 
