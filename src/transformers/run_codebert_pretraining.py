@@ -16,6 +16,7 @@ from transformers.data.data_collator import DataCollatorForLanguageModeling
 
 from .dataset_codebert import CodeBertDataset
 from .tokenization_codebert import CodeBertTokenizerFast
+from .optimization import get_polynomial_decay_with_warmup
 
 
 class CodeBertLMPretraining(pl.LightningModule):
@@ -118,7 +119,7 @@ class CodeBertLMPretraining(pl.LightningModule):
             },
         ]
 
-        optimizer = AdamW(optimizer_grouped_parameters, lr=1e-4,)
+        optimizer = AdamW(optimizer_grouped_parameters, lr=1e-4)
         self.optimizer = optimizer
         return [optimizer]
 
@@ -153,12 +154,15 @@ class CodeBertLMPretraining(pl.LightningModule):
             trainer = cast(pl.Trainer, self.trainer)
             t_total = trainer.max_steps
 
-        scheduler = get_linear_schedule_with_warmup(
-            self.optimizer,
-            num_warmup_steps=self.hparams.warmup_steps,
-            num_training_steps=t_total,
-        )
-        self.lr_scheduler = scheduler
+        if self.optimizer is not None:
+            scheduler = get_polynomial_decay_with_warmup(
+                self.optimizer,
+                num_warmup_steps=self.hparams.warmup_steps,
+                num_training_steps=t_total,
+                power=0.95,
+            )
+            self.lr_scheduler = scheduler
+
         return data_loader
 
     @staticmethod
