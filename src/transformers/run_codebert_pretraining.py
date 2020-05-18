@@ -124,15 +124,22 @@ class CodeBertLMPretraining(pl.LightningModule):
         # prepare loss and ppl
         loss, _ = self.forward(**batch)
         perplexity = get_perplexity(loss)
+        return {"loss": loss, "ppl": perplexity}
 
+    def validation_epoch_end(
+        self, outputs: List[Dict[Text, torch.Tensor]]
+    ) -> Dict[Text, torch.Tensor]:
+        # prepare average loss and ppl
+        avg_loss = torch.stack([x["loss"] for x in outputs]).mean()
+        avg_perplexity = torch.stack([x["ppl"] for x in outputs]).mean()
         tensorboard_logs = {
-            "val_loss": loss,
-            "val_ppl": perplexity,
+            "val_loss": avg_loss,
+            "val_ppl": avg_perplexity,
         }
 
         return {
-            "loss": loss,
-            "ppl": perplexity,
+            "val_loss": avg_loss,
+            "val_ppl": avg_perplexity,
             "log": tensorboard_logs,
         }
 
