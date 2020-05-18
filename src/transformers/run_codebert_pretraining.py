@@ -125,33 +125,33 @@ class CodeBertLMPretraining(pl.LightningModule):
     def train_dataloader(self) -> DataLoader:
         dataset = CodeBertDataset(
             tokenizer=self.tokenizer,
-            data_path=self.hparams.dataset_path,
+            data_path=self.hparams.train_data_path,
             max_length=512,
         )
-        collator = DataCollatorForLanguageModeling(self.tokenizer)
 
-        train_batch_size = 5
+        sampler = RandomSampler(dataset)
+        collator = DataCollatorForLanguageModeling(self.tokenizer)
         data_loader = DataLoader(
             dataset,
-            batch_size=train_batch_size,
+            batch_size=self.hparams.train_batch_size,
             num_workers=0,
-            shuffle=True,
+            sampler=sampler,
             collate_fn=collator.collate_batch,
         )
 
-        setattr(self.hparams, "n_gpu", 1)
-        setattr(self.hparams, "gradient_accumulation_steps", 32)
-        setattr(self.hparams, "num_train_epochs", 1000)
-        setattr(self.hparams, "warmup_steps", 5000)
-
-        def training_steps(dataset_len: int, batch_size: int) -> int:
-            per_gpu_samples = (
-                dataset_len // batch_size * max(1, self.hparams.n_gpu)
+        def training_steps(dataset_len: int) -> int:
+            batch_size = self.hparams.train_batch_size
+            per_gpu_samples = dataset_len // (
+                batch_size * max(1, self.hparams.gpus)
             )
-            per_gpu_samples //= self.hparams.gradient_accumulation_steps
-            return per_gpu_samples * self.hparams.num_train_epochs
+            per_gpu_samples //= self.hparams.accumulate_grad_batches
+            return per_gpu_samples * self.hparams.max_epochs
 
-        t_total = training_steps(len(data_loader.dataset), train_batch_size)
+        if getattr(self.trainer, "max_steps") is None:
+            t_total = training_steps(len(data_loader.dataset))
+        else:
+            trainer = cast(pl.Trainer, self.trainer)
+            t_total = trainer.max_steps
 
         scheduler = get_linear_schedule_with_warmup(
             self.optimizer,
