@@ -106,7 +106,7 @@ class CodeBertLMPretraining(pl.LightningModule):
 
     def get_progress_bar_dict(self) -> Dict[Text, Union[int, str]]:
         progress_bar_dict = super().get_progress_bar_dict()
-        progress_bar_dict["lr"] = "{}".format(self.lr_scheduler.get_lr()[-1])  # type: ignore
+        progress_bar_dict["lr"] = "{}".format(self.lr_scheduler.get_last_lr()[-1])  # type: ignore
         return progress_bar_dict
 
     def configure_optimizers(self) -> List[Optimizer]:
