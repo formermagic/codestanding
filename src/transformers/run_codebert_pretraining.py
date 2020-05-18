@@ -189,7 +189,7 @@ class CodeBertLMPretraining(pl.LightningModule):
         collator = DataCollatorForLanguageModeling(self.tokenizer)
         data_loader = DataLoader(
             dataset,
-            batch_size=self.hparams.train_batch_size,
+            batch_size=self.hparams.batch_size,
             num_workers=0,
             sampler=sampler,
             collate_fn=collator.collate_batch,
@@ -200,7 +200,7 @@ class CodeBertLMPretraining(pl.LightningModule):
             if isinstance(num_gpus, list):
                 num_gpus = list(num_gpus)
 
-            batch_size = self.hparams.train_batch_size
+            batch_size = self.hparams.batch_size
             per_gpu_samples = dataset_len // (batch_size * max(1, num_gpus))
             per_gpu_samples //= self.trainer.accumulate_grad_batches
             return per_gpu_samples * self.trainer.max_epochs
@@ -231,7 +231,7 @@ class CodeBertLMPretraining(pl.LightningModule):
         collator = DataCollatorForLanguageModeling(self.tokenizer)
         data_loader = DataLoader(
             dataset,
-            batch_size=self.hparams.train_batch_size,
+            batch_size=self.hparams.batch_size,
             num_workers=0,
             shuffle=False,
             collate_fn=collator.collate_batch,
@@ -259,7 +259,7 @@ class CodeBertLMPretraining(pl.LightningModule):
                             help="A path to the validation data file.")
         parser.add_argument("--local_rank", type=int, default=-1,
                             help="local_rank for distributed training on gpus")
-        parser.add_argument("--train_batch_size", type=int, default=1,
+        parser.add_argument("--batch_size", type=int, default=1,
                             help="Batch size value for training setup.")
         parser.add_argument("--lr", type=float, default=0.001,
                             help="Train learning rate for optimizer.")
