@@ -1,9 +1,9 @@
 import logging
 from typing import List, Optional, Text, Union
 
-from tokenizers import AddedToken, ByteLevelBPETokenizer
+from tokenizers import AddedToken
+from transformers import RobertaTokenizerFast
 from transformers.tokenization_roberta import RobertaProcessing
-from transformers.tokenization_utils import PreTrainedTokenizerFast
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ PRETRAINED_VOCAB_FILES_MAP = {
 PRETRAINED_POSITIONAL_EMBEDDINGS_SIZES = {}
 
 # pylint: disable=abstract-method
-class CodeBertTokenizerFast(PreTrainedTokenizerFast):
+class CodeBertTokenizerFast(RobertaTokenizerFast):
 
     vocab_files_names = VOCAB_FILES_NAMES
     pretrained_vocab_files_map = PRETRAINED_VOCAB_FILES_MAP
@@ -48,19 +48,15 @@ class CodeBertTokenizerFast(PreTrainedTokenizerFast):
         kwargs.setdefault("cls_token", cls_token)
         kwargs.setdefault("mask_token", mask_token)
 
-        byte_tokenizer = ByteLevelBPETokenizer(
+        super().__init__(
             vocab_file=vocab_file,
             merges_file=merges_file,
-            add_prefix_space=add_prefix_space,
-            lowercase=True,
-        )
-
-        super().__init__(
-            byte_tokenizer,
+            unk_token=unk_token,
             bos_token=bos_token,
             eos_token=eos_token,
-            unk_token=unk_token,
-            **kwargs
+            add_prefix_space=add_prefix_space,
+            trim_offsets=trim_offsets,
+            **kwargs,
         )
 
         self.backend_tokenizer._tokenizer.post_processor = RobertaProcessing(
