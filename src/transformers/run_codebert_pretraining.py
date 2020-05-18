@@ -107,25 +107,18 @@ class CodeBertLMPretraining(pl.LightningModule):
     def training_step(
         self, batch: Dict[Text, torch.Tensor], batch_idx: int
     ) -> Dict[Text, torch.Tensor]:
-        # prepare loss and ppl
+        # prepare logging meter values
         loss, _ = self.forward(**batch)
         perplexity = get_perplexity(loss)
-        # prepare lr
-        learning_rate = self.lr_scheduler.get_last_lr()[-1]  # type: ignore
-        learning_rate = torch.FloatTensor([learning_rate])  # type: ignore
-
+        learning_rate = self.lr_scheduler.get_last_lr()  # type: ignore
+        learning_rate = torch.FloatTensor(learning_rate).mean()  # type: ignore
         tensorboard_logs = {
             "train_loss": loss,
             "train_ppl": perplexity,
             "train_lr": learning_rate,
         }
 
-        return {
-            "loss": loss,
-            "ppl": perplexity,
-            "lr": learning_rate,
-            "log": tensorboard_logs,
-        }
+        return {**tensorboard_logs, "log": tensorboard_logs}
 
     # pylint: disable=arguments-differ, unused-argument
     def validation_step(
@@ -147,11 +140,7 @@ class CodeBertLMPretraining(pl.LightningModule):
             "val_ppl": avg_perplexity,
         }
 
-        return {
-            "val_loss": avg_loss,
-            "val_ppl": avg_perplexity,
-            "log": tensorboard_logs,
-        }
+        return {**tensorboard_logs, "log": tensorboard_logs}
 
     # pylint: disable=too-many-arguments
     def optimizer_step(
