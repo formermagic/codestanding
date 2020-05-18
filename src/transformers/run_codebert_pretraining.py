@@ -61,6 +61,8 @@ class CodeBertLMPretraining(pl.LightningModule):
             intermediate_size=3072,
             hidden_act="gelu",
             max_position_embeddings=512 + 2,
+            hidden_dropout_prob=0.1,
+            attention_probs_dropout_prob=0.1,
             pad_token_id=self.tokenizer.pad_token_id,
             bos_token_id=self.tokenizer.bos_token_id,
             eos_token_id=self.tokenizer.eos_token_id,
