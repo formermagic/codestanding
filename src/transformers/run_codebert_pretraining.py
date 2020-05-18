@@ -42,6 +42,7 @@ class CodeBertLMPretraining(pl.LightningModule):
     tokenizer: CodeBertTokenizerFast
     optimizer: Optional[Optimizer]
     lr_scheduler: Optional[LambdaLR]
+    trainer: Optional[pl.Trainer]
 
     def __init__(self, hparams: Namespace) -> None:
         super().__init__()
