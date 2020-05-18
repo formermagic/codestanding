@@ -1,5 +1,6 @@
 import os
 from argparse import ArgumentParser, Namespace
+from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Text, Tuple, Union, cast
 
 import pytorch_lightning as pl
@@ -21,6 +22,12 @@ class ValidSaveCallback(Callback):
     def __init__(self, filepath: Text) -> None:
         self.filepath = filepath
 
+    @staticmethod
+    def _keep_last_files(num: int, dirname: Text) -> None:
+        paths = sorted(Path(dirname).iterdir(), key=os.path.getmtime)
+        for path in paths[:-num]:
+            os.remove(path)
+
     def on_validation_end(
         self, trainer: pl.Trainer, pl_module: pl.LightningModule
     ) -> None:
@@ -36,6 +43,9 @@ class ValidSaveCallback(Callback):
         model_checkpoint.save_function = trainer.save_checkpoint
         # pylint: disable=protected-access
         model_checkpoint._save_model(save_filepath)
+
+        # keep last 3 files
+        self._keep_last_files(num=3, dirname=self.filepath)
 
 
 class CodeBertLMPretraining(pl.LightningModule):
