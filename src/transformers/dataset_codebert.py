@@ -1,7 +1,6 @@
 import linecache
 import os
-import subprocess
-from typing import Text
+from typing import IO, Iterable, Text
 
 import torch
 from torch.utils.data import Dataset
@@ -12,9 +11,21 @@ from .tokenization_codebert import CodeBertTokenizerFast
 def lines_in_file(filepath: Text) -> int:
     if not os.path.exists(filepath):
         raise FileNotFoundError(filepath)
-    output = subprocess.check_output(f"wc -l < {filepath}", shell=True)
-    n_lines = int(output.strip())
+
+    with open(
+        filepath, mode="r", encoding="utf-8", errors="ignore"
+    ) as input_file:
+        n_lines = sum(block.count("\n") for block in blocks(input_file))
+
     return n_lines
+
+
+def blocks(file_io: IO[Text], size: int = 65536) -> Iterable[Text]:
+    while True:
+        block = file_io.read(size)
+        if not block:
+            break
+        yield block
 
 
 class CodeBertDataset(Dataset):
