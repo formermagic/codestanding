@@ -71,10 +71,13 @@ class CodeBertLMPretraining(pl.LightningModule):
     def training_step(
         self, batch: Dict[Text, torch.Tensor], batch_idx: int
     ) -> Dict[Text, torch.Tensor]:
+        # prepare loss and ppl
         loss, _ = self.forward(**batch)
         perplexity = get_perplexity(loss)
+        # prepare lr
         learning_rate = self.lr_scheduler.get_last_lr()[-1]  # type: ignore
         learning_rate = torch.FloatTensor([learning_rate])  # type: ignore
+
         tensorboard_logs = {
             "train_loss": loss,
             "train_ppl": perplexity,
