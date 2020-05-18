@@ -1,4 +1,4 @@
 from .dataset_codebert import CodeBertDataset
-from .polynomial_decay_scheduler import PolynomialDecayScheduler
+from .optimization import get_polynomial_decay_with_warmup
 from .run_codebert_pretraining import CodeBertLMPretraining
 from .tokenization_codebert import CodeBertTokenizerFast
