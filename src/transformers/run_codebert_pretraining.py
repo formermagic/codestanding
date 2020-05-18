@@ -32,8 +32,8 @@ class CodeBertLMPretraining(pl.LightningModule):
         config = RobertaConfig(
             vocab_size=self.tokenizer.vocab_size,
             hidden_size=768,
-            num_hidden_layers=2,
-            num_attention_heads=12,
+            num_hidden_layers=self.hparams.num_hidden_layers,
+            num_attention_heads=self.hparams.num_attention_heads,
             intermediate_size=3072,
             hidden_act="gelu",
             max_position_embeddings=512 + 2,
@@ -197,5 +197,9 @@ class CodeBertLMPretraining(pl.LightningModule):
                             help="Batch size value for training setup.")
         parser.add_argument("--lr", type=float, default=0.001,
                             help="Train learning rate for optimizer.")
+        parser.add_argument("--num_hidden_layers", type=int, default=6,
+                            help="A number of transformer encoder hidden layers.")
+        parser.add_argument("--num_attention_heads", type=int, default=12,
+                            help="A number of self-attention heads.")
         # fmt: on
         return parser
