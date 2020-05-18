@@ -119,7 +119,7 @@ class CodeBertLMPretraining(pl.LightningModule):
             },
         ]
 
-        optimizer = AdamW(optimizer_grouped_parameters, lr=1e-4)
+        optimizer = AdamW(optimizer_grouped_parameters, lr=self.hparams.lr)
         self.optimizer = optimizer
         return [optimizer]
 
@@ -183,5 +183,7 @@ class CodeBertLMPretraining(pl.LightningModule):
                             help="local_rank for distributed training on gpus")
         parser.add_argument("--train_batch_size", type=int, default=1,
                             help="Batch size value for training setup.")
+        parser.add_argument("--lr", type=float, default=0.001,
+                            help="Train learning rate for optimizer.")
         # fmt: on
         return parser
