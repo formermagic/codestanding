@@ -6,17 +6,13 @@ import torch
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader, RandomSampler
-from transformers import (
-    AdamW,
-    RobertaConfig,
-    RobertaForMaskedLM,
-    get_linear_schedule_with_warmup,
-)
+from transformers import AdamW, RobertaConfig, RobertaForMaskedLM
 from transformers.data.data_collator import DataCollatorForLanguageModeling
 
 from .dataset_codebert import CodeBertDataset
-from .tokenization_codebert import CodeBertTokenizerFast
 from .optimization import get_polynomial_decay_with_warmup
+from .tokenization_codebert import CodeBertTokenizerFast
+from .utils import get_perplexity
 
 
 class CodeBertLMPretraining(pl.LightningModule):
@@ -76,8 +72,21 @@ class CodeBertLMPretraining(pl.LightningModule):
         self, batch: Dict[Text, torch.Tensor], batch_idx: int
     ) -> Dict[Text, torch.Tensor]:
         loss, _ = self.forward(**batch)
-        tensorboard_logs = {"train_loss": loss}
-        return {"loss": loss, "log": tensorboard_logs}
+        perplexity = get_perplexity(loss)
+        learning_rate = self.lr_scheduler.get_last_lr()[-1]  # type: ignore
+        learning_rate = torch.FloatTensor([learning_rate])  # type: ignore
+        tensorboard_logs = {
+            "train_loss": loss,
+            "train_ppl": perplexity,
+            "train_lr": learning_rate,
+        }
+
+        return {
+            "loss": loss,
+            "ppl": perplexity,
+            "lr": learning_rate,
+            "log": tensorboard_logs,
+        }
 
     # pylint: disable=too-many-arguments
     def optimizer_step(
