@@ -220,7 +220,7 @@ class CodeBertLMPretraining(pl.LightningModule):
         data_loader = DataLoader(
             dataset,
             batch_size=self.hparams.batch_size,
-            num_workers=0,
+            num_workers=self.hparams.num_workers,
             sampler=sampler,
             collate_fn=collator.collate_batch,
         )
@@ -262,7 +262,7 @@ class CodeBertLMPretraining(pl.LightningModule):
         data_loader = DataLoader(
             dataset,
             batch_size=self.hparams.batch_size,
-            num_workers=0,
+            num_workers=self.hparams.num_workers,
             shuffle=False,
             collate_fn=collator.collate_batch,
         )
@@ -297,5 +297,7 @@ class CodeBertLMPretraining(pl.LightningModule):
                             help="A number of transformer encoder hidden layers.")
         parser.add_argument("--num_attention_heads", type=int, default=12,
                             help="A number of self-attention heads.")
+        parser.add_argument("--num_workers", type=int, default=0,
+                            help="A number of workers for data loaders.")
         # fmt: on
         return parser
