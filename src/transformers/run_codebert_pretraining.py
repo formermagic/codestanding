@@ -116,7 +116,7 @@ class CodeBertLMPretraining(pl.LightningModule):
         loss, prediction_scores = outputs[:2]
         return loss, prediction_scores
 
-    # pylint: disable=arguments-differ, unused-argument
+    # pylint: disable=arguments-differ, unused-argument, not-callable
     def training_step(
         self, batch: Dict[Text, torch.Tensor], batch_idx: int
     ) -> Dict[Text, Union[torch.Tensor, Dict[Text, torch.Tensor]]]:
@@ -124,10 +124,12 @@ class CodeBertLMPretraining(pl.LightningModule):
         loss, _ = self.forward(**batch)
         perplexity = get_perplexity(loss)
         learning_rate = self.last_learning_rate
+        batch_size = torch.tensor([self.hparams.batch_size])
         tensorboard_logs = {
             "train_loss": loss,
             "train_ppl": perplexity,
             "train_lr": learning_rate,
+            "train_bz": batch_size,
         }
 
         return {
