@@ -2,6 +2,7 @@ import logging
 from typing import List, Optional, Text, Union
 
 from tokenizers import AddedToken
+from tokenizers.normalizers import Lowercase
 from transformers import RobertaTokenizerFast
 from transformers.tokenization_roberta import RobertaProcessing
 
@@ -61,6 +62,7 @@ class CodeBertTokenizerFast(RobertaTokenizerFast):
 
         assert self.pad_token_id == 1, "Make sure `pad_token_id==1`"
 
+        self.backend_tokenizer._tokenizer.normalizer = Lowercase()
         self.backend_tokenizer._tokenizer.post_processor = RobertaProcessing(
             sep=(sep_token, self.sep_token_id),
             cls=(cls_token, self.cls_token_id),
