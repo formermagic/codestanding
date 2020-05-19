@@ -28,7 +28,5 @@ def get_perplexity(
         ppl_tensor = torch.tensor([safe_round(base ** loss, ndigits)])
     except OverflowError:
         ppl_tensor = torch.tensor([float("inf")])
-    else:
-        ppl_tensor = torch.tensor([float("inf")])
 
     return cast(torch.FloatTensor, ppl_tensor.float())
