@@ -92,6 +92,16 @@ class CodeBertLMPretraining(pl.LightningModule):
         tokenizer.backend_tokenizer.add_special_tokens(["<nl>"])
         return tokenizer
 
+    @property
+    def last_learning_rate(self) -> torch.FloatTensor:
+        # pylint: disable=not-callable
+        if self.lr_scheduler is None:
+            values = torch.tensor([float("nan")])
+        else:
+            values = self.lr_scheduler.get_last_lr()  # type: ignore
+            values = torch.tensor(values).mean()
+        return cast(torch.FloatTensor, values.float())
+
     # pylint: disable=arguments-differ
     def forward(
         self,
@@ -113,8 +123,7 @@ class CodeBertLMPretraining(pl.LightningModule):
         # prepare logging meter values
         loss, _ = self.forward(**batch)
         perplexity = get_perplexity(loss)
-        learning_rate = self.lr_scheduler.get_last_lr()  # type: ignore
-        learning_rate = torch.FloatTensor(learning_rate).mean()  # type: ignore
+        learning_rate = self.last_learning_rate
         tensorboard_logs = {
             "train_loss": loss,
             "train_ppl": perplexity,
