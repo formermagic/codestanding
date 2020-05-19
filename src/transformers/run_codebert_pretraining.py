@@ -19,8 +19,9 @@ from .utils import get_perplexity
 
 
 class ValidSaveCallback(Callback):
-    def __init__(self, filepath: Text) -> None:
+    def __init__(self, filepath: Text, save_top_k: int = 3) -> None:
         self.filepath = filepath
+        self.save_top_k = save_top_k
 
     @staticmethod
     def _keep_last_files(num: int, dirname: Text) -> None:
@@ -32,7 +33,9 @@ class ValidSaveCallback(Callback):
         self, trainer: pl.Trainer, pl_module: pl.LightningModule
     ) -> None:
         save_filepath = os.path.join(self.filepath, "{epoch}-{step}")
-        model_checkpoint = ModelCheckpoint(save_filepath)
+        model_checkpoint = ModelCheckpoint(
+            save_filepath, save_top_k=self.save_top_k
+        )
         save_filepath = model_checkpoint.format_checkpoint_name(
             epoch=trainer.current_epoch,
             metrics=dict(
@@ -44,8 +47,8 @@ class ValidSaveCallback(Callback):
         # pylint: disable=protected-access
         model_checkpoint._save_model(save_filepath)
 
-        # keep last 3 files
-        self._keep_last_files(num=3, dirname=self.filepath)
+        # keep last `save_top_k` files
+        self._keep_last_files(num=self.save_top_k, dirname=self.filepath)
 
 
 class CodeBertLMPretraining(pl.LightningModule):
