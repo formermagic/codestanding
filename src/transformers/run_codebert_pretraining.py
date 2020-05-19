@@ -148,7 +148,7 @@ class CodeBertLMPretraining(pl.LightningModule):
 
     def validation_epoch_end(
         self, outputs: List[Dict[Text, torch.Tensor]]
-    ) -> Dict[Text, torch.Tensor]:
+    ) -> Dict[Text, Dict[Text, torch.Tensor]]:
         # prepare average loss and ppl
         avg_loss = torch.stack([x["loss"] for x in outputs]).mean()
         avg_perplexity = torch.stack([x["ppl"] for x in outputs]).mean()
@@ -157,11 +157,7 @@ class CodeBertLMPretraining(pl.LightningModule):
             "val_ppl": avg_perplexity,
         }
 
-        return {
-            "loss": avg_loss,
-            "ppl": avg_perplexity,
-            "log": tensorboard_logs,
-        }
+        return {"log": tensorboard_logs}
 
     # pylint: disable=too-many-arguments
     def optimizer_step(
