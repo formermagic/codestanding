@@ -119,7 +119,7 @@ class CodeBertLMPretraining(pl.LightningModule):
     # pylint: disable=arguments-differ, unused-argument
     def training_step(
         self, batch: Dict[Text, torch.Tensor], batch_idx: int
-    ) -> Dict[Text, torch.Tensor]:
+    ) -> Dict[Text, Union[torch.Tensor, Dict[Text, torch.Tensor]]]:
         # prepare logging meter values
         loss, _ = self.forward(**batch)
         perplexity = get_perplexity(loss)
