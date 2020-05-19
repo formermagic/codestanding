@@ -130,7 +130,12 @@ class CodeBertLMPretraining(pl.LightningModule):
             "train_lr": learning_rate,
         }
 
-        return {**tensorboard_logs, "log": tensorboard_logs}
+        return {
+            "loss": loss,
+            "ppl": perplexity,
+            "lr": learning_rate,
+            "log": tensorboard_logs,
+        }
 
     # pylint: disable=arguments-differ, unused-argument
     def validation_step(
@@ -152,7 +157,11 @@ class CodeBertLMPretraining(pl.LightningModule):
             "val_ppl": avg_perplexity,
         }
 
-        return {**tensorboard_logs, "log": tensorboard_logs}
+        return {
+            "loss": avg_loss,
+            "ppl": avg_perplexity,
+            "log": tensorboard_logs,
+        }
 
     # pylint: disable=too-many-arguments
     def optimizer_step(
