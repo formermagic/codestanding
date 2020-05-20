@@ -343,8 +343,6 @@ def main() -> None:
         callbacks=[val_save],
         auto_scale_batch_size=hparams.auto_scale_batch_size,
         resume_from_checkpoint=hparams.resume_from_checkpoint,
-        train_percent_check=0.05,
-        val_percent_check=0.05,
     )
 
     trainer.fit(code_bert_model)
