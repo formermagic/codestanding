@@ -3,7 +3,6 @@ from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Text, Tuple, Union, cast
 
-import pytorch_lightning as pl
 import torch
 from pytorch_lightning import LightningModule, Trainer, seed_everything
 from pytorch_lightning.callbacks import Callback, ModelCheckpoint
