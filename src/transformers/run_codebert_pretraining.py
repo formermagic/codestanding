@@ -5,6 +5,7 @@ from typing import Any, Callable, Dict, List, Optional, Text, Tuple, Union, cast
 
 import pytorch_lightning as pl
 import torch
+from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.callbacks import Callback, ModelCheckpoint
 from pytorch_lightning.loggers.wandb import WandbLogger
 from pytorch_lightning.utilities.memory import (
@@ -326,11 +327,20 @@ def main() -> None:
                         help="A flag that indicates whether we should find detect batch-size.")
     parser.add_argument("--steps_per_trial", type=int, default=10,
                         help="A number of steps to try during batch_size finding.")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="A seed to make experiments reproducible.")
     # fmt: on
 
     parser = CodeBertLMPretraining.add_model_specific_args(parser)
     parser = pl.Trainer.add_argparse_args(parser)
     hparams = parser.parse_args()
+
+    # make experiments reproducible if needed
+    if hparams.seed is not None:
+        seed_everything(hparams.seed)
+        determenistic = True
+    else:
+        determenistic = False
 
     code_bert_model = CodeBertLMPretraining(hparams)
 
@@ -373,6 +383,7 @@ def main() -> None:
         callbacks=[val_save],
         auto_scale_batch_size=hparams.auto_scale_batch_size,
         resume_from_checkpoint=hparams.resume_from_checkpoint,
+        deterministic=determenistic,
     )
 
     # loop the training since we want to catch errors and repeat
