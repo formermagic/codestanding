@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict, List, Optional, Text, Tuple, Union, cast
 
 import pytorch_lightning as pl
 import torch
-from pytorch_lightning import Trainer, seed_everything
+from pytorch_lightning import LightningModule, Trainer, seed_everything
 from pytorch_lightning.callbacks import Callback, ModelCheckpoint
 from pytorch_lightning.loggers.wandb import WandbLogger
 from pytorch_lightning.utilities.memory import (
@@ -36,7 +36,7 @@ class ValidSaveCallback(Callback):
             os.remove(path)
 
     def on_validation_end(
-        self, trainer: pl.Trainer, pl_module: pl.LightningModule
+        self, trainer: Trainer, pl_module: LightningModule
     ) -> None:
         save_filepath = os.path.join(self.filepath, "{epoch}-{step}")
         model_checkpoint = ModelCheckpoint(
@@ -55,11 +55,11 @@ class ValidSaveCallback(Callback):
         self._keep_last_files(num=self.save_top_k, dirname=self.filepath)
 
 
-class CodeBertLMPretraining(pl.LightningModule):
+class CodeBertLMPretraining(LightningModule):
     tokenizer: CodeBertTokenizerFast
     optimizer: Optional[Optimizer]
     lr_scheduler: Optional[LambdaLR]
-    trainer: Optional[pl.Trainer]
+    trainer: Optional[Trainer]
 
     def __init__(self, hparams: Namespace) -> None:
         super().__init__()
@@ -332,7 +332,7 @@ def main() -> None:
     # fmt: on
 
     parser = CodeBertLMPretraining.add_model_specific_args(parser)
-    parser = pl.Trainer.add_argparse_args(parser)
+    parser = Trainer.add_argparse_args(parser)
     hparams = parser.parse_args()
 
     # make experiments reproducible if needed
@@ -347,7 +347,7 @@ def main() -> None:
     # use correct batch_size
     if hparams.find_batch_size:
         # a dummy trainer for batch_size finder
-        dummy_trainer = pl.Trainer(
+        dummy_trainer = Trainer(
             gpus=hparams.gpus,
             num_nodes=hparams.num_nodes,
             accumulate_grad_batches=hparams.accumulate_grad_batches,
@@ -372,7 +372,7 @@ def main() -> None:
     wandb_logger.watch(code_bert_model.model, log="gradients", log_freq=1)
 
     val_save = ValidSaveCallback(hparams.save_dir)
-    trainer = pl.Trainer(
+    trainer = Trainer(
         gpus=hparams.gpus,
         num_nodes=hparams.num_nodes,
         accumulate_grad_batches=hparams.accumulate_grad_batches,
