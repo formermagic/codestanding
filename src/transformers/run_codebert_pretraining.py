@@ -319,6 +319,8 @@ def main() -> None:
                         help="The interval of steps between checkpoints saving.")
     parser.add_argument("--find_batch_size", default=False, action="store_true",
                         help="A flag that indicates whether we should find detect batch-size.")
+    parser.add_argument("--steps_per_trial", type=int, default=10,
+                        help="A number of steps to try during batch_size finding.")
     # fmt: on
 
     parser = CodeBertLMPretraining.add_model_specific_args(parser)
@@ -337,7 +339,9 @@ def main() -> None:
         )
         # find fitting batch_size with binsearch
         batch_size = dummy_trainer.scale_batch_size(
-            code_bert_model, mode="binsearch"
+            code_bert_model,
+            mode="binsearch",
+            steps_per_trial=hparams.steps_per_trial,
         )
         # clear allocated gpu memory
         torch.cuda.empty_cache()
