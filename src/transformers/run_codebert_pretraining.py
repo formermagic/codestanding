@@ -317,6 +317,8 @@ def main() -> None:
                         help="The dir to save training checkpoints.")
     parser.add_argument("--save_interval_updates", type=int, default=None,
                         help="The interval of steps between checkpoints saving.")
+    parser.add_argument("--find_batch_size", default=False, action="store_true",
+                        help="A flag that indicates whether we should find detect batch-size.")
     # fmt: on
 
     parser = CodeBertLMPretraining.add_model_specific_args(parser)
@@ -324,6 +326,15 @@ def main() -> None:
     hparams = parser.parse_args()
 
     code_bert_model = CodeBertLMPretraining(hparams)
+
+    # use correct batch_size
+    if hparams.find_batch_size:
+        dummy_trainer = pl.Trainer()
+        batch_size = dummy_trainer.scale_batch_size(code_bert_model)
+    else:
+        batch_size = hparams.batch_size
+    code_bert_model.hparams.batch_size = batch_size
+
     wandb_logger = WandbLogger(
         project=hparams.wandb_project,
         name=hparams.wandb_name,
