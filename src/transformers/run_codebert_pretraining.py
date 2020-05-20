@@ -248,6 +248,7 @@ class CodeBertLMPretraining(pl.LightningModule):
                 num_training_steps=t_total,
                 power=self.hparams.power,
             )
+            scheduler.last_epoch = self.trainer.global_step - 1  # type: ignore
             self.lr_scheduler = scheduler
 
         return data_loader
