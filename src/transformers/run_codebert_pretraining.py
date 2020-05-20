@@ -329,8 +329,18 @@ def main() -> None:
 
     # use correct batch_size
     if hparams.find_batch_size:
-        dummy_trainer = pl.Trainer()
-        batch_size = dummy_trainer.scale_batch_size(code_bert_model)
+        # a dummy trainer for batch_size finder
+        dummy_trainer = pl.Trainer(
+            gpus=hparams.gpus,
+            num_nodes=hparams.num_nodes,
+            accumulate_grad_batches=hparams.accumulate_grad_batches,
+        )
+        # find fitting batch_size with binsearch
+        batch_size = dummy_trainer.scale_batch_size(
+            code_bert_model, mode="binsearch"
+        )
+        # clear allocated gpu memory
+        torch.cuda.empty_cache()
     else:
         batch_size = hparams.batch_size
     code_bert_model.hparams.batch_size = batch_size
