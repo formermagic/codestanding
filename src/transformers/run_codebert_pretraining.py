@@ -38,9 +38,7 @@ class ValidSaveCallback(Callback):
         )
         save_filepath = model_checkpoint.format_checkpoint_name(
             epoch=trainer.current_epoch,
-            metrics=dict(
-                **trainer.callback_metrics, step=trainer.global_step
-            ),
+            metrics=dict(**trainer.callback_metrics, step=trainer.global_step),
         )
 
         model_checkpoint.save_function = trainer.save_checkpoint
