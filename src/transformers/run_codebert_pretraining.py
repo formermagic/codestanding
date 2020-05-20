@@ -6,6 +6,7 @@ from typing import Any, Callable, Dict, List, Optional, Text, Tuple, Union, cast
 import pytorch_lightning as pl
 import torch
 from pytorch_lightning.callbacks import Callback, ModelCheckpoint
+from pytorch_lightning.loggers.wandb import WandbLogger
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader, RandomSampler
@@ -301,3 +302,53 @@ class CodeBertLMPretraining(pl.LightningModule):
                             help="A number of workers for data loaders.")
         # fmt: on
         return parser
+
+
+def main() -> None:
+    parser = ArgumentParser()
+    # fmt: off
+    parser.add_argument("--wandb_project", type=str, default=None,
+                        help="The WandB project name to write logs to.")
+    parser.add_argument("--wandb_name", type=str, default=None,
+                        help="The WandB experiment name to write logs to.")
+    parser.add_argument("--wandb_id", type=str, default=None,
+                        help="The WandB id to use for resuming.")
+    parser.add_argument("--save_dir", type=str, default=None,
+                        help="The dir to save training checkpoints.")
+    parser.add_argument("--save_interval_updates", type=int, default=None,
+                        help="The interval of steps between checkpoints saving.")
+    # fmt: on
+
+    parser = CodeBertLMPretraining.add_model_specific_args(parser)
+    parser = pl.Trainer.add_argparse_args(parser)
+    hparams = parser.parse_args()
+
+    code_bert_model = CodeBertLMPretraining(hparams)
+    wandb_logger = WandbLogger(
+        project=hparams.wandb_project,
+        name=hparams.wandb_name,
+        id=hparams.wandb_id,
+    )
+    wandb_logger.watch(code_bert_model.model, log="gradients", log_freq=1)
+
+    val_save = ValidSaveCallback(hparams.save_dir)
+    trainer = pl.Trainer(
+        gpus=hparams.gpus,
+        num_nodes=hparams.num_nodes,
+        accumulate_grad_batches=hparams.accumulate_grad_batches,
+        max_steps=hparams.max_steps,
+        gradient_clip_val=hparams.gradient_clip_val,
+        val_check_interval=hparams.save_interval_updates,
+        logger=wandb_logger,
+        callbacks=[val_save],
+        auto_scale_batch_size=hparams.auto_scale_batch_size,
+        resume_from_checkpoint=hparams.resume_from_checkpoint,
+        train_percent_check=0.05,
+        val_percent_check=0.05,
+    )
+
+    trainer.fit(code_bert_model)
+
+
+if __name__ == "__main__":
+    main()
