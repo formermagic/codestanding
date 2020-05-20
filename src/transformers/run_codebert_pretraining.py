@@ -7,6 +7,10 @@ import pytorch_lightning as pl
 import torch
 from pytorch_lightning.callbacks import Callback, ModelCheckpoint
 from pytorch_lightning.loggers.wandb import WandbLogger
+from pytorch_lightning.utilities.memory import (
+    garbage_collection_cuda,
+    is_oom_error,
+)
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LambdaLR
 from torch.utils.data import DataLoader, RandomSampler
@@ -371,7 +375,24 @@ def main() -> None:
         resume_from_checkpoint=hparams.resume_from_checkpoint,
     )
 
-    trainer.fit(code_bert_model)
+    # loop the training since we want to catch errors and repeat
+    while True:
+        try:
+            # start training the model
+            is_finished = trainer.fit(code_bert_model)
+            # break the loop when training is finished
+            if is_finished == 1:
+                break
+        except RuntimeError as exception:
+            if is_oom_error(exception):
+                # clear gpu memory
+                garbage_collection_cuda()
+                # try to decrease a batch_size so OOM hopefully resolves
+                batch_size = code_bert_model.hparams.batch_size
+                code_bert_model.hparams.batch_size = max(1, batch_size - 1)
+            else:
+                # we don't know how to treat other errors
+                break
 
 
 if __name__ == "__main__":
