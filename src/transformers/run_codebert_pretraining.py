@@ -89,7 +89,10 @@ class CodeBertLMPretraining(LightningModule):
 
     def load_tokenizer(self) -> CodeBertTokenizerFast:
         tokenizer = CodeBertTokenizerFast.from_pretrained(
-            self.hparams.tokenizer_path
+            self.hparams.tokenizer_path,
+            add_prefix_space=self.hparams.tokenizer_add_prefix_space,
+            trim_offsets=self.hparams.tokenizer_trim_offsets,
+            lowercase=self.hparams.tokenizer_lowercase,
         )
         tokenizer = cast(CodeBertTokenizerFast, tokenizer)
         tokenizer.backend_tokenizer.add_special_tokens(["<nl>"])
@@ -288,6 +291,14 @@ class CodeBertLMPretraining(LightningModule):
         # fmt: off
         parser.add_argument("--tokenizer_path", type=str, default=None,
                             help="A path to pretrained tokenizer saved files.")
+        parser.add_argument("--tokenizer_add_prefix_space", type=bool, default=False,
+                            help="""Whether to put a space to start the input string with or not.
+                            >>>> tokenizer.decode(tokenizer.encode("Hello")) = " Hello" """)
+        parser.add_argument("--tokenizer_trim_offsets", type=bool, default=True,
+                            help="""Whether the post processing step should trim offsets \
+                            to avoid including whitespaces.""")
+        parser.add_argument("--tokenizer_lowercase", type=bool, default=True,
+                            help="Whether the text should be lowercased or not.")
         parser.add_argument("--warmup_steps", type=int, default=None,
                             help="A number of warmup steps to make.")
         parser.add_argument("--weight_decay", type=float, default=None,
