@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Text, Union
+from typing import Any, List, Optional, Text, Union
 
 from tokenizers import AddedToken
 from tokenizers.normalizers import Lowercase
@@ -42,7 +42,8 @@ class CodeBertTokenizerFast(RobertaTokenizerFast):
         mask_token: Text = "<mask>",
         add_prefix_space: bool = True,
         trim_offsets: bool = True,
-        **kwargs
+        lowercase: bool = True,
+        **kwargs: Any,
     ) -> None:
         kwargs.setdefault("pad_token", pad_token)
         kwargs.setdefault("sep_token", sep_token)
@@ -62,7 +63,11 @@ class CodeBertTokenizerFast(RobertaTokenizerFast):
 
         assert self.pad_token_id == 1, "Make sure `pad_token_id==1`"
 
-        self.backend_tokenizer._tokenizer.normalizer = Lowercase()
+        # add lowercase normalizer if needed
+        if lowercase:
+            self.backend_tokenizer._tokenizer.normalizer = Lowercase()
+
+        # add RoBERTa post processor
         self.backend_tokenizer._tokenizer.post_processor = RobertaProcessing(
             sep=(sep_token, self.sep_token_id),
             cls=(cls_token, self.cls_token_id),
