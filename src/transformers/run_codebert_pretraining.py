@@ -175,14 +175,13 @@ class CodeBertLMPretraining(LightningModule):
     ) -> None:
         optimizer.step()
         optimizer.zero_grad()
-        self.lr_scheduler.step()
 
     def get_progress_bar_dict(self) -> Dict[Text, Union[int, str]]:
         progress_bar_dict = super().get_progress_bar_dict()
         progress_bar_dict["lr"] = "{}".format(self.lr_scheduler.get_last_lr()[-1])  # type: ignore
         return progress_bar_dict
 
-    def configure_optimizers(self) -> List[Optimizer]:
+    def configure_optimizers(self) -> Tuple[List[Optimizer], List[Dict]]:
         model = self.model
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
@@ -210,8 +209,39 @@ class CodeBertLMPretraining(LightningModule):
             eps=1e-6,
             lr=self.hparams.lr,
         )
+
+        if getattr(self.trainer, "max_steps") is None:
+            t_total = self.training_steps(len(self.trainer.train_dataloader))
+        else:
+            t_total = self.trainer.max_steps
+
+        scheduler = get_polynomial_decay_with_warmup(
+            optimizer,
+            num_warmup_steps=self.hparams.warmup_steps,
+            num_training_steps=t_total,
+            power=self.hparams.power,
+        )
+
         self.optimizer = optimizer
-        return [optimizer]
+        self.lr_scheduler = scheduler
+
+        # called after each training steps
+        step_scheduler = {
+            "scheduler": scheduler,
+            "interval": "step",
+        }
+
+        return [optimizer], [step_scheduler]
+
+    def training_steps(self, dataset_len: int) -> int:
+        num_gpus = self.trainer.gpus
+        if isinstance(num_gpus, list):
+            num_gpus = list(num_gpus)
+
+        batch_size = self.hparams.batch_size
+        per_gpu_samples = dataset_len // (batch_size * max(1, num_gpus))
+        per_gpu_samples //= self.trainer.accumulate_grad_batches
+        return per_gpu_samples * self.trainer.max_epochs
 
     def train_dataloader(self) -> DataLoader:
         dataset = CodeBertDataset(
@@ -229,31 +259,6 @@ class CodeBertLMPretraining(LightningModule):
             sampler=sampler,
             collate_fn=collator.collate_batch,
         )
-
-        def training_steps(dataset_len: int) -> int:
-            num_gpus = self.trainer.gpus
-            if isinstance(num_gpus, list):
-                num_gpus = list(num_gpus)
-
-            batch_size = self.hparams.batch_size
-            per_gpu_samples = dataset_len // (batch_size * max(1, num_gpus))
-            per_gpu_samples //= self.trainer.accumulate_grad_batches
-            return per_gpu_samples * self.trainer.max_epochs
-
-        if getattr(self.trainer, "max_steps") is None:
-            t_total = training_steps(len(data_loader.dataset))
-        else:
-            t_total = self.trainer.max_steps
-
-        if self.optimizer is not None:
-            scheduler = get_polynomial_decay_with_warmup(
-                self.optimizer,
-                num_warmup_steps=self.hparams.warmup_steps,
-                num_training_steps=t_total,
-                power=self.hparams.power,
-            )
-            scheduler.last_epoch = self.trainer.global_step - 1  # type: ignore
-            self.lr_scheduler = scheduler
 
         return data_loader
 
