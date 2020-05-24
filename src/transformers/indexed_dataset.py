@@ -142,3 +142,15 @@ class IndexDatasetPreprocessor(IndexProcessorMixin):
             if bucket:
                 flush(bucket, output_file)
 
+
+class IndexedDataset(IndexProcessorMixin, Dataset):
+    def __init__(self, filepath: Text, vocab_size: int) -> None:
+        super().__init__(vocab_size)
+        self.filepath = filepath
+        self.vocab_size = vocab_size
+
+    def __len__(self) -> int:
+        return len(self.read_lengths(self.filepath))
+
+    def __getitem__(self, index: int) -> List[int]:
+        return self.read_tokens(self.filepath, index)
