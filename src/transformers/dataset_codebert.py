@@ -1,31 +1,11 @@
 import linecache
-import os
-from typing import IO, Iterable, Text
+from typing import Text
 
 import torch
 from torch.utils.data import Dataset
 
 from .tokenization_codebert import CodeBertTokenizerFast
-
-
-def lines_in_file(filepath: Text) -> int:
-    if not os.path.exists(filepath):
-        raise FileNotFoundError(filepath)
-
-    with open(
-        filepath, mode="r", encoding="utf-8", errors="ignore"
-    ) as input_file:
-        n_lines = sum(block.count("\n") for block in blocks(input_file))
-
-    return n_lines
-
-
-def blocks(file_io: IO[Text], size: int = 65536) -> Iterable[Text]:
-    while True:
-        block = file_io.read(size)
-        if not block:
-            break
-        yield block
+from .utils import lines_in_file
 
 
 class CodeBertDataset(Dataset):
